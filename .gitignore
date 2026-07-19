@@ -1,0 +1,42 @@
+# Task text is personal (psyche task standard — all task files gitignored)
+TODO.md
+
+# Outputs, data, tracking (large / local)
+outputs/
+data/
+mlruns/
+multirun/
+
+# Literature: bib + downloaded PDFs are large / personal staging
+paper/literature/
+
+# Reviews / ARR / reviewer text — never committed (public repo)
+text_docs/reviews/
+
+# Secrets (defense-in-depth; the SessionStart hook mirrors these to .cursorignore)
+.env
+.env.*
+*.env
+keys/
+secrets/
+*.key
+*.pem
+*credentials*
+*.secret
+
+# Python / uv
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# Fonts (CJK/Devanagari renders — large, local)
+fonts/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/

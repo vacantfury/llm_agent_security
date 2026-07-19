@@ -1,0 +1,11 @@
+# Mirror of the secret-file patterns Claude Code is denied from reading,
+# so Cursor's AI is blocked from the same files (SessionStart hook keeps this in sync).
+.env
+.env.*
+*.env
+keys/
+secrets/
+*.key
+*.pem
+*credentials*
+*.secret

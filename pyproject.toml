@@ -1,0 +1,17 @@
+[project]
+name = "llm-agent-security"
+version = "0.1.0"
+description = "Security of LLM agents: encoded/indirect prompt injection, action-level attacks and defenses, and agent-safety evaluation."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    # Agent-harness + backbone deps land at S7 (AgentDojo / InjecAgent, LLM SDKs, etc.).
+    # Encoder deps (copied from the sibling) get pinned when the copied module is decoupled.
+]
+
+[tool.uv]
+# uv is the package/project manager for this repo (global law: uv, not poetry).
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
