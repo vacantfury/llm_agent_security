@@ -66,6 +66,17 @@ AI-agent / LLM **security** — target a MAIN conference (IEEE SaTML / S&P / USE
 
 **Verdict (provisional, internal):** a real, defensible gap (Medium overlap), with a stronger novelty position than the parked judge-reliability line — gated on moving before the fast-moving field closes it, and on accepting the external-harness build cost. Advance to S5 (main story) and an S6 design + cost estimate.
 
+# Idea-check outcome (cspaper.org, 2026-07-20)
+
+**Verdict: CONFIRMED — advance to S5.** The check placed the idea centrally in agent security / IPI and stated the gap in our own terms ("diverges by testing reversible encodings and image-rendered payloads … whether existing defenses are overly reliant on surface-form lexical patterns at the expense of decoded semantics"). No new scoop.
+
+- **Signal vs noise:** 5 of 10 retrieved papers are real prior art (MELON, ChatInject, Defense-by-Attack-Techniques, AdvAgent, ASB — now in `my_base.bib` [12]–[16], `literature_review.md §§2–6`); the other 5 are co-retrieval noise.
+- **The one substantive change — MELON (`zhu2025melon`):** a behavioral/trajectory IPI defense (SOTA on AgentDojo) the S4 deep-read missed. It likely *resists* encoding → **contribution #1 re-scoped to surface-form injection defenses**, with MELON as the resistant contrast. This sharpens, not threatens (proposal §4 idea-check note + §5).
+- **Validated:** multi-agent security named as an open gap (= `future_work.md §3`); learnability of instruction/data separation as a discussion framing.
+- **Venue:** retrieved papers cluster at ICML/ICLR/ACL (corpus-confounded) — keep ICLR / ACL-via-ARR live alongside the security-venue target for S10.
+
+Full report below (§ "# Review").
+
 # Review
 
 Encoded Indirect Prompt Injection Bypasses Agent Defenses
