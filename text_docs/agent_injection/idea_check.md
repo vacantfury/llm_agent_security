@@ -21,7 +21,7 @@ No published work systematically measures whether an **encoded** indirect-inject
 ## The idea (core claim)
 
 Injection defenses recognize an *imperative natural-language surface* in ingested data (delimiting it, datamarking it, classifying it). An **encoded** instruction presents a surface they were never tuned on, yet the backbone still **decodes-and-obeys** it — the surface-vs-decoded gap of Paper C, relocated to the agent's untrusted **data channel**. We measure it directly and fix-check it:
-- **Attack (§5.1, the core):** an encoded indirect-injection payload raises **injected-action success** over a plain-language payload against deployed injection defenses, **across ≥3 scaffolds × backbones**, on a standard harness (AgentDojo / InjecAgent). Success = the agent completes the injected action (agent-native metric), *not* a harmful-text verdict.
+- **Attack (the core of this paper):** an encoded indirect-injection payload raises **injected-action success** over a plain-language payload against deployed injection defenses, **across ≥3 scaffolds × backbones**, on a standard harness (AgentDojo / InjecAgent). Success = the agent completes the injected action (agent-native metric), *not* a harmful-text verdict.
 - **Falsifiable, refutation-is-a-finding:** if encoding gives no lift once an injection guard is present, that itself is a result — injection defenses, unlike alignment, would be encoding-robust.
 
 **Seed plausibility (not hypothetical):** Reverse CAPTCHA (2026) quantifies that **tool-use amplifies compliance** with an encoded (invisible-Unicode) payload — Cohen's *h* up to **1.37**, compliance → 98–100% with tools; and this line already owns the encoders (MathEnc) and image transforms (ImgAug) that become the payloads.
