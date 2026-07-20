@@ -1,0 +1,58 @@
+# Config for scripts/sync_shared_refs.py — the bib-sync bridge between this
+# repo and its sibling VLM repo.
+#
+# Why this exists: the two repos (llm_agent_security ↔
+# imaging_text_attacks_for_llm_jailbreaking) share the ENCODERS as payloads, so
+# their encoding-literature citations overlap. The oikos charter bars a
+# research-bet -> research-bet import dependency, so the bibs are kept as
+# separate copies (see CLAUDE.md "Scope boundary"). This tool reconciles the
+# overlap: it matches entries by content identity across the two `my_base.bib`
+# files and reports metadata conflicts (stale versions, year/title drift) plus
+# the one-sided entries. It NEVER writes — porting a paper across repos is a
+# judgment call (scope boundary), so that stays manual.
+
+# --- Bib file locations (relative to repo root, or absolute) ---
+# local  = this repo's bib.
+# sibling = the VLM repo's bib. Default assumes the two repos are cloned
+#           side-by-side under the same parent dir (the owner's layout). Override
+#           on the CLI with --sibling if cloned elsewhere.
+local_bib: paper/literature/my_base.bib
+sibling_bib: ../imaging_text_attacks_for_llm_jailbreaking/paper/literature/my_base.bib
+
+# Human labels for the report header.
+local_label: llm_agent_security
+sibling_label: imaging_text_attacks_for_llm_jailbreaking
+
+# --- Identity matching ---
+matching:
+  # arXiv DOIs (preprint DOIs) fold into the arXiv-id key instead of counting as
+  # a distinct venue DOI. Any doi starting with one of these prefixes is ignored
+  # for DOI matching (the arXiv id carries the identity).
+  arxiv_doi_prefixes:
+    - "10.48550/arxiv"
+  # Fuzzy title match (difflib ratio, stdlib) is the last-resort matcher, used
+  # only when neither an arXiv id nor a venue DOI is available on BOTH entries.
+  # Above this ratio, two titles are treated as the same paper.
+  title_similarity_threshold: 0.92
+  # Skip the fuzzy title comparison entirely when the two titles' lengths differ
+  # by more than this ratio (cheap prefilter; 0.5 = one is <half the other).
+  title_length_prefilter: 0.6
+
+# --- Conflict classification ---
+# Which divergences on a MATCHED pair (same paper in both bibs) to surface.
+# severities: conflict (needs action) > note (nice to align) > info (fyi).
+conflicts:
+  year_mismatch: conflict          # different year -> likely a stale copy (e.g. v1 vs v2)
+  arxiv_version_mismatch: conflict # eprint 2504.xxxxxv1 vs v2 -> one repo cites an old version
+  title_drift: conflict            # strong-key match but titles diverge -> metadata error or wrong match
+  published_upgrade: note          # one repo has the published venue entry, other still has the arXiv preprint
+  key_mismatch: info               # different citation keys across repos (expected; report only if you want to align them)
+
+# --- Report ---
+report:
+  # List the one-sided entries (only-in-local / only-in-sibling). These are
+  # usually long and mostly the two repos' disjoint topic bibs, so off by
+  # default; turn on with --show-only or set true here.
+  show_only_in: false
+  # Cap how many one-sided entries to print per side when show_only_in is on.
+  only_in_limit: 40
