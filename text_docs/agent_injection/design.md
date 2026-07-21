@@ -46,8 +46,10 @@ than patching a cloned tree (§4).
 be peer-reviewed / published, not arXiv-only or non-paper artifacts (our own builds excluded). Audit of the
 stack: harness **AgentDojo (NeurIPS'24 D&B)** ✓; resistant behavioral defense **MELON (ICML'25)** ✓;
 complements **InjecAgent (Findings-ACL'24)** ✓ and **ASB (ICLR'25)** ✓; **spotlighting (Hines et al.,
-CAMLIS'24)** ✓ (canonical, smaller venue). Excluded (ours): the encoders (set-theory = the owner's published
-MathEnc; cipher/homoglyph are standard techniques) and `llm_utils`. **One flag:** the PI-classifier baseline
+CAMLIS'24)** ✓ (canonical, smaller venue). Published methods we build on (the encoding side): set-theory + formal-logic are the owner's **published**
+MathEnc work (`pmlr-v318-zhang26a`, PMLR v318 / Canadian AI'26) — peer-reviewed, so the core encoding method
+satisfies the rule despite being ours; cipher / homoglyph are standard techniques. Only `llm_utils` is excluded,
+as tooling/infrastructure (ours). **One flag:** the PI-classifier baseline
 `transformers_pi_detector` = ProtectAI `deberta-v3-base-prompt-injection` is a HuggingFace *artifact*, not a
 published method — keep it as the de-facto open PI-detector the field benchmarks and AgentDojo ships, but label
 it as such, and if a reviewer wants a published detector, add one (a PI-detection paper's method) as a second

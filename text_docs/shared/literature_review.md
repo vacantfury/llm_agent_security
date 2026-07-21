@@ -20,7 +20,8 @@ reference `paper/literature/my_base.bib` (agent-injection block `[1]`–`[23]`).
 
 **Gap.** No published work systematically measures whether an **encoded** indirect-injection payload evades
 **injection-specific** defenses on an agent, scored by whether the agent **completes the injected action**, nor
-frames it as the agents' injection defenses inheriting the content guards' *surface-not-decoded* blind spot.
+frames it as the agents' injection defenses inheriting the content guards' *surface-not-decoded* blind spot
+(this line's own **published** model-side result, `pmlr-v318-zhang26a`; §6).
 The pieces exist but are scattered: the rigorous agentic-IPI harnesses test natural-language (NL) injections
 only (§2); the phenomenon appears only as one-off anecdotes and two explicit "future work" flags (§4, §6);
 encoding-as-evasion is otherwise studied non-agentically (§4); and the adaptive-attack line that shares our
@@ -194,6 +195,15 @@ an artifact of *adaptivity* rather than budget alone. That is at most an **added
 
 ## 6. The decode-blind-spot lineage & non-scoops
 
+- **Mathematical-encoding jailbreaks** (`pmlr-v318-zhang26a`, PMLR v318 / Canadian AI'26 — this line's own
+  **published** model-side work, and the origin of the encoders reused here as payloads) — established that
+  encoding a harmful request as a genuine mathematical problem (set theory / formal logic) bypasses **content
+  guards** at 46–56% ASR across 8 models, precisely because the guards match *surface* semantics, not *decoded*
+  content. This is the **content-guard decode blind spot** the agent line ports to the injection-defense setting.
+  **Caveat for our capability axis:** it found **newer models (GPT-5/-mini) MORE robust** to math-encoding — the
+  *opposite* direction to the agent line's "more-capable-more-vulnerable" bet. The reconciliation (content-guard
+  evasion is gated by *alignment*, which scales up; agent action-injection is gated by *decoding competence*, which
+  may not) is exactly what the capability-scaling pilot must establish — either answer is a finding.
 - **Controlled-Release Prompting** (`fairoze2026bypassingpromptguardsproduction`, 2026) — the **decode-capability
   asymmetry** insight ("a payload only the model can decode slips past a guard that cannot"), but on **chat
   platforms / direct jailbreak**, not agents / action. The insight twin, in a different domain; we relocate it
