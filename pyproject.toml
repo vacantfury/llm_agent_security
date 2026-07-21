@@ -8,7 +8,9 @@ dependencies = [
     # Agent-harness + backbone deps land at S7 (AgentDojo / InjecAgent, LLM SDKs, etc.).
     # Encoder deps (copied from the sibling) get pinned when the copied module is decoupled.
     "agentdojo>=0.1.35",
+    "boto3>=1.43.52",
     "homoglyphs>=2.0.4",
+    "pillow>=12.3.0",
     "pydantic>=2.13.4",
     "pyyaml>=6.0.3",
 ]
