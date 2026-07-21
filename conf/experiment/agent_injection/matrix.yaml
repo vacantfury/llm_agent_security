@@ -1,0 +1,99 @@
+# The Smuggled-Actions experiment matrix (design.md §7). Read by src/harness/runner.py.
+#
+#   payload (attack)  ×  defense  ×  scaffold  ×  backbone (capability-ordered)  ×  AgentDojo suite
+#
+# YAML-config-not-magic-numbers (global law): every knob lives here; code reads it. Presets at the
+# bottom carve subsets out of the full axes (the `pilot` preset is the gated first run, design §7).
+# NOTHING here spends on its own — the runner only calls a model when invoked WITHOUT --dry-run.
+
+benchmark_version: v1.2.2          # AgentDojo suite version (workspace/travel/banking/slack)
+logdir: outputs/agent_injection/runs   # AgentDojo TraceLogger tree (gitignored); caches + resumes
+
+# --- payload axis (attack names registered by src/attacks/encoded_injection.py) ----------------
+# encoded_plain = the CONTROL (goal in cleartext, same carrier) — plain-vs-encoded isolates the
+# encoding effect. The rest are the encoders (deterministic: cipher/homoglyph/code;
+# LLM-based, need an encoder API key at run: set_theory/formal_logic/classical).
+payloads:
+  - encoded_plain          # control
+  - encoded_cipher
+  - encoded_code
+  - encoded_homoglyph
+  - encoded_set_theory
+  - encoded_formal_logic
+  - encoded_classical
+control_payload: encoded_plain
+
+# --- defense axis (src/defenses/factory.py; classes tagged in defenses.yaml) --------------------
+# Headline set = surface-form (fall) + behavioral (resists). protectai_deberta kept for comparison.
+defenses:
+  - none
+  - spotlighting_with_delimiting   # surface-form (prompt)   — reuse
+  - tool_filter                    # isolation (OpenAI-only) — reuse; content-agnostic contrast
+  - piguard                        # surface-form (classifier, published) — needs [classifiers] extra
+  - melon                          # behavioral (resistant baseline)
+comparison_defenses:
+  - protectai_deberta              # surface-form (classifier, non-published AgentDojo default)
+
+# --- scaffold axis (design §3) ------------------------------------------------------------------
+# native   = the provider's structured tool API (OpenAI/Anthropic/Google)   — free
+# prompted = tool schemas serialized into the prompt (PromptingLLM/LocalLLM) — free; the open-weight path
+# react    = a built planner->executor BasePipelineElement                    — BUILD (design §3.3), not yet
+# "default" (used by presets) = each backbone's own default_scaffold (holds scaffold fixed per backbone).
+scaffolds:
+  - native
+  - prompted
+# react: deferred to the full-matrix generality axis (see src/harness/backbones.py SCAFFOLDS).
+
+# --- AgentDojo suites ---------------------------------------------------------------------------
+suites:
+  - workspace
+  - travel
+  - banking
+  - slack
+
+# --- backbone axis (capability-ordered; the axis IS the headline finding) -----------------------
+# capability_rank orders low->high — the ONLY load-bearing field for the scaling analysis.
+# `model` strings are TUNABLE EXAMPLES: set them to currently-available snapshots at run time
+# (they drift; do not treat as pinned). Frontier arms bypass AgentDojo's ModelsEnum via hand-built
+# LLM objects (the factory accepts a pre-built llm); the open-weight arm is served on the
+# NEU/employer cluster via vLLM (near-zero cost, resource-acquisition rule) at $VLLM_BASE_URL.
+backbones:
+  - {id: qwen2.5-7b,    provider: vllm,      model: "Qwen/Qwen2.5-7B-Instruct",    default_scaffold: prompted, capability_rank: 1, base_url_env: VLLM_BASE_URL}
+  - {id: llama3.1-8b,   provider: vllm,      model: "meta-llama/Llama-3.1-8B-Instruct", default_scaffold: prompted, capability_rank: 2, base_url_env: VLLM_BASE_URL}
+  - {id: gpt-4o-mini,   provider: openai,    model: "gpt-4o-mini-2024-07-18",      default_scaffold: native,   capability_rank: 3}
+  - {id: qwen2.5-72b,   provider: vllm,      model: "Qwen/Qwen2.5-72B-Instruct",   default_scaffold: prompted, capability_rank: 4, base_url_env: VLLM_BASE_URL}
+  - {id: gpt-4o,        provider: openai,    model: "gpt-4o-2024-08-06",           default_scaffold: native,   capability_rank: 5}
+  - {id: claude-sonnet, provider: anthropic, model: "claude-3-5-sonnet-20241022",  default_scaffold: native,   capability_rank: 6}
+  - {id: gemini-2.5-pro,provider: google,    model: "gemini-2.5-pro",              default_scaffold: native,   capability_rank: 7}
+  - {id: gpt-5,         provider: openai,    model: "gpt-5",                       default_scaffold: native,   capability_rank: 8, reasoning_effort: medium}
+  - {id: claude-opus,   provider: anthropic, model: "claude-opus-4-20250514",      default_scaffold: native,   capability_rank: 9}
+
+# --- run controls -------------------------------------------------------------------------------
+force_rerun: false        # false = reuse AgentDojo's on-disk cache (resume); true = recompute
+max_user_tasks: null      # null = all; an int caps per suite (for cheap subsets)
+max_injection_tasks: null
+
+# --- presets: named subsets of the axes above ---------------------------------------------------
+presets:
+  # The gated first run (design §7): ~6 capability-spread backbones × {control + 2 encoders} ×
+  # {no-defense + spotlighting} × each backbone's default scaffold × a workspace subset (~tens of
+  # cases). Decides (a) does encoding lift ASR and (b) does the capability trend exist, before the
+  # full matrix. Open-weight arm ~free on cluster; API arm ~$100-800 (proposal §10). GATED on owner-go.
+  pilot:
+    backbones: [qwen2.5-7b, llama3.1-8b, gpt-4o-mini, qwen2.5-72b, gpt-4o, claude-sonnet]
+    payloads: [encoded_plain, encoded_set_theory, encoded_code]
+    defenses: [none, spotlighting_with_delimiting]
+    scaffolds: [default]
+    suites: [workspace]
+    max_user_tasks: 10
+    max_injection_tasks: 4
+
+  # A no-spend smoke test: 1 cheap backbone, control payload, no defense, tiny subset.
+  smoke:
+    backbones: [gpt-4o-mini]
+    payloads: [encoded_plain]
+    defenses: [none]
+    scaffolds: [default]
+    suites: [workspace]
+    max_user_tasks: 2
+    max_injection_tasks: 1
