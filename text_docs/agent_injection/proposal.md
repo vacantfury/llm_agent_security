@@ -76,6 +76,42 @@ The cspaper.org idea-check (10 related papers) independently confirmed the place
 
 **Gate outcome = ADVANCE to S5** (main story). Full report pasted in `idea_check.md § "# Review"`.
 
+### EXPLORATORY scoop-check — 2026-07-20 (best-of-N-over-encoding pivot; NOT ratified, NOT gating S5)
+
+**Not part of the S4/S1 chain above — a separate scoop-check run on a candidate PIVOT** (best-of-N /
+repeated-sampling over structural-encoding variants as the attack mechanism, vs. this paper's current
+single-shot encoded payload) raised by a prior-art check, owner review pending. Recorded here so it
+survives a session reset; **does not change §4's verdict or the S5 gate outcome above.**
+
+- **Verdict: Level 2 (High Overlap)** on the *mechanism* axis specifically — the "any-of-N attempts
+  succeeds, action-scored on AgentDojo" framing is **already published** by AgentDojo's own creators:
+  `hofer2026assessingautomatedpromptinjection` (2606.10525) defines **Success@N** exactly this way
+  (n=4 independent GCG/TAP restarts × m=6 eval repeats), action-scored via deterministic check
+  functions. **But it tests ZERO defenses** and its N-repeats are same-optimizer reseeds (gibberish/
+  paraphrase), not curated structural/encoding variants (cipher/code/set-theory/classical-Chinese).
+- **`nasr2025attackermovessecondstronger`** (already in bib) is the second-most dangerous candidate:
+  its adaptive genetic search tests our exact defense suite (Spotlighting, Prompt Sandwiching, RPO,
+  Data Sentinel, **MELON**) on AgentDojo, functions as an any-of-N-attempts framing (≤800 queries),
+  and organically discovers encoding variants (Hex/Base64/Unicode) as part of its strategy repertoire.
+  **Critically, it BREAKS MELON (76% ASR blind, 95% with defense knowledge)** — direct evidence
+  AGAINST this pivot's "MELON resists repeated attempts" sub-hypothesis, though via an ADAPTIVE,
+  defense-aware attack, not a blind structural-encoding best-of-N.
+  Anthropic's public but non-academic "internal Best-of-N attacker" for the Claude browser extension
+  (disclosed 2025-11-24) is further evidence the *naming/framing* ("best-of-N attacker vs. agent
+  prompt injection") is not novel as a concept, even though it doesn't cover the systematic
+  encoding-channel × defense-family study.
+- **Surviving delta (narrow, but real):** neither paper runs a **blind (non-adaptive, no
+  defense-feedback) best-of-N over a fixed structural/encoding bank**, isolating whether the
+  structural/encoding channel *specifically* amplifies defense bypass beyond a surface-noise best-of-N
+  baseline — and whether MELON's fall in Nasr et al. is an artifact of *adaptivity/defense-knowledge*
+  rather than budget alone. That controlled ablation (encoding-channel BoN vs. surface-noise BoN vs.
+  no-BoN single-shot, crossed with the full defense suite incl. MELON) is open.
+- **Recommendation:** if pursued, reframe as an ablation ADDED to the existing Paper E design (payload
+  axis gets an N-budget dimension; MELON's resistance becomes "resists blind budget, falls only to
+  adaptive/defense-aware attacks" — a sharper, still-novel claim) rather than a standalone new paper.
+  Full candidates staged in `my_base.bib` (`hofer2026...`, `beyer2026...`); not yet downloaded/deep-read
+  via `lit-review-loop` Phase 2 — owner call on whether to pursue before that spend.
+
 ## 5. Contributions (provisional)
 
 1. **The first systematic measurement** of ENCODED indirect prompt injection as an evasion axis against injection-specific **surface-form** defenses (spotlighting / isolation / prompt-shield / shield-prompt), scored by **action completion** — with a **behavioral defense (MELON) as the resistant contrast** that localizes the blind spot to the surface-form class (idea-check sharpening, §4).

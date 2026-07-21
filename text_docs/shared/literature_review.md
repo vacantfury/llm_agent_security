@@ -10,8 +10,9 @@ and here they are **payloads**, not model-side attacks.*
 
 *Provenance: grounded in the S4 scoop-check + full deep-read (11 papers, 4 parallel readers, 2026-07-19;
 synthesis in `text_docs/agent_injection/proposal.md §4`) and extended with the papers surfaced by the S1
-idea-check (cspaper.org, 2026-07-20). Citation keys reference `paper/literature/my_base.bib` (agent-injection
-block `[1]`–`[16]`). PDFs are in `paper/literature/`.*
+idea-check (cspaper.org, 2026-07-20), then further extended (2026-07-20) with the deep-read of the
+compositional-harm and best-of-N scoop-check papers (§§5, 7, 8; 9 PDFs, 4 parallel readers). Citation keys
+reference `paper/literature/my_base.bib` (agent-injection block `[1]`–`[23]`). PDFs are in `paper/literature/`.*
 
 ---
 
@@ -38,6 +39,14 @@ testing reversible encodings and image-rendered payloads … addresses the gap o
 defenses are overly reliant on surface-form lexical patterns at the expense of decoded semantics" — and
 surfaced no new scoop, but it added one defense (MELON, §3) that sharpens the claim.
 
+**Pivots considered and closed (2026-07-20).** Two *stronger*-looking directions were scoop-checked after the
+idea-check and found crowded, which is why this line stays on the encoded-injection axis: **single-agent
+compositional action harm** (per-step-benign / jointly-harmful) is **fully scooped** (§7), and **best-of-N over
+encodings** is **heavily anticipated** (§5). The **multi-agent** extension (§8) is substantially anticipated by
+`hu2026localmonitorsmisscompositional` but leaves an action-level + injection-defense slice open. Net: the
+encoded-injection-vs-surface-form-defenses result remains the one unclaimed contribution; the pivots survive
+only as an *added axis* (an N-budget dimension, §5) or a *reshaped* future paper (§8).
+
 ---
 
 ## 2. Agentic indirect-injection harnesses (the evaluation substrate)
@@ -48,7 +57,7 @@ surfaced no new scoop, but it added one defense (MELON, §3) that sharpens the c
   the injected action. This is the anchor for the plain-vs-encoded control.
 - **InjecAgent** (`zhan-etal-2024-injecagent`, Findings-ACL'24) — the lightweight complement: 1,054 test cases,
   17 user tools × 62 attacker tools, two intent types (direct harm, data exfiltration); NL injections only.
-- **Agent Security Bench / ASB** (`zhang2025asb`, ICLR'25) — a broad benchmark (10 scenarios, 400+ tools, 27
+- **Agent Security Bench / ASB** (`zhang2025agent`, ICLR'25) — a broad benchmark (10 scenarios, 400+ tools, 27
   attack/defense methods, 7 metrics, 13 backbones). A possible **complementary** harness — encoded-payload
   attacks could integrate into its testbed — though its breadth trades off the fine-grained action-scoring
   AgentDojo gives.
@@ -78,6 +87,12 @@ in ingested data — delimiting it, datamarking it, or classifying it.
   clean baseline to beat.
 - **Firewalls / bespoke Sanitizer** (`bhagwatkar2025indirect`, NeurIPS'25) — a firewall/sanitizer framework;
   see §4 for its one Braille anecdote.
+- **Independent brittleness evidence — `owireduashley2026attacksuccessrateactiongradedseverity`** (arXiv
+  2607.07474) — on the *same* harness (AgentDojo) and defense family we target, an action-graded severity study
+  finds a **"spotlighting paradox"** (spotlighting lowers binary ASR 48→40% on GPT-4o-mini yet *raises* the
+  severe-episode tail, L5–L6 count 1→3) and **channel substitution** (a tool-filter defense reaches 0% ASR
+  while the same payload still fires through an unfiltered `create_calendar_event` field). Surface-form
+  injection defenses are brittle by their own metric, *before* any encoding — motivation, not a scoop.
 
 **Behavioral / semantic defenses (the resistant class — the sharpening).**
 - **MELON** (`zhu2025melon`, ICML'25) — **Masked re-Execution and TooL comparisON**: re-executes the agent
@@ -86,6 +101,12 @@ in ingested data — delimiting it, datamarking it, or classifying it.
   form**, encoding should NOT change what it detects — making MELON the **resistant contrast baseline** that
   localizes the blind spot to surface-form defenses, and the natural class our later `recover-before-act`
   defense belongs to.
+- **Caveat — MELON resists *non-adaptive* encoding, not adaptive attack.**
+  `nasr2025attackermovessecondstronger` breaks MELON on AgentDojo (**76% ASR blind, 95% with defense
+  knowledge**) via an adaptive genetic search (§5). The sharpening is therefore scoped precisely: encoding
+  defeats surface-form defenses *single-shot*, and MELON is the resistant contrast **within the blind /
+  single-shot regime** our plain-vs-encoded control uses — we report the adaptive-attack boundary honestly
+  rather than claim MELON is robust in general.
 - **Recursive-LM procedural defense** (`shavit2026recursivelanguagemodelsjailbreak`) — a procedural jailbreak
   defense for tool-augmented agents; another non-surface-form point of comparison.
 
@@ -141,9 +162,33 @@ encoding.
 - **Adaptive Attacks Break IPI Defenses** (`zhan-etal-2025-adaptive`, NAACL'25) — breaks agent injection
   defenses, action-scored, via **GCG / AutoDAN gibberish suffixes** (white-box optimization). Our black-box,
   readable-encoding route is the distinguishing mechanism.
-- **The Attacker Moves Second** (`nasr2025attackermovessecondstronger`, 2025) — stronger adaptive attacks
-  bypass defenses against jailbreaks and prompt injections; same "adaptivity beats static defenses" lesson,
-  again via optimization rather than a payload the model *decodes*.
+- **The Attacker Moves Second** (`nasr2025attackermovessecondstronger`, 2025) — the strongest adaptive result
+  for us: its adaptive genetic search runs against our exact defense suite (spotlighting, prompt sandwiching,
+  RPO, data sentinel, **and MELON**) on AgentDojo and **breaks MELON — 76% ASR blind, 95% with defense
+  knowledge**. Lesson: MELON's resistance (§3) holds against a *blind/static* encoded payload, not a
+  *defense-aware adaptive* attacker — a boundary we state explicitly rather than over-claim. Mechanism is still
+  optimization, not a payload the model *decodes* — our distinguishing axis.
+- **Assessing Automated Prompt Injection** (`hofer2026assessingautomatedpromptinjection`, 2026 — by the
+  AgentDojo team, ETH) — defines **Success@N** ("at least one of N attempts succeeds"), **action-scored on
+  AgentDojo** via the deterministic check functions (n=4 independent GCG/TAP optimization restarts × m=6 eval
+  repeats); black-box TAP beats white-box GCG. So **the any-of-N / best-of-N framing on agent injection is
+  already published** — but its N-repeats are *same-optimizer reseeds* (gibberish / social-engineering), **not**
+  a curated structural/encoding bank, and it tests **zero defenses** ("focuses on evaluating attack
+  effectiveness rather than defenses").
+- **Sampling-aware Adversarial Attacks** (`beyer2026samplingaware`, ICLR'26) — the foundational mechanism cite
+  (and the source Hofer credits): casts attacks as a *compute-allocation* problem between optimization and
+  sampling, with Best-of-N a degenerate special case; +37 pp ASR / up to 100× cheaper. But it is **model-only**
+  (single-turn chatbot harm judged by StrongREJECT) — no agent, no indirect injection, no encoding, no defense
+  suite.
+
+**Consequence for a best-of-N-over-encoding pivot (exploratory scoop-check, 2026-07-20).** Between Hofer
+(Success@N on AgentDojo), Beyer (BoN-as-compute-allocation), Hughes' Best-of-N (in the sibling bib), and
+Anthropic's publicly-disclosed internal "Best-of-N attacker" for its browser extension, the *framing* is
+heavily anticipated. The surviving slice is narrow: a **blind (non-adaptive, no defense feedback) best-of-N over
+a fixed structural/encoding bank**, crossed with the full defense suite **including MELON**, isolating whether
+the encoding channel amplifies bypass beyond a surface-noise budget — and whether MELON's fall in Nasr et al. is
+an artifact of *adaptivity* rather than budget alone. That is at most an **added axis on this paper's design**
+(the payload axis gains an N-budget dimension), not a standalone paper (`proposal.md §4` exploratory scoop).
 
 ---
 
@@ -163,5 +208,78 @@ the honest cost that a hot, fast-moving field makes it an obvious next step (sco
 
 ---
 
-*Maintenance: this review is the agent line's single prior-art home. Add new agent-injection prior art here
-(with its `my_base.bib` key) as the line advances; keep model-side citations in the sibling repo's review.*
+## 7. Compositional action harm on agents — a crowded landscape (the single-agent pivot is closed)
+
+A direction considered for this line — **compositional action harm** (each individual tool call benign in
+isolation, the *composed* trajectory harmful) as a **single-agent** attack — was scoop-checked (2026-07-20) and
+found **fully occupied**. Recorded here so the line does not re-open it. The through-line that keeps our paper
+distinct: **none of these use *encoding*** — they decompose intent into benign-looking *natural-language* steps,
+an axis orthogonal to our encoded-payload evasion.
+
+- **STAC** (`li2026stacinnocenttoolsform`, arXiv 2509.25624; preprint) — the canonical statement. An automated,
+  environment-verified pipeline generates **Sequential Tool Attack Chains** in which every step but the last is
+  individually benign, reaching **91.2% mean final ASR** across 8 agents, **action-scored** on SHADE-Arena (an
+  AgentDojo extension) + Agent-SafetyBench, and shows prompt-based defenses (spotlighting, a harm-benefit
+  "reasoning" defense, ToolShield) are insufficient. Single-agent, single session, **no encoding**. This is the
+  paper that closes single-agent compositional harm as a standalone contribution. (It does **not** test MELON —
+  an open comparison, same as for the other compositional papers.)
+- **Context-Fractured Decomposition** (`lin2026contextfractureddecompositionattackstoolusing`, arXiv 2606.09084;
+  ICML'26 FAGEN workshop) — the **cross-session / provenance-gap** variant: benign artifacts are planted across
+  context-reset sessions and recombined by an "innocent executor," action-scored on an AgentDojo exfiltration
+  subset. It **explicitly hands the single-session case to STAC** ("STAC … operates within a single contiguous
+  trajectory … Our attack class is distinct"), confirming the area has already split into named sub-variants. No
+  encoding; only detection probes, no deployed defense (provenance tagging is future work). Workshop-tier.
+- **SCR / Skill Composition Risk** (`xie2026benignisolationharmfulcomposition`, arXiv 2606.15242) — the literal
+  framing "**benign in isolation, harmful in composition**," here for agent *skill ecosystems* (an upstream
+  skill's output becomes a downstream trust / capability / authorization signal). Single-agent, own SCR-Bench,
+  state-scored, no encoding, no new defense — the strongest evidence the phrase itself is a named risk category.
+- **AgentLAB** (`jiang2026agentlabbenchmarkingllmagents`, arXiv 2602.16901) — a long-horizon-attack benchmark
+  whose **tool-chaining** family (1 of 5) is exactly per-step-benign / jointly-harmful; NL social engineering,
+  no encoding. Its finding that single-turn / classifier defenses fail to generalize to long-horizon attacks
+  *supports* our surface-form-brittleness motivation.
+- **Sequentially Contextual Harm** (`yueh-han2025monitoring`, ICLR'25 Building-Trust workshop) — the earliest
+  statement of the insight (decomposition into benign subtasks slashes refusal; harm "can only be identified by
+  analyzing the *composition*"). It monitors the **user-instruction channel** (not tool outputs), so it is
+  adjacent to — not identical with — the MELON-style tool-output behavioral class (§3); it also finds
+  trajectory-level LLM monitoring real but **fragile** (degraded by random-subtask noise), reinforcing why
+  per-step defenses are insufficient in principle. It explicitly leaves **cross-conversation / cross-agent**
+  composition open — the segue to §8.
+
+**Verdict:** single-agent compositional action harm = **Level 1 (fully scooped)**; not a standalone direction
+for this line. It stays valid *related work* (per-step defenses are provably insufficient), and the honest
+distinction from our paper is the **encoding axis**, which none of these touch.
+
+---
+
+## 8. Multi-agent / distributed compositional harm — the future coordinate (substantially anticipated)
+
+The line's broadest future coordinate (`future_work.md §3`) — harm *distributed across agents*, each agent's
+contribution benign, the *joint* behavior harmful — is largely anticipated by one 2026 paper, which reshapes
+what that future paper can claim:
+
+- **Distributed Backdoors** (`hu2026localmonitorsmisscompositional`, arXiv 2607.11751) — formalizes an
+  **observability boundary** (Prop. 1: once fragments are locally benign, *no* monitor confined to a local view
+  separates attack from benign beyond ε) and instantiates it: a harmful payload is split into K=3 **encoded**
+  fragments (base64 / hex / a reused DemonAgent codec), each carried in a benign-looking report by a different
+  agent; only the assembled-and-decoded object is malicious. A marker-free one-class monitor recovers code
+  payloads (0.874 AUROC) but **fails on natural-language payloads** (0.406); a decoded-view gate blocks 50/50
+  only as a *diagnostic ceiling* (it assumes the codec is known). Multi-agent, action-scored
+  (credential-exfiltration execution).
+
+This **substantially scoops** the future §3 on its core idea (per-agent-benign / joint-harmful + a
+wider-view / joint defense) **and already uses encoded fragments** — so the future paper cannot simply re-stake
+"distributed compositional harm + joint verification." What it leaves open, and where §3 must relocate:
+(1) **action / tool-call-level** distributed harm (sensitive tool calls split across agents), not assembled
+executable-code payloads — the authors' own monitor collapses on non-code harm and they name it open;
+(2) a **genuinely new encoding scheme** (this line's set-theory / formal-logic / cipher / classical-Chinese /
+homoglyph encoders) rather than reused published codecs; (3) generalizing **injection-specific** defenses
+(spotlighting / isolation / prompt-shield) to the multi-agent joint view — untouched (hu2026 tests only
+observation-window monitors). §3, if pursued, is scoped to that intersection.
+
+---
+
+*Maintenance: this review is the agent line's single prior-art home. §§1–6 cover the current paper's prior art
+(encoded indirect injection vs. injection-specific defenses); §§7–8 record the compositional-harm and
+multi-agent scoop-checks — the directions this line deliberately does *not* pursue single-agent, and the
+reshaped future coordinate. Add new agent-injection prior art with its `my_base.bib` key as the line advances;
+keep model-side citations in the sibling repo's review.*
