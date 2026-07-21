@@ -49,12 +49,16 @@ complements **InjecAgent (Findings-ACL'24)** ✓ and **ASB (ICLR'25)** ✓; **sp
 CAMLIS'24)** ✓ (canonical, smaller venue). Published methods we build on (the encoding side): set-theory + formal-logic are the owner's **published**
 MathEnc work (`pmlr-v318-zhang26a`, PMLR v318 / Canadian AI'26) — peer-reviewed, so the core encoding method
 satisfies the rule despite being ours; cipher / homoglyph are standard techniques. Only `llm_utils` is excluded,
-as tooling/infrastructure (ours). **One flag:** the PI-classifier baseline
-`transformers_pi_detector` = ProtectAI `deberta-v3-base-prompt-injection` is a HuggingFace *artifact*, not a
-published method — keep it as the de-facto open PI-detector the field benchmarks and AgentDojo ships, but label
-it as such, and if a reviewer wants a published detector, add one (a PI-detection paper's method) as a second
-surface-form classifier. arXiv-only *related work* (STAC, hu2026, …) is cited as prior art, not built on, so it
-is outside this rule.
+as tooling/infrastructure (ours). **Flag RESOLVED (search 2026-07-21):** AgentDojo's shipped PI-classifier
+`transformers_pi_detector` = ProtectAI `deberta-v3-base-prompt-injection` is confirmed a HuggingFace *artifact*,
+not peer-reviewed (AgentDojo and Nasr et al. both cite it as a bare HF URL). So we adopt **PIGuard**
+(`li2025piguard`, **ACL'25**) as the published surface-form classifier baseline — same fine-tuned-classifier
+shape, public weights, wired via the identical `PromptInjectionDetector` seam (a model-name swap), and the most
+adaptive-attack-resistant classifier in Nasr et al.'s AgentDojo suite. ProtectAI DeBERTa is kept only as the
+non-published AgentDojo *default*, for comparison. Optional second, formally-grounded detector: **DataSentinel**
+(`liu2025datasentinel`, **IEEE S&P'25**, Distinguished Paper). NB: Meta PromptGuard/LlamaFirewall is arXiv-only
+— do NOT present it as peer-reviewed. arXiv-only *related work* (STAC, hu2026, …) is cited as prior art, not
+built on, so it is outside this rule.
 
 ---
 
@@ -139,7 +143,8 @@ Mapped to the surface-form vs behavioral thesis (lit review §3). "Reuse" = ship
 | Defense | Class | Status | Effort | Expected vs. encoding |
 |---|---|---|---|---|
 | no-defense | — | reuse | — | control |
-| `transformers_pi_detector` (ProtectAI DeBERTa `deberta-v3-base-prompt-injection-v2`) | surface-form (classifier) | **reuse** | — | **falls** — the headline; classifier trained on plaintext injection phrasing |
+| **PIGuard** (`li2025piguard`, ACL'25 — *published*; same detector seam, model-name swap) | surface-form (classifier) | build (low) | ~hrs | **falls** — the headline; a classifier trained on plaintext injection phrasing |
+| `transformers_pi_detector` (ProtectAI DeBERTa — HF artifact, not peer-reviewed) | surface-form (classifier) | **reuse** | — | kept only as the AgentDojo *default*, for comparison |
 | `spotlighting_with_delimiting` (Hines) | surface-form (prompt) | **reuse** | — | **falls** — doesn't touch semantics; weak even non-adaptively |
 | `tool_filter` (OpenAI-only tool-list restriction) | isolation (coarse, content-agnostic) | **reuse** | — | **≈unchanged** — useful contrast (encoding isn't what moves it) |
 | **MELON** (masked re-execution + tool-call comparison) | **behavioral** | **build (low)** | ~½ day | **resists** — never reads tool-output text, only the resulting tool-call trajectory |
@@ -157,8 +162,11 @@ its patch targets an older flat-string message API while current AgentDojo uses 
 ~½ day of API adaptation, not a rewrite. **Recurring cost:** ~2× LLM calls/step (parallelizable) + one embedding
 call per compared tool call — factor into the run budget.
 
-**Headline defense set = {no-defense, DeBERTa-detector, spotlighting-delimiting, tool_filter, MELON}** — three
-reuse + MELON (½-day patch) demonstrate "surface-form falls, behavioral resists" at minimal build cost.
+**Headline defense set = {no-defense, PIGuard, spotlighting-delimiting, tool_filter, MELON}** — two reuse
+(spotlighting, tool_filter) + PIGuard (published classifier, low: a model-name swap into the same detector
+seam) + MELON (½-day patch) demonstrate "surface-form falls, behavioral resists" at minimal build cost, and
+every named defense is now peer-reviewed. (ProtectAI DeBERTa stays available as the non-published AgentDojo
+default for a comparison point; DataSentinel is the optional published 2nd classifier.)
 **Stretch resistant baselines (only if reviewers want more than MELON):** the Firewalls "Minimize & Sanitize"
 Sanitizer (`bhagwatkar2025indirect`; no public code → medium build) as a second *semantic* defense; a true
 dual-LLM / CaMeL quarantine is medium-high build (restructures how tool results enter context) — skip unless
@@ -216,9 +224,11 @@ enters at the full-matrix stage.
 2. **Attack.** Decouple `src/prompt_transformations/` to the payload-gen subset (TODO item 2); implement +
    `@register_attack` the encoded-payload attack with the escape/serialization step; verify a payload survives
    `.format()`→YAML and that the model decodes it (a sanity decode-rate check on one backbone).
-3. **Defenses.** Wire the 3 shipped (config); implement MELON as a `BasePipelineElement` (port `pi_detector.py`
-   to the current message-block API; YAML threshold; embedding-backend knob); add the spotlighting
-   datamarking/encoding variants.
+3. **Defenses.** Wire spotlighting + tool_filter (config); swap **PIGuard** in for the classifier baseline
+   (published; a model-name swap into the same `PromptInjectionDetector` seam — keep ProtectAI DeBERTa available
+   as the non-published default for comparison); implement MELON as a `BasePipelineElement` (port
+   `pi_detector.py` to the current message-block API; YAML threshold; embedding-backend knob); add the
+   spotlighting datamarking/encoding variants. Optional published 2nd classifier: DataSentinel.
 4. **Backbones + scaffolds.** Add `ModelsEnum` entries / configure the cluster vLLM open-weight arm; build the
    3rd scaffold (ReAct or planner→executor).
 5. **Config + scoring.** YAML matrix config (`conf/experiment/agent_injection/`); `src/scoring/` aggregation +
