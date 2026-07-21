@@ -7,6 +7,7 @@ requires-python = ">=3.12"
 dependencies = [
     # Agent-harness + backbone deps land at S7 (AgentDojo / InjecAgent, LLM SDKs, etc.).
     # Encoder deps (copied from the sibling) get pinned when the copied module is decoupled.
+    "agentdojo>=0.1.35",
 ]
 
 [tool.uv]
