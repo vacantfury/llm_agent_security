@@ -1,0 +1,49 @@
+# Defense axis for the encoded-injection matrix. Each baseline maps to the surface-form vs.
+# behavioral thesis (literature_review.md §3 / design.md §5). Consumed by src/defenses/factory.py.
+# expected = our prediction (encoding slips past surface-form, behavioral resists in the blind regime).
+
+defenses:
+  - name: none
+    class: none
+
+  - name: spotlighting_with_delimiting
+    class: surface-form
+    ref: hines2024defending            # CAMLIS'24
+    shipped: true
+    expected: falls
+
+  - name: tool_filter
+    class: surface-form                # coarse isolation; content-agnostic
+    ref: debenedetti2024agentdojo      # NeurIPS'24
+    shipped: true
+    note: OpenAI-only in AgentDojo's shipped implementation
+    expected: unchanged                # content-agnostic -> encoding shouldn't move it either way
+
+  - name: piguard
+    class: surface-form                # THE published classifier baseline (replaces protectai_deberta)
+    ref: li-etal-2025-piguard          # ACL'25
+    hf_model: leolee99/PIGuard
+    safe_label: benign                 # VERIFY against the model card at first construction
+    threshold: 0.5
+    expected: falls
+
+  - name: melon
+    class: behavioral                  # the resistant baseline
+    ref: zhu2025melon                  # ICML'25
+    threshold: 0.8                     # MELON's cosine threshold (a real param in the port)
+    expected: resists                  # blind/single-shot regime; falls to adaptive attacks (nasr, §5)
+
+  - name: protectai_deberta
+    class: surface-form
+    hf_model: protectai/deberta-v3-base-prompt-injection-v2
+    published: false                   # HF artifact — AgentDojo default, kept only for comparison
+    shipped: true
+
+# Optional stretch: a 2nd behavioral baseline, published (IEEE S&P'25). Wire if wanted.
+optional:
+  - name: datasentinel
+    class: behavioral
+    ref: "11023476"
+    note: >-
+      known-answer probe; heavy (an LLM call per message); robustness to encoding is open, with a
+      detector-vs-backend capability-gap cell (weak detection LLM may miss an encoding a strong backend decodes)
