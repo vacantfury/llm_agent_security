@@ -253,7 +253,7 @@ distinction from our paper is the **encoding axis**, which none of these touch.
 
 ## 8. Multi-agent / distributed compositional harm — the future coordinate (substantially anticipated)
 
-The line's broadest future coordinate (`future_work.md §3`) — harm *distributed across agents*, each agent's
+The line's broadest future coordinate (`future_work.md §4`) — harm *distributed across agents*, each agent's
 contribution benign, the *joint* behavior harmful — is largely anticipated by one 2026 paper, which reshapes
 what that future paper can claim:
 

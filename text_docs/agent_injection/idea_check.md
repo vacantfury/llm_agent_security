@@ -72,7 +72,7 @@ AI-agent / LLM **security** — target a MAIN conference (IEEE SaTML / S&P / USE
 
 - **Signal vs noise:** 5 of 10 retrieved papers are real prior art (MELON, ChatInject, Defense-by-Attack-Techniques, AdvAgent, ASB — now in `my_base.bib` [12]–[16], `literature_review.md §§2–6`); the other 5 are co-retrieval noise.
 - **The one substantive change — MELON (`zhu2025melon`):** a behavioral/trajectory IPI defense (SOTA on AgentDojo) the S4 deep-read missed. It likely *resists* encoding → **contribution #1 re-scoped to surface-form injection defenses**, with MELON as the resistant contrast. This sharpens, not threatens (proposal §4 idea-check note + §5).
-- **Validated:** multi-agent security named as an open gap (= `future_work.md §3`); learnability of instruction/data separation as a discussion framing.
+- **Validated:** multi-agent security named as an open gap (= `future_work.md §4`); learnability of instruction/data separation as a discussion framing.
 - **Venue:** retrieved papers cluster at ICML/ICLR/ACL (corpus-confounded) — keep ICLR / ACL-via-ARR live alongside the security-venue target for S10.
 
 Full report below (§ "# Review").

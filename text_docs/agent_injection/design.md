@@ -113,7 +113,7 @@ the dict; `@register_attack("encoded_<scheme>")`. Usable via `--attack encoded_<
 **Image-render caveat (scope decision).** AgentDojo is **text-only** — tool outputs are text/YAML, so the
 `ir_plain` image-rendered payload has *no delivery path here*. Image-borne injection needs a **VLM / computer-use
 (screenshot) agent** (e.g. a VPI-Bench-style setup). **Decision: the core paper is text-encoders on AgentDojo;
-the image-render arm is a scoped extension requiring a separate multimodal harness** (`future_work.md §2`), not
+the image-render arm is a scoped extension requiring a separate multimodal harness** (`future_work.md §3`), not
 part of the core matrix. Do not promise image results on the AgentDojo track.
 
 ---

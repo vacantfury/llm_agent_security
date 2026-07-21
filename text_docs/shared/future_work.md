@@ -22,7 +22,9 @@ Index:
   `text_docs/agent_injection/proposal.md`, not here.
 - **§2 — the direct follow-on**: the action-level *recover-before-act* defense + a flagship deployed-agent
   demonstration — the coupled, engineering-heavier, deliberately-later half of the Smuggled-Actions thesis.
-- **§3 — the next coordinate**: multi-agent / distributed harm — a separate, later paper that generalizes §1
+- **§3 — multimodal / image-borne encoded injection**: extend the encoded-payload attack to VLM /
+  computer-use (screenshot) agents — the second-priority future direction, just below §2.
+- **§4 — the next coordinate**: multi-agent / distributed harm — a separate, later paper that generalizes §1
   from a single agent to a system of agents.
 
 Within each section, subsections are its component points.
@@ -70,9 +72,6 @@ text-side jailbreaking.
 
 The coupled, later half of the thesis: after the attack (§1) establishes the blind spot, close it.
 
-- **Multimodal injection.** Computer-use / screenshot agents read *images*; the image-render / decoy
-  transforms become **image-borne** indirect injection into a VLM agent — a direct lift of this line's
-  modality-placement work into the action-harm setting.
 - **Action-level coverage (the defense half).** The coverage map gains the untrusted tool/data channel as a
   new *surface* and the action as a new *harm type*; the natural agent analog of a recover-before-guard
   defense recovers and checks content on the data channel **before** it can reach an action. But agent
@@ -86,16 +85,41 @@ The coupled, later half of the thesis: after the attack (§1) establishes the bl
 
 ---
 
-## 3. The next coordinate — multi-agent / distributed harm (a separate, later paper)
+## 3. Multimodal / image-borne encoded injection (the second-priority direction)
+
+The direct modality extension of §1: keep the attack and the action-completion metric, change the *channel*.
+Instead of an encoded instruction in a text tool-output, the payload is **rendered to an image** (or an
+on-screen element) that a **VLM / computer-use (screenshot) agent** reads, decodes, and acts on — the agent
+coordinate of this line's modality-placement work (the encoders / renderers are the shared assets; the
+model-side modality study is the sibling repo's).
+
+- **Why it is a *separate* direction, not part of §1's core.** The core harness (AgentDojo) is **text-only** —
+  it has no path to deliver an image payload — so this needs a distinct **multimodal / computer-use harness** (a
+  VPI-Bench-style screenshot-agent setup). It also introduces a **vision / OCR capability axis** distinct from
+  text-decode competence, which would confound §1's capability-scaling result — a reason to study it on its own
+  terms. (Scope decided 2026-07-20: the core paper is text encoders; the abstract's "rendered image" clause maps
+  here.)
+- **Prior art / seed** (`literature_review.md §4`): VPI-Bench (image + agent + action, but a *plaintext* pop-up,
+  no injection guard — explicitly names concealing prompts from users while keeping them agent-readable as future
+  work) and Reverse CAPTCHA (invisible-Unicode injection; tool-use amplifies compliance). The encoded
+  image-payload against an injection-defended VLM agent is the open, systematic version.
+- **Relation to §2.** The §2 flagship demonstration is naturally a computer-use agent — so §2 and §3 pair: §3
+  supplies the image-borne attack, §2 the deployed-agent stage and the recover-before-act defense.
+- **Cost honesty.** A multimodal harness is a materially bigger build than the text / AgentDojo core — the reason
+  it is sequenced as a follow-on, not folded into the shipping paper.
+
+---
+
+## 4. The next coordinate — multi-agent / distributed harm (a separate, later paper)
 
 A multi-agent adversary is the **cross-agent analog of cross-modal splitting**: harm distributed across
 agents, each agent's individual contribution benign, the *joint* behavior harmful — deception / collusion /
 steering as the mechanism, **joint / system-level verification** as the defense (the multi-agent analog of a
 joint-verification defender). This is the broadest reach of the line's thesis.
 
-- **Relation to §1.** §1 is *single-agent* indirect injection (one agent, one compromised data channel); §3
+- **Relation to §1.** §1 is *single-agent* indirect injection (one agent, one compromised data channel); §4
   is the *multi-agent* composition where **no single agent is individually compromised** — the harm exists
-  only in the joint behavior. §3 overlaps §1 but generalizes it; it is explicitly a **separate, later paper**,
+  only in the joint behavior. §4 overlaps §1 but generalizes it; it is explicitly a **separate, later paper**,
   not this one.
 - **Cost honesty.** A multi-agent harness is a materially bigger, more compute-heavy build than the eval-only
   single-agent setup — the main reason it is sequenced after §1 (and §2), not run in parallel.
@@ -105,6 +129,13 @@ joint-verification defender). This is the broadest reach of the line's thesis.
   compositional-harm thesis doesn't belong on this arc.
 
 ---
+
+*Maintenance — kept coherent with the sibling (`imaging_text_attacks_for_llm_jailbreaking`).* This roadmap and
+the sibling's `future_work.md` share cross-line coordinates — the identity frame, and boundary directions built
+on the shared encoders (e.g. §3 multimodal is the agent side of the sibling's modality work). They are **not** a
+full mirror (scope-partitioned: agent-side here, model-side there), but the shared / boundary coordinates and
+the cross-references between them are kept consistent — when one side's shared coordinate moves, update the
+other. (The sibling's `future_work.md` is now local-only / untracked, so its side is a local edit.)
 
 *Further identity coordinates the whole arc could extend into (harm × truth / fabrication-based harm; a formal
 compositional language) are recorded in the sibling repo's `future_work.md` as part of the cross-line identity
