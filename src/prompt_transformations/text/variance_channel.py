@@ -31,7 +31,7 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Optional
 
-from src.experiment.schemas import Prompt
+from src.prompt_transformations.schemas import Prompt
 from src.prompt_transformations.base import Modality, PromptTransformation
 from src.prompt_transformations.transformation_factory import (
     create_transformation,

@@ -583,6 +583,15 @@ wheels = [
 ]
 
 [[package]]
+name = "homoglyphs"
+version = "2.0.4"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/42/a8/33ee2cc828318714563991144c56c42f4d1126487b6f166fe8f80800652b/homoglyphs-2.0.4.tar.gz", hash = "sha256:18c9f235f54fd0467dc3145fe82c33c7faaf7fc8ce5559ab26abcc83f5780da6", size = 88304, upload-time = "2020-10-16T14:25:48.282Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/37/43/b4f6c03bef205840e966f6cf4845462c6221777388a572b48a46496efbbf/homoglyphs-2.0.4-py3-none-any.whl", hash = "sha256:bdcdb00cc46880b8479c51084b7652bf7992d044a80abee8d5afc0a3b2bdb5c8", size = 88429, upload-time = "2020-10-16T14:25:51.042Z" },
+]
+
+[[package]]
 name = "httpcore"
 version = "1.0.9"
 source = { registry = "https://pypi.org/simple" }
@@ -864,6 +873,9 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "agentdojo" },
+    { name = "homoglyphs" },
+    { name = "pydantic" },
+    { name = "pyyaml" },
 ]
 
 [package.dev-dependencies]
@@ -873,7 +885,12 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "agentdojo", specifier = ">=0.1.35" }]
+requires-dist = [
+    { name = "agentdojo", specifier = ">=0.1.35" },
+    { name = "homoglyphs", specifier = ">=2.0.4" },
+    { name = "pydantic", specifier = ">=2.13.4" },
+    { name = "pyyaml", specifier = ">=6.0.3" },
+]
 
 [package.metadata.requires-dev]
 dev = [

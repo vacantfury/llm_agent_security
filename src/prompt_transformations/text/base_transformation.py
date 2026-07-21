@@ -10,7 +10,7 @@ them via the standard `apply(prompts, step_dir)` interface.
 from pathlib import Path
 from typing import ClassVar, Optional, Type
 
-from src.experiment.schemas import Prompt
+from src.prompt_transformations.schemas import Prompt
 from src.prompt_transformations.base import PromptTransformation, Modality
 from .base_encoder import BaseEncoder
 

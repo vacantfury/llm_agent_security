@@ -20,7 +20,7 @@ the actual TELL behavior of each target model.
 from pathlib import Path
 from typing import Optional
 
-from src.experiment.schemas import Prompt
+from src.prompt_transformations.schemas import Prompt
 from src.prompt_transformations.base import PromptTransformation, Modality
 from src.prompt_transformations.transformation_factory import register_transformation
 

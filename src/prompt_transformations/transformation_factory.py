@@ -144,4 +144,3 @@ def list_transformations() -> list[str]:
 # Import subpackages so their @register_transformation calls fire.
 # (deferred to bottom to avoid circular imports during decorator execution)
 from . import text as _text  # noqa: E402,F401
-from . import image as _image  # noqa: E402,F401

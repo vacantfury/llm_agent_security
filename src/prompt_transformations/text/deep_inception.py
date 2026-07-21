@@ -16,7 +16,7 @@ Fits cleanly as a non-LLM PromptTransformation.
 from pathlib import Path
 from typing import Optional
 
-from src.experiment.schemas import Prompt
+from src.prompt_transformations.schemas import Prompt
 from src.prompt_transformations.base import PromptTransformation, Modality
 from src.prompt_transformations.transformation_factory import register_transformation
 
