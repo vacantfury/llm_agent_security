@@ -86,6 +86,16 @@ in ingested data — delimiting it, datamarking it, or classifying it.
   shield-prompt** defense (inverts attack techniques into a defensive suffix); SOTA among prompt-based
   defenses. Exactly the surface-pattern defense the decode blind spot predicts encoding will slip past — a
   clean baseline to beat.
+- **PIGuard** (`li-etal-2025-piguard`, ACL'25) — the current SOTA **published PI-classifier** guardrail
+  (fine-tuned DeBERTaV3), and our surface-form classifier baseline **in place of the non-published ProtectAI
+  DeBERTa artifact** AgentDojo ships. It is by construction a **lexical** classifier: its own contribution (the
+  NotInject over-defense benchmark + the MOF training strategy) *reduces trigger-word over-defense* but the model
+  still keys on surface phrasing, not decoded semantics — so it is the strongest, most recent representative of
+  exactly the class the decode blind spot predicts encoding slips past (beats the best open guard by 30.4%).
+  **Caveat:** base64 is one of 17 training *carrier* formats (a container — e.g. a base64 blob in a webpage), but
+  its train/eval never uses semantic/logical encodings (set-theory / formal-logic / cipher / homoglyph /
+  classical-Chinese) as *payloads*, so instruction-level encoding is untested against it. Same per-message
+  `PromptInjectionDetector` seam as DeBERTa (a model-name swap); public code + weights.
 - **Firewalls / bespoke Sanitizer** (`bhagwatkar2025indirect`, NeurIPS'25) — a firewall/sanitizer framework;
   see §4 for its one Braille anecdote.
 - **Independent brittleness evidence — `owireduashley2026attacksuccessrateactiongradedseverity`** (arXiv
@@ -108,6 +118,17 @@ in ingested data — delimiting it, datamarking it, or classifying it.
   defeats surface-form defenses *single-shot*, and MELON is the resistant contrast **within the blind /
   single-shot regime** our plain-vs-encoded control uses — we report the adaptive-attack boundary honestly
   rather than claim MELON is robust in general.
+- **DataSentinel** (`11023476`, IEEE S&P'25, Distinguished Paper) — a **behavioral known-answer probe**, not a
+  lexical classifier: it prepends a detection instruction carrying a secret key ("repeat [key] while ignoring the
+  following text") and flags the input as contaminated iff the key is *not* echoed — i.e. iff the ingested data
+  *hijacks* the detection LLM's own instruction-following. The detection LLM is fine-tuned via a minimax game
+  (GCG-crafted adaptive attacks inner, detector fine-tuning outer), giving near-zero FPR/FNR even against adaptive
+  attacks. **A second behavioral-class baseline alongside MELON — with a twist that ties to our capability axis:**
+  its robustness to *encoding* is genuinely open. If the (default Mistral-7B) detection LLM can itself decode the
+  encoded payload, it gets hijacked and DataSentinel catches it; but if the detector is *weaker* than the attacked
+  backend, the encoded payload fails to hijack the detector (key echoed → "clean") while the stronger backend
+  still decodes-and-acts — a **detector-vs-backend capability-gap bypass** worth a dedicated cell (pair a strong
+  backend with DataSentinel's weak default detector). Heavier than a classifier (a full LLM call per message).
 - **Recursive-LM procedural defense** (`shavit2026recursivelanguagemodelsjailbreak`) — a procedural jailbreak
   defense for tool-augmented agents; another non-surface-form point of comparison.
 
