@@ -15,6 +15,16 @@ dependencies = [
     "pyyaml>=6.0.3",
 ]
 
+[project.optional-dependencies]
+# Classifier-based surface-form defenses (PIGuard, ProtectAI DeBERTa) load a HF model via
+# agentdojo's TransformersBasedPIDetector, which needs transformers+torch. Kept OUT of the base
+# install (torch is heavy and this arm runs cluster-side, not on the laptop). Install with:
+#   uv sync --extra classifiers      (or on the cluster: uv pip install '.[classifiers]')
+# The 'none' / 'spotlighting' / 'melon' defenses need none of this.
+classifiers = [
+    "agentdojo[transformers]>=0.1.35",
+]
+
 [tool.uv]
 # uv is the package/project manager for this repo (global law: uv, not poetry).
 

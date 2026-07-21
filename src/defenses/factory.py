@@ -20,6 +20,7 @@ RUN-TIME items to confirm when we first construct these (build-time fetch / spen
 
 import json
 from functools import partial
+from typing import Literal
 
 from agentdojo.agent_pipeline import AgentPipeline, PipelineConfig
 from agentdojo.agent_pipeline.base_pipeline_element import BasePipelineElement
@@ -52,7 +53,7 @@ _SHIPPED_ALIAS: dict[str, str | None] = {
 DEFENSES = ["none", "spotlighting_with_delimiting", "tool_filter", "piguard", "melon", "protectai_deberta"]
 
 
-def _tool_output_formatter(tool_output_format: str):
+def _tool_output_formatter(tool_output_format: str | None):
     if tool_output_format == "json":
         return partial(tool_result_to_str, dump_fn=json.dumps)
     return tool_result_to_str
@@ -65,7 +66,7 @@ def _classifier_pipeline(
     model_name: str,
     safe_label: str,
     threshold: float,
-    tool_output_format: str,
+    tool_output_format: str | None,
     label: str,
 ) -> AgentPipeline:
     """Mirror AgentDojo's `transformers_pi_detector` branch with a chosen HF classifier model."""
@@ -87,7 +88,7 @@ def build_defended_pipeline(
     llm: BasePipelineElement,
     system_message: str,
     *,
-    tool_output_format: str = "text",
+    tool_output_format: Literal["yaml", "json"] | None = None,
     piguard_model: str = PIGUARD_MODEL,
     classifier_safe_label: str = "benign",  # VERIFY against leolee99/PIGuard model card at run time
     classifier_threshold: float = 0.5,
@@ -95,10 +96,14 @@ def build_defended_pipeline(
 ) -> AgentPipeline:
     """Build an AgentDojo pipeline defended by `defense`, around an already-constructed `llm`."""
     if defense in _SHIPPED_ALIAS:
+        # `llm` is a pre-built element, so from_config takes the `else config.llm` branch and never
+        # reads `model_id`/`system_message_name` (both required PipelineConfig fields, hence None).
         config = PipelineConfig(
             llm=llm,
+            model_id=None,
             defense=_SHIPPED_ALIAS[defense],
             system_message=system_message,
+            system_message_name=None,
             tool_output_format=tool_output_format,
         )
         return AgentPipeline.from_config(config)
