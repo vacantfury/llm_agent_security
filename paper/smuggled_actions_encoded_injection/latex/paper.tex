@@ -90,7 +90,7 @@
 % nouns, adverbs, adjectives should be capitalized, including both words in hyphenated terms, while
 % articles, conjunctions, and prepositions are lower case unless they
 % directly follow a colon or long dash
-\title{Smuggled Actions: Encoded Indirect Prompt Injection Evades Surface-Form Defenses on LLM Agents}
+\title{Smuggled Actions: Encoded Indirect Prompt Injection Evades Surface-Form but Not Behavioral Defenses on LLM Agents}
 \author{
     % Anonymous for double-blind review (aaai2027 [submission] mode suppresses the copyright slug).
     Anonymous Submission
@@ -136,26 +136,28 @@
 \maketitle
 
 \begin{abstract}
-% WORKING ABSTRACT (workflow stage S5, pre-results): states the paper's thesis and study
-% design. Fill in the headline numbers (per-defense action-success lift; benign-utility bound)
-% at write-up, once the payload x defense x scaffold x backbone matrix has been run.
-LLM agents act on the data they ingest---tool outputs, retrieved documents, on-screen
-images---which turns that data channel into an untrusted surface for \emph{indirect} prompt
-injection. The injection-specific defenses now deployed against this threat---spotlighting,
-data isolation, and prompt-shield / classifier guards---are tuned to recognize an imperative
-natural-language surface in ingested content. We ask whether they inherit the \emph{decode}
-blind spot already documented for content-level safety guards: an injected instruction that is
-\emph{encoded}---as set theory, formal logic, source code, a cipher, classical Chinese,
-homoglyphs, or a rendered image---presents a surface the defense was never tuned on, yet a
-capable backbone still decodes it and executes the injected action. We introduce a systematic,
-controlled evaluation of encoding as an evasion axis against agent injection defenses, crossing
-payload encodings with defenses across multiple agent scaffolds and backbones on standard,
-action-scored harnesses (AgentDojo, InjecAgent), with plain-versus-encoded controls that
-isolate the encoding effect and a benign-task utility bound that limits over-blocking. Our
-analysis separates two defense families: encoding evades \emph{surface-form} defenses that key
-on the lexical form of ingested text, whereas a \emph{behavioral} defense that keys on
-action-dependence rather than surface form (MELON) resists it---localizing the blind spot to
-the surface-form class rather than to agent injection defense in general.
+% WORKING ABSTRACT (workflow stage S6, pre-results): states the thesis, study design, and the two
+% organizing questions (defense-class specificity; capability-scaling). Fill in headline numbers
+% (per-defense action-success lift; the capability-vulnerability trend; benign-utility bound) at
+% write-up, once the payload x defense x scaffold x backbone matrix and the capability pilot have run.
+LLM agents act on the data they ingest---tool outputs, retrieved documents, on-screen images---which
+turns that data channel into an untrusted surface for \emph{indirect} prompt injection. The
+injection-specific defenses now deployed against it---spotlighting, data isolation, and prompt-shield /
+classifier guards---are tuned to recognize an imperative natural-language surface in ingested content.
+We ask whether they inherit the \emph{decode} blind spot documented for content-level safety guards: an
+injected instruction that is \emph{encoded}---as set theory, formal logic, code, a cipher, classical
+Chinese, homoglyphs, or a rendered image---presents a surface the defense was never tuned on, yet a
+capable backbone decodes it and executes the injected action. We introduce a systematic, controlled
+evaluation of encoding as an evasion axis against agent injection defenses, crossing payload encodings
+with defenses across multiple agent scaffolds and backbones on standard, action-scored harnesses
+(AgentDojo, InjecAgent), with plain-versus-encoded controls that isolate the encoding effect and a
+benign-task utility bound that limits over-blocking. Two questions organize the study. First, is the
+evasion \emph{defense-class-specific}---does encoding slip past \emph{surface-form} defenses (which key
+on lexical form) while a \emph{behavioral} defense that keys on action-dependence (MELON) resists,
+localizing the blind spot to the surface-form class rather than to agent injection defense in general?
+Second, because the attack requires the backbone to decode its own exploit, are \emph{more capable
+models more vulnerable}---does the decoding competence that makes an agent useful widen its exposure,
+inverting the usual expectation that a stronger model is a safer one?
 \end{abstract}
 
 % Uncomment the following to link to your code, datasets, an extended version or similar.

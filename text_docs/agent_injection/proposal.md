@@ -1,12 +1,12 @@
 # Research Proposal — Smuggled Actions: Encoded Indirect Prompt Injection on LLM Agents (`agent_injection`)
 
-**Workflow stage:** S5 · main story — **S4 scoop + deep-read DONE (Level 3 Medium, delta SAFE, 2026-07-19); S1 idea-check RETURNED + CONFIRMED (cspaper.org, 2026-07-20 — no new scoop; MELON surfaced, which sharpens the claim; §4).** Prior art in `literature_review.md §1` (full map §§2–6). Both High-risk candidates defanged on inspection. **Order from here (owner-corrected 2026-07-19 — keep this sequence):** (1) preliminary proposal ✅ → (2) S4 literature / scoop search ✅ → (3) `idea_check.md` ✅ (returned + confirmed, cspaper.org 2026-07-20) → (4) **NOW: S5 main story** (lock the delta + positioning; fold in the surface-form-vs-behavioral sharpening) → (5) S6 design + cost. Paper E, off the July AAAI crunch (Papers C/D own that); targets a later cycle (§8).
+**Workflow stage:** S6 · design + cost — **S4 scoop + deep-read DONE (Level 3 Medium, delta SAFE, 2026-07-19); S1 idea-check RETURNED + CONFIRMED (cspaper.org, 2026-07-20 — no new scoop; MELON surfaced, which sharpens the claim; §4).** Prior art in `literature_review.md §1` (full map §§2–6). Both High-risk candidates defanged on inspection. **Order from here (owner-corrected 2026-07-19 — keep this sequence):** (1) preliminary proposal ✅ → (2) S4 literature / scoop search ✅ → (3) `idea_check.md` ✅ (returned + confirmed, cspaper.org 2026-07-20) → (4) ✅ S5 main story (delta + positioning locked; surface-form-vs-behavioral sharpening folded in; compositional & multi-agent pivots scoop-checked and closed — lit review §§5/7/8) → (5) **NOW: S6 design + cost** — **owner ratified the direction 2026-07-20** (Paper E go; capability-scaling pilot authorized; blind-BoN axis held). Paper E, off the July AAAI crunch (Papers C/D own that); targets a later cycle (§8).
 
 *Codename: **Smuggled Actions** (Paper E — the alias **E was reassigned from the parked `judge_reliability` direction** in the sibling repo `imaging_text_attacks_for_llm_jailbreaking`, 2026-07-19). Origin: this repo's `text_docs/shared/future_work.md §1` (the agent-side line, migrated from the sibling's future_work §5) + the compositional-harm identity. **Attack-first** — the attack is this paper; the defense is the deliberately-later half (`future_work.md §2`). Full paper-facing title refined at writing.*
 
 ---
 
-## 1. Decision & posture (provisional — ratify at S5)
+## 1. Decision & posture (RATIFIED by owner 2026-07-20)
 
 - **Paper E = an ATTACK-FIRST agent-security paper.** The question: does an **encoded** indirect-injection payload defeat **injection-specific defenses** and drive a harmful agent **action**? It leaves the model-only setting of Papers A–C entirely — a *separate line*, not a follow-on.
 - **Home: THIS repo, `agent_injection` namespace.** It reuses this line's encoder suite and image transforms **as payloads**; the genuinely new build is the agent-harness integration + the injection-defense baselines + the action-completion metric.
@@ -32,6 +32,8 @@ The core artifact is a matrix — **payload-encoding × injection-defense × sca
 - **Defense axis.** No-defense (control) vs deployed injection defenses: **spotlighting** (delimiting / datamarking / encoding the data boundary), **delimiter / quarantine isolation**, **prompt-shield / classifier guards** on ingested content. Each wrapped as an evaluatable baseline, deployed as its authors intend. Plus a **behavioral contrast defense** — **MELON** (masked re-execution + tool comparison; `zhu2025melon`), expected to *resist* encoding, included to show the blind spot is specific to the surface-form class (idea-check finding, §4).
 - **Scaffold × backbone.** ≥3 agent scaffolds on a standard harness (AgentDojo / InjecAgent — tool-use injection benchmarks with built-in attack + utility scoring) × multiple backbones (the repo's served + API models), for generality.
 - **Metric.** Injected-action success rate (attack) **and** benign-task utility (the harness's own utility score, to bound over-blocking), per cell. **Headline** = encoded payloads lift injected-action success over plain payloads *specifically where an injection defense is present*.
+- **Capability-scaling analysis (the headline-finding axis, ratified 2026-07-20).** Treat backbone capability as a *first-class analysis dimension*, not just a generality sweep: order the backbones by capability and test whether encoded-injection success *rises* with capability (better decoders → more exposed). This is the paper's candidate non-obvious finding; a flat/negative trend is itself a clean result.
+- **Pilot first (S6 → gated run).** Before the full matrix, a small capability-scaling pilot — ~5–6 backbones spanning a capability range × plain + 2 encoders × spotlighting + no-defense × 1 scaffold × an AgentDojo task-injection subset — decides whether the capability trend and the encoding lift exist at all. Cost estimate in §10; the pilot runs only after the S7 harness build and the owner's go on spend.
 
 ## 4. Novelty & prior-art — THE gate (S4, UNRUN — make-or-break; it GROUNDS `idea_check.md`)
 
@@ -115,9 +117,10 @@ survives a session reset; **does not change §4's verdict or the S5 gate outcome
 ## 5. Contributions (provisional)
 
 1. **The first systematic measurement** of ENCODED indirect prompt injection as an evasion axis against injection-specific **surface-form** defenses (spotlighting / isolation / prompt-shield / shield-prompt), scored by **action completion** — with a **behavioral defense (MELON) as the resistant contrast** that localizes the blind spot to the surface-form class (idea-check sharpening, §4).
-2. **The agent coordinate of the coverage / decode-gap thesis:** injection defenses inherit the *surface-not-decoded* blind spot — a unifying account, not a new widget.
-3. **A generality result** across ≥3 scaffolds × backbones (not a single-agent anecdote), with the plain-vs-encoded control isolating the encoding effect.
-4. **(Later half, §5.2)** an action-level *recover-before-act* defense + a flagship demonstration on a deployed, recognizable agent (responsible disclosure) — the coupled, engineering-heavier second contribution.
+2. **The capability-scaling finding (the headline bet, pilot-gated).** Because the attack requires the *backbone itself* to decode the payload before it can act, more capable models — better decoders — may be **more** vulnerable to encoded injection, inverting the usual "a stronger model is a safer one" expectation. If the trend holds (the pilot decides, §3), this is the non-obvious result that lifts the paper above a routine evasion measurement; if it does not, the flat/negative trend is itself a clean, publishable finding.
+3. **The agent coordinate of the coverage / decode-gap thesis:** injection defenses inherit the *surface-not-decoded* blind spot — a unifying account, not a new widget.
+4. **A generality result** across ≥3 scaffolds × backbones (not a single-agent anecdote), with the plain-vs-encoded control isolating the encoding effect.
+5. **(Later half, `future_work.md §2`)** an action-level *recover-before-act* defense + a flagship demonstration on a deployed, recognizable agent (responsible disclosure) — the coupled, engineering-heavier second contribution.
 
 ## 6. Threats to validity
 
@@ -142,5 +145,15 @@ survives a session reset; **does not change §4's verdict or the S5 gate outcome
 1. ✅ **Preliminary proposal** (this doc).
 2. ✅ **S4 · literature / scoop search — DONE** (Level 3 Medium, delta SAFE): `scoop-check` + `lit-review-loop` (bib staged, PDFs downloaded, review written to `literature_review.md`).
 3. ✅ **`idea_check.md` — DONE, returned + confirmed** (cspaper.org, 2026-07-20): verdict confirmed, no new scoop; MELON surfaced → contribution re-scope (§4).
-4. **S5 · main story — NOW** — lock the delta + positioning (fold in the surface-form-vs-behavioral sharpening); ratify with owner.
-5. **S6 · design + cost** — the scaffold × backbone × payload matrix with a first-class cost estimate (external-harness API / compute footprint); owner ratifies before any run. **Nothing runs without the owner's go.**
+4. ✅ **S5 · main story — DONE + RATIFIED** (owner 2026-07-20): direction approved (Paper E go), capability-scaling pilot authorized, blind-BoN axis held; compositional & multi-agent pivots scoop-checked and closed (lit review §§5/7/8); title + abstract refined.
+5. **S6 · design + cost — NOW** — firm the payload × defense × scaffold × backbone matrix and the capability-scaling pilot; cost + build estimate in §10.
+6. **S7 · build** — integrate the external agent harness (AgentDojo) + injection-defense baselines + action-completion scoring (§7). The real gate before any run.
+7. **Run** — pilot first, then (if positive) the full matrix. **Nothing runs without the owner's go on the cost.**
+
+## 10. Cost & build estimate (S6, order-of-magnitude — firm at S7)
+
+Assumptions (explicit, to be re-measured against AgentDojo's real token footprint once wired): an agent task = ~5–15 LLM calls (a multi-turn tool loop); ~3K tokens/call on average as the context grows.
+
+- **Capability-scaling pilot.** ~6 backbones × 3 payload conditions (plain + 2 encoders) × 2 defense conditions (none + spotlighting) × 1 scaffold × ~75 AgentDojo cases ≈ **~2.7K agent runs ≈ ~27K LLM calls ≈ ~80M tokens.** On API models at a blended ~$1–10/M tokens that is **order ~$100–800**; on **served open-weight backbones (NEU / employer cluster) the compute is near-zero** — so run the open-weight arm on the cluster and reserve API spend for the frontier-capability points. Owner's go is needed only for the API arm.
+- **Full matrix (post-pilot, only if the pilot is positive).** All encoders (6 + image) × defense families (none / spotlighting / isolation / prompt-shield / MELON) × ≥3 scaffolds × more backbones ≈ **~10–20× the pilot** → low-thousands of API dollars, again largely offloadable to the cluster for the open-weight arm.
+- **Build effort (S7 — the real gate, not the API spend).** Integrate AgentDojo (clone into gitignored `other_repos/`, read before wiring), wire the copied encoders as an `attack()`, wrap spotlighting / isolation / prompt-shield / MELON as evaluatable defense baselines, add action-completion + utility scoring. This engineering is the dominant cost of the direction; the API dollars are secondary.

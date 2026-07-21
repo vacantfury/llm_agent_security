@@ -19,7 +19,7 @@ First paper: **Paper E "Smuggled Actions"** (`agent_injection`) — an encoded i
 - **Shared = the ENCODERS only.** `src/prompt_transformations/` here is a **COPY** of the sibling's encoder/renderer factory — the payload generators. Keep them in sync **manually**; if a second real need appears, extract a standalone encoder package (rule of two). **Do NOT add a cross-repo import dependency** — the oikos charter bars a research-bet→research-bet dependency; copy, don't import.
 - **One concrete example each side:** "encode a harmful request as set-theory, render to image" = an **encoder** (shared); "inject that encoded blob into a tool output and check whether the agent calls `send_email`" = **THIS repo**; "check whether a VLM emits harmful text for that image" = the **sibling**.
 
-## Architecture (INTENDED — this repo is at S3; the runtime is NOT built yet)
+## Architecture (INTENDED — the `agent_injection` paper is at S6/design; the runtime build is S7, NOT done yet)
 
 The agent pipeline, to be built at S7 (code design + implementation):
 
@@ -32,7 +32,10 @@ Multi-paper namespacing mirrors the sibling: `text_docs/<paper>/`, `conf/experim
 
 ## Common commands
 
-The agent runtime is not built yet (S3). Once it exists, this section mirrors the sibling's `python main.py <preset>` shape adapted to the agent harness. Until then, work is docs + design (`text_docs/`).
+- **Bib sync** — reconcile the shared-encoding citation overlap with the sibling repo:
+  `uv run python scripts/sync_shared_refs.py` (`--show-only` for the one-sided lists; `--strict` to exit non-zero on a metadata conflict). Report-only — it never writes; config in `conf/sync_shared_refs.yaml`. Per the scope boundary above, the two bibs are kept as separate copies (not imported), and this tool keeps their overlap honest.
+
+The agent runtime is not built yet — the `agent_injection` paper is at **S6 (design)** (see its `proposal.md`); the runtime **build is S7**. Once built, this section mirrors the sibling's `python main.py <preset>` shape adapted to the agent harness. Until then, work is docs + design (`text_docs/`) plus the maintenance command above.
 
 ## Skills (copied from the sibling; adapt the runtime-specific ones)
 
