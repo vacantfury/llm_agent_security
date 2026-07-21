@@ -47,7 +47,7 @@ Global skills (`research-workflow`, `found-project`, `bootstrap-research-skills`
 - **Package manager: `uv`** (this is a new repo — global law: uv, not poetry). Deps in `pyproject.toml`, lock is `uv.lock`.
 - **Cost:** always estimate experiment cost when designing — API/compute spend is a first-class design constraint (standing rule).
 - **Public-grade discipline** (mandatory): no secrets / PII / 1Password refs in any committed file; `TODO.md`, `outputs/`, `paper/literature/`, `data/`, `text_docs/reviews/` are gitignored.
-- **Conference deadlines:** consult the shared `text_docs/shared/conference_timeline.md` pattern when it lands; never fork per-paper deadline lists.
+- **Conference deadlines:** the CANONICAL timeline lives in the sibling repo — `imaging_text_attacks_for_llm_jailbreaking/text_docs/shared/conference_timeline.md` (deadlines + Rep/Fit/Bar/Archival columns). Local `text_docs/shared/conference_timeline.md` is a pointer stub only. Update the canonical, never fork per-paper deadline lists; when this repo reaches venue planning, add a per-repo Fit column THERE (2026-07-20).
 - **English only** in task files (human names may stay as-is).
 - This is an **active research repo whose direction shifts** — consult `text_docs/shared/papers.md` + the paper's `proposal.md` (with its `Workflow stage:` line) before assuming what's important.
 
