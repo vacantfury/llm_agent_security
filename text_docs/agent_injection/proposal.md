@@ -133,7 +133,7 @@ survives a session reset; **does not change §4's verdict or the S5 gate outcome
 ## 7. Reused machinery + new code owed
 
 - **Reused (no new attack build):** the encoder factory (`src/prompt_transformations/text/`) + image renderer (`ir_plain`) as **payloads**; the model registry / serving for backbones.
-- **New (the real cost — be honest):** integration with an **external agent harness** (AgentDojo / InjecAgent — clone into gitignored `other_repos/` and read before wiring, per standing feedback); **injection-defense wrappers** (spotlighting / isolation / prompt-shield) as baselines; the **action-completion metric** + attack/utility scoring. This is materially bigger than the eval-only VLM setup — the honest cost of choosing this direction over the (occupied) judge line.
+- **New (the real cost — be honest):** integration with an **external agent harness** — `uv add agentdojo` (pip package) and extend via its public API; no clone needed (read the installed source under `.venv/` if wiring needs it; full design in `design.md §1`); **injection-defense wrappers** (MELON built; spotlighting / classifier / isolation baselines mostly reused from AgentDojo) as baselines; the **action-completion metric** + attack/utility scoring (largely reused). Materially bigger than the eval-only VLM setup, but the framework study (2026-07-20) shows AgentDojo supplies most of it — see `design.md §§1,5,6,8`.
 
 ## 8. Publication strategy (candidate — LIVE deadline re-check at S10)
 
@@ -146,8 +146,8 @@ survives a session reset; **does not change §4's verdict or the S5 gate outcome
 2. ✅ **S4 · literature / scoop search — DONE** (Level 3 Medium, delta SAFE): `scoop-check` + `lit-review-loop` (bib staged, PDFs downloaded, review written to `literature_review.md`).
 3. ✅ **`idea_check.md` — DONE, returned + confirmed** (cspaper.org, 2026-07-20): verdict confirmed, no new scoop; MELON surfaced → contribution re-scope (§4).
 4. ✅ **S5 · main story — DONE + RATIFIED** (owner 2026-07-20): direction approved (Paper E go), capability-scaling pilot authorized, blind-BoN axis held; compositional & multi-agent pivots scoop-checked and closed (lit review §§5/7/8); title + abstract refined.
-5. **S6 · design + cost — NOW** — firm the payload × defense × scaffold × backbone matrix and the capability-scaling pilot; cost + build estimate in §10.
-6. **S7 · build** — integrate the external agent harness (AgentDojo) + injection-defense baselines + action-completion scoring (§7). The real gate before any run.
+5. ✅ **S6 · design + cost — DONE** — full system design in `design.md` (framework decision, agent/scaffolds, attack seam, defense baseline set, eval, matrix, build plan); cost + build estimate in §10.
+6. **S7 · build — NEXT** — per `design.md §8`: `uv add agentdojo` → encoded-payload attack → defense baselines (incl. MELON) → backbones/scaffolds → config + scoring → pilot. The real gate before any run.
 7. **Run** — pilot first, then (if positive) the full matrix. **Nothing runs without the owner's go on the cost.**
 
 ## 10. Cost & build estimate (S6, order-of-magnitude — firm at S7)
