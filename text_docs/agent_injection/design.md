@@ -219,24 +219,41 @@ enters at the full-matrix stage.
 
 ## 8. Build plan (S7, ordered)
 
-1. **Harness up.** `uv add agentdojo`; run a vanilla benchmark to confirm the loop + scoring + a couple of
-   backbones work end-to-end. Pin the version.
-2. **Attack.** Decouple `src/prompt_transformations/` to the payload-gen subset (TODO item 2); implement +
-   `@register_attack` the encoded-payload attack with the escape/serialization step; verify a payload survives
-   `.format()`→YAML and that the model decodes it (a sanity decode-rate check on one backbone).
-3. **Defenses.** Wire spotlighting + tool_filter (config); swap **PIGuard** in for the classifier baseline
-   (published; a model-name swap into the same `PromptInjectionDetector` seam — keep ProtectAI DeBERTa available
-   as the non-published default for comparison); implement MELON as a `BasePipelineElement` (port
-   `pi_detector.py` to the current message-block API; YAML threshold; embedding-backend knob); add the
-   spotlighting datamarking/encoding variants. Optional published 2nd classifier: DataSentinel.
-4. **Backbones + scaffolds.** Add `ModelsEnum` entries / configure the cluster vLLM open-weight arm; build the
-   3rd scaffold (ReAct or planner→executor).
-5. **Config + scoring.** YAML matrix config (`conf/experiment/agent_injection/`); `src/scoring/` aggregation +
-   the capability-scaling analysis + the plain-vs-encoded lift.
-6. **Pilot run** — owner-go on the API arm; then read results before designing the full-matrix run.
+**Status (2026-07-21): the no-spend scaffolding is BUILT and verified — the pipeline is
+runnable-but-not-run.** Everything below that does not require a live model call is done and
+green; the only remaining items are spend-gated (a vanilla end-to-end run, the pilot) or explicitly
+deferred (the 3rd scaffold, off the pilot path). Verification was all offline: attack registration,
+defense-factory assembly of every baseline, `runner.py --dry-run` assembling all
+smoke(1)/pilot(36)/full(2520→1260 buildable) cells, and `scoring` reproducing the thesis split on
+synthetic data.
 
-Skills to adapt at this point (TODO item 2): `run-experiment` / `check-experiment-results` / `manage-experiments`
-currently assume the sibling's VLM cluster pipeline — rewire to this AgentDojo runtime.
+1. **Harness up.** ✅ `uv add agentdojo`, version pinned; API mapped from the installed source
+   (benchmark `v1.2.2`, 4 suites, `benchmark_suite_with_injections`, `SuiteResults`,
+   `load_system_message`). ⏳ *Gated:* the vanilla end-to-end confirmation run needs a live backbone.
+2. **Attack.** ✅ `src/prompt_transformations/` decoupled; `src/attacks/encoded_injection.py` registers
+   `encoded_{plain,cipher,code,homoglyph,set_theory,formal_logic,classical}` with the YAML-double-quoted
+   escape step; verified a payload survives `.format()`→`yaml.safe_load`. ⏳ *Gated:* the decode-rate
+   sanity check needs one live backbone.
+3. **Defenses.** ✅ `src/defenses/factory.build_defended_pipeline` — spotlighting + tool_filter (shipped),
+   **PIGuard** swapped in as the published classifier baseline (ProtectAI kept for comparison), and
+   **MELON** ported to the current content-block API (`src/defenses/melon.py`: real YAML threshold,
+   swappable embedding backend, episode-scoped cache). Classifier defenses need the `[classifiers]`
+   extra (transformers+torch, cluster-side). *Not done:* the spotlighting datamarking/encoding variants
+   (secondary ablation) and the optional DataSentinel 2nd classifier.
+4. **Backbones + scaffolds.** ✅ `src/harness/backbones.build_backbone` + the capability-ordered
+   `matrix.yaml` backbone table (hand-built LLM objects bypass the shipped `ModelsEnum`; cluster vLLM
+   arm via an OpenAI-compatible endpoint). native + prompted scaffolds are free (class choice).
+   ⏳ *Deferred:* the 3rd scaffold (`react` planner→executor) — off the pilot path; `build_backbone`
+   raises `NotImplementedError` for it until built.
+5. **Config + scoring.** ✅ `matrix.yaml` (axes + `pilot`/`smoke` presets); `src/harness/runner.py`
+   (enumerate → assemble → `benchmark_suite_with_injections` + benign PNA pass; offline `--dry-run`);
+   `src/scoring/aggregate.py` (ASR / Utility-Under-Attack / PNA / NRP + encoding lift + defense-class
+   split + capability-scaling Pearson r & slope).
+6. **Pilot run** — ⏳ *Gated on owner-go + API keys* (`runner.py --preset pilot`); read results before the
+   full-matrix run. Open-weight arm ~free on cluster; API arm ~$100–800 (proposal §10).
+
+Skills to adapt (TODO item 2): `run-experiment` / `check-experiment-results` / `manage-experiments`
+still assume the sibling's VLM cluster pipeline — rewire to this AgentDojo runtime at the pilot.
 
 ---
 
