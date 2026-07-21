@@ -42,6 +42,18 @@ wanted during the build, read the installed package under `.venv/` (a clone woul
 isn't necessary). MELON ships as a *patch* to AgentDojo — we reuse its logic as our own pipeline element rather
 than patching a cloned tree (§4).
 
+**Component provenance (published-first — owner steer 2026-07-21).** The paper's *key* building blocks should
+be peer-reviewed / published, not arXiv-only or non-paper artifacts (our own builds excluded). Audit of the
+stack: harness **AgentDojo (NeurIPS'24 D&B)** ✓; resistant behavioral defense **MELON (ICML'25)** ✓;
+complements **InjecAgent (Findings-ACL'24)** ✓ and **ASB (ICLR'25)** ✓; **spotlighting (Hines et al.,
+CAMLIS'24)** ✓ (canonical, smaller venue). Excluded (ours): the encoders (set-theory = the owner's published
+MathEnc; cipher/homoglyph are standard techniques) and `llm_utils`. **One flag:** the PI-classifier baseline
+`transformers_pi_detector` = ProtectAI `deberta-v3-base-prompt-injection` is a HuggingFace *artifact*, not a
+published method — keep it as the de-facto open PI-detector the field benchmarks and AgentDojo ships, but label
+it as such, and if a reviewer wants a published detector, add one (a PI-detection paper's method) as a second
+surface-form classifier. arXiv-only *related work* (STAC, hu2026, …) is cited as prior art, not built on, so it
+is outside this rule.
+
 ---
 
 ## 2. System architecture
