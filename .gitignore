@@ -7,8 +7,9 @@ data/
 mlruns/
 multirun/
 
-# Literature: bib + downloaded PDFs are large / personal staging
-paper/literature/
+# Paper dir: drafts, build artifacts (PDF/docx/zip), author kits, bib + downloaded
+# PDFs — all local; this harness repo is not the paper's home / submission repo.
+paper/
 
 # Reviews / ARR / reviewer text — never committed (public repo)
 text_docs/reviews/
