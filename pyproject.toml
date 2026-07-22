@@ -16,13 +16,16 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-# Classifier-based surface-form defenses (PIGuard, ProtectAI DeBERTa) load a HF model via
-# agentdojo's TransformersBasedPIDetector, which needs transformers+torch. Kept OUT of the base
-# install (torch is heavy and this arm runs cluster-side, not on the laptop). Install with:
-#   uv sync --extra classifiers      (or on the cluster: uv pip install '.[classifiers]')
-# The 'none' / 'spotlighting' / 'melon' defenses need none of this.
+# Cluster-side ML deps kept OUT of the base install (torch is heavy; this arm runs on the cluster,
+# not the laptop). Install with:  uv sync --extra classifiers  (cluster: uv pip install '.[classifiers]')
+#  - agentdojo[transformers]: the classifier surface-form defenses (PIGuard, ProtectAI DeBERTa) load a
+#    HF model via TransformersBasedPIDetector (transformers+torch).
+#  - sentence-transformers: MELON's LOCAL tool-call embedder (melon.embedding=local) — keeps an
+#    open-weight MELON run $0 (no OpenAI embedding calls). MELON with the default OpenAI embedder,
+#    and the 'none'/'spotlighting' defenses, need none of this.
 classifiers = [
     "agentdojo[transformers]>=0.1.35",
+    "sentence-transformers>=3.0",
 ]
 
 [tool.uv]
