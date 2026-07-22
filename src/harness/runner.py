@@ -118,16 +118,36 @@ def _default_system_message() -> str:
     return _DEFAULT_SYSTEM_MESSAGE
 
 
-def build_pipeline_for_cell(cell: Cell):
-    """Assemble the defended AgentDojo pipeline for a cell. Offline (no spend) — see backbones.py."""
+_MELON_BACKENDS: dict[str, Any] = {}  # cache: load the (local) embedding model once across melon cells
+
+
+def _melon_backend(kind: str):
+    if kind not in _MELON_BACKENDS:
+        from src.defenses.melon import make_embedding_backend
+        _MELON_BACKENDS[kind] = make_embedding_backend(kind)
+    return _MELON_BACKENDS[kind]
+
+
+def build_pipeline_for_cell(cell: Cell, melon_embedding: str = "local"):
+    """Assemble the defended AgentDojo pipeline for a cell. Offline (no spend) — see backbones.py.
+
+    ``melon_embedding`` selects MELON's embedder (config ``melon.embedding``): ``local`` (cluster $0,
+    default) or ``openai`` (reference; small spend even for an open backbone). Both lazy — no load
+    until a real run embeds, so dry-run assembles melon cells without the [classifiers] extra."""
     llm = build_backbone(cell.backbone, cell.scaffold)
-    melon_kwargs = {"llm": llm} if cell.defense == "melon" else None
+    melon_kwargs = None
+    if cell.defense == "melon":
+        melon_kwargs = {"llm": llm, "embedding_backend": _melon_backend(melon_embedding)}
     return build_defended_pipeline(
         cell.defense,
         llm=llm,
         system_message=_default_system_message(),
         melon_kwargs=melon_kwargs,
     )
+
+
+def _melon_embedding(cfg: dict) -> str:
+    return (cfg.get("melon") or {}).get("embedding", "local")
 
 
 # --------------------------------------------------------------------------------------------------
@@ -189,11 +209,12 @@ def _tool_decode_check(cfg: dict) -> dict[str, Any]:
 def dry_run(cfg: dict) -> dict[str, Any]:
     """Enumerate + assemble every cell offline; report buildability + case volume. No spend."""
     cells = enumerate_cells(cfg)
+    melon_emb = _melon_embedding(cfg)
     ok, skipped, needs_extra = [], [], []
     for cell in cells:
         label = f"{cell.backbone.id}/{cell.scaffold}/{cell.defense}/{cell.payload}/{cell.suite}"
         try:
-            build_pipeline_for_cell(cell)
+            build_pipeline_for_cell(cell, melon_emb)
             ok.append((cell, label))
         except ImportError as e:  # classifier defenses need the [classifiers] extra (transformers+torch)
             needs_extra.append((label, str(e).splitlines()[0]))
@@ -248,13 +269,14 @@ def run(cfg: dict, out_path: str | Path) -> Path:
     max_u, max_i = cfg.get("max_user_tasks"), cfg.get("max_injection_tasks")
 
     cells = enumerate_cells(cfg)
+    melon_emb = _melon_embedding(cfg)
     benign_done: set[tuple[str, str, str, str]] = set()
     records: list[dict] = []
 
     with out_path.open("w") as fh:
         for cell in cells:
             try:
-                pipeline = build_pipeline_for_cell(cell)
+                pipeline = build_pipeline_for_cell(cell, melon_emb)
             except (BackboneError, NotImplementedError, ImportError) as e:
                 records.append({"kind": "skip", **_cell_dict(cell), "reason": str(e).splitlines()[0]})
                 continue

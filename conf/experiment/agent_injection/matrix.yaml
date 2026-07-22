@@ -51,6 +51,12 @@ defenses:
 comparison_defenses:
   - protectai_deberta              # surface-form (classifier, non-published AgentDojo default)
 
+# MELON's tool-call embedder (src/defenses/melon.py). `local` = a sentence-transformers model on the
+# cluster ($0, needs the [classifiers] extra); `openai` = the reference text-embedding-3-large (small
+# spend even for an open backbone). Default local so an open-weight MELON run is truly zero-cost.
+melon:
+  embedding: local
+
 # --- scaffold axis (design §3) ------------------------------------------------------------------
 # native   = the provider's structured tool API (OpenAI/Anthropic/Google)   — free
 # prompted = tool schemas serialized into the prompt (PromptingLLM/LocalLLM) — free; the open-weight path
@@ -139,39 +145,18 @@ presets:
     max_user_tasks: 2
     max_injection_tasks: 1
 
-  # --- STAGED LADDER (owner asked to split the heavy pilot into smaller go/no-go parts, 2026-07-22) ----
-  # Each stage answers ONE question on the SMALLEST sufficient slice and is its OWN approval-gated run
-  # (report GPU+$+time, get go — CLAUDE.md §Conventions). Run cheapest-first; STOP if a stage is negative.
-  # Stages 0-2 need only small open-weight models (1-2 GPUs, ~$0, minutes); the capability SWEEP (s3) is
-  # the only heavy stage and waits until 0-2 show the effect AND the cluster's open-model list is known.
+  # --- TWO-PART SPLIT (owner 2026-07-22: the micro-stage ladder was too conservative for uniformly-$0
+  # cluster runs — merge mechanism+evasion+defense-split into ONE cheap open-weight run; keep the heavy
+  # capability sweep separate). One run's results still slice by defense/model/payload, so the
+  # "did the mechanism fire" cells are readable first without a separate run. Each part reports
+  # GPU+$+time and gets an explicit go before launch (CLAUDE.md §Conventions).
 
-  # s0 — mechanism: does an agent complete the injected action at all, and does b's tool actually fire?
-  # 1 small model, no defense, control vs a(internal decode) vs b(tool decode). ~8 cases/cell.
-  s0_mechanism:
-    backbones: [qwen2.5-7b]
-    payloads: [encoded_plain, encoded_cipher, tooldecode_base64]
-    defenses: [none]
-    scaffolds: [default]
-    suites: [workspace]
-    max_user_tasks: 4
-    max_injection_tasks: 2
-
-  # s1 — evasion: do a and b get past ONE surface-form defense (spotlighting)? 2 small open models
-  # (guard against model-specificity), control + a + b × {none, spotlighting}. ~18 cases/cell.
-  s1_evasion:
-    backbones: [qwen2.5-7b, llama3.1-8b]
-    payloads: [encoded_plain, encoded_cipher, tooldecode_base64]
-    defenses: [none, spotlighting_with_delimiting]
-    scaffolds: [default]
-    suites: [workspace]
-    max_user_tasks: 6
-    max_injection_tasks: 3
-
-  # s2 — defense-class split: surface-form (spotlighting, piguard) FALL vs behavioral (melon) RESISTS,
-  # for both a and b. small + one larger open model. Needs the [classifiers] extra (piguard) + a LOCAL
-  # MELON embedder (else MELON leaks small OpenAI embedding $). ~24 cases/cell.
-  s2_defsplit:
-    backbones: [qwen2.5-7b, qwen2.5-72b]
+  # pilot_open — the cheap core (merged s0+s1+s2): does the injected action fire (mechanism + b's tool),
+  # does encoding get past surface-form defenses (spotlighting, PIGuard), and does the behavioral defense
+  # (MELON) resist — control vs a(internal) vs b(tool), across 3 small→mid open-weight models. All on the
+  # cluster (~$0 with melon.embedding=local); PIGuard needs the [classifiers] extra. ~24 cases/cell.
+  pilot_open:
+    backbones: [qwen2.5-7b, llama3.1-8b, qwen2.5-72b]
     payloads: [encoded_plain, encoded_cipher, tooldecode_base64]
     defenses: [none, spotlighting_with_delimiting, piguard, melon]
     scaffolds: [default]
@@ -179,10 +164,10 @@ presets:
     max_user_tasks: 8
     max_injection_tasks: 3
 
-  # s3 — capability sweep (the ONLY heavy stage): ASR vs capability on the surviving payload×defense
-  # subset. Fill the backbone list once the cluster's open-weight inventory is known (needs >2 capability
-  # tiers: 7-8B -> ~32B -> 72B -> a near-frontier open anchor). Open-weight ladder placeholder for now.
-  s3_capability:
+  # capability_sweep — the ONLY heavy part: ASR vs capability on the surviving payload×defense subset,
+  # run only if pilot_open is positive. Fill the backbone list once the cluster's open-weight inventory
+  # is known (needs >2 capability tiers: 7-8B -> ~32B -> 72B -> a near-frontier open anchor).
+  capability_sweep:
     backbones: [qwen2.5-7b, llama3.1-8b, qwen2.5-72b]
     payloads: [encoded_plain, encoded_cipher, tooldecode_base64]
     defenses: [none, spotlighting_with_delimiting]

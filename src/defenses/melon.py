@@ -142,6 +142,50 @@ class OpenAIEmbeddingBackend:
         return list(response.data[0].embedding)
 
 
+class LocalEmbeddingBackend:
+    """$0 embedding backend for cluster runs: a local ``sentence-transformers`` model — no API, no
+    ``OPENAI_API_KEY``. Use this to keep a MELON run on an open-weight cluster genuinely zero-cost
+    (otherwise the default OpenAI backend leaks a small embedding spend even for an open backbone).
+
+    Requires the ``[classifiers]`` extra (``sentence-transformers``, which rides on torch/transformers
+    — the same cluster-side extra PIGuard needs). The model is loaded lazily on first call, so
+    importing this module or constructing ``MELON(...)`` stays offline/free (mirrors the OpenAI
+    backend), and ``runner.py --dry-run`` can assemble MELON cells without the dependency installed.
+    """
+
+    def __init__(self, model: str = "sentence-transformers/all-MiniLM-L6-v2") -> None:
+        self.model = model
+        self._st = None
+
+    def _model_or_create(self):
+        if self._st is None:
+            try:
+                from sentence_transformers import SentenceTransformer  # deferred: cluster-side extra
+            except ImportError as e:
+                raise ImportError(
+                    "LocalEmbeddingBackend requires 'sentence-transformers' (install the "
+                    "[classifiers] extra: `uv sync --extra classifiers` / `pip install "
+                    "agentdojo[transformers] sentence-transformers`)."
+                ) from e
+            self._st = SentenceTransformer(self.model)
+        return self._st
+
+    def __call__(self, text: str) -> list[float]:
+        return [float(x) for x in self._model_or_create().encode(text)]
+
+
+def make_embedding_backend(kind: str = "local") -> EmbeddingBackend:
+    """Resolve the matrix config's ``melon.embedding`` knob to a backend: ``local`` (cluster $0, the
+    default here) or ``openai`` (the reference's text-embedding-3-large; costs a little even for an
+    open backbone). Construction is lazy either way — no spend, no dependency, until a run embeds."""
+    k = (kind or "local").strip().lower()
+    if k == "openai":
+        return OpenAIEmbeddingBackend()
+    if k == "local":
+        return LocalEmbeddingBackend()
+    raise ValueError(f"unknown melon.embedding {kind!r}; expected 'local' or 'openai'")
+
+
 @dataclass(frozen=True)
 class MelonFlag:
     """One flagged real tool call: what it matched in the masked-pass cache, and how closely."""

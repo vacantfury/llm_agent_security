@@ -341,10 +341,12 @@ still assume the sibling's VLM cluster pipeline — rewire to this AgentDojo run
 - **Scoop-race** (lit review §1) — the field is hot; the pilot + build should move promptly once greenlit.
 - **Cost** — 629 cases × axes × MELON's 2× multiplies; the pilot is the gate, and open-weight-on-cluster keeps the
   scaling arm cheap.
-- **Staged ladder over one heavy pilot (owner rule 2026-07-22):** the pilot is split into cheapest-question-first,
-  separately-approved runs — `s0_mechanism` (does the action fire + does b's tool fire; 1 small model, no
-  defense) → `s1_evasion` (a/b past one surface-form defense; 2 small models) → `s2_defsplit` (surface-form fall
-  vs behavioral resist) → `s3_capability` (the only heavy stage; the capability sweep, model list pending the
-  cluster's open-weight inventory). Run cheapest-first, STOP on a negative rung. Stages 0–2 need only small
-  open-weight models (1–2 GPUs, ~$0, minutes); each run reports GPU+$+time and gets an explicit go before launch
-  (CLAUDE.md §Conventions). Presets live in `matrix.yaml`.
+- **Two-part split, not one heavy pilot (owner rule 2026-07-22):** since every cluster run is ~$0, splitting into
+  many micro-approval gates costs more than it saves — so **`pilot_open`** merges mechanism + surface-form-evasion
+  + defense-class-split into ONE cheap open-weight run (3 small→mid open models × {none, spotlighting, PIGuard,
+  MELON} × {control, a, b} × workspace subset; ~$0 with `melon.embedding=local`, 1–2 GPUs, minutes), and only the
+  heavy **`capability_sweep`** (ASR vs capability, model list pending the cluster's open-weight inventory) is a
+  separate, later run gated on `pilot_open` being positive. One run's results still slice by defense/model/payload,
+  so the "did the action fire" cells are readable first. Each part reports GPU+$+time and gets an explicit go
+  before launch (CLAUDE.md §Conventions). Presets in `matrix.yaml`; MELON's `local` sentence-transformers embedder
+  keeps the run truly $0 (else the default OpenAI embedder leaks a small spend).
