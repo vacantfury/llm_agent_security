@@ -11,6 +11,10 @@ multirun/
 # PDFs — all local; this harness repo is not the paper's home / submission repo.
 paper/
 
+# Cluster access/property docs — SSH hosts, usernames, SLURM accounts (never public).
+# Mirrors of the sibling's canonical cluster_files/ (see cluster_files/README.md).
+cluster_files/
+
 # Reviews / ARR / reviewer text — never committed (public repo)
 text_docs/reviews/
 
