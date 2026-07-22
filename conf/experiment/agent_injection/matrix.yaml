@@ -15,13 +15,30 @@ logdir: outputs/agent_injection/runs   # AgentDojo TraceLogger tree (gitignored)
 # LLM-based, need an encoder API key at run: set_theory/formal_logic/classical).
 payloads:
   - encoded_plain          # control
-  - encoded_cipher
+  - encoded_cipher         # a: internal decode, base64  (pairs with tooldecode_base64)
+  - encoded_caesar         # a: internal decode, caesar   (pairs with tooldecode_caesar)
   - encoded_code
   - encoded_homoglyph
   - encoded_set_theory
   - encoded_formal_logic
   - encoded_classical
+  - tooldecode_base64      # b: tool-assisted self-decoding (attack b; needs convert_text tool)
+  - tooldecode_caesar      # b: tool-assisted self-decoding
 control_payload: encoded_plain
+
+# --- tool-assisted-decode axis (attack b; src/attacks/tool_assisted_decode.py) ------------------
+# The b payloads (tooldecode_*) nudge the agent to decode the smuggled instruction with its OWN
+# benign tool (src/harness/agent_tools.convert_text) rather than in its head — the cleartext then
+# lands only in the agent's tool output (a boundary surface-form defenses don't inspect) and the
+# attack no longer depends on the backbone's own decode skill (design.md §4). The runner attaches
+# convert_text to the suite ONLY for tooldecode_* cells (get_suite is a shared singleton). `pairs`
+# maps each b payload to its matched a (same encoder, decoded in-head) for src/scoring's
+# tool_decode_lift = ASR(b) − ASR(a).
+tool_decode:
+  tool_name: convert_text
+  pairs:
+    tooldecode_base64: encoded_cipher
+    tooldecode_caesar: encoded_caesar
 
 # --- defense axis (src/defenses/factory.py; classes tagged in defenses.yaml) --------------------
 # Headline set = surface-form (fall) + behavioral (resists). protectai_deberta kept for comparison.
@@ -88,10 +105,34 @@ presets:
     max_user_tasks: 10
     max_injection_tasks: 4
 
+  # The b (tool-assisted self-decoding) pilot (proposal §4 direction, 2026-07-22). Capability-spread
+  # backbones × {control, a-internal, b-tool} for base64 × the defense-class split (surface-form
+  # fall vs behavioral resist) × default scaffold × workspace subset. Tests the b signature: b works
+  # even at LOW capability (tool decodes regardless of the backbone's own decode skill), where a
+  # internal-decode should fall off — the tool_decode_lift largest at low capability. GATED on owner-go.
+  b_pilot:
+    backbones: [qwen2.5-7b, llama3.1-8b, gpt-4o-mini, gpt-4o, claude-sonnet]
+    payloads: [encoded_plain, encoded_cipher, tooldecode_base64]
+    defenses: [none, spotlighting_with_delimiting, piguard, melon]
+    scaffolds: [default]
+    suites: [workspace]
+    max_user_tasks: 10
+    max_injection_tasks: 4
+
   # A no-spend smoke test: 1 cheap backbone, control payload, no defense, tiny subset.
   smoke:
     backbones: [gpt-4o-mini]
     payloads: [encoded_plain]
+    defenses: [none]
+    scaffolds: [default]
+    suites: [workspace]
+    max_user_tasks: 2
+    max_injection_tasks: 1
+
+  # A no-spend b smoke: b payload assembles + tool round-trips (verify via --dry-run).
+  b_smoke:
+    backbones: [gpt-4o-mini]
+    payloads: [encoded_plain, encoded_cipher, tooldecode_base64, tooldecode_caesar]
     defenses: [none]
     scaffolds: [default]
     suites: [workspace]

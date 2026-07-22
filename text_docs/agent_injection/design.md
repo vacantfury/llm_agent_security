@@ -134,6 +134,57 @@ the dict; `@register_attack("encoded_<scheme>")`. Usable via `--attack encoded_<
 the image-render arm is a scoped extension requiring a separate multimodal harness** (`future_work.md §3`), not
 part of the core matrix. Do not promise image results on the AgentDojo track.
 
+### 4b. Attack b — tool-assisted self-decoding (the NEW element; owner-settled 2026-07-22)
+
+Paper E is one attack, *decode relocation* (keep the harmful action's readable form only where a defense isn't
+looking), presented as an escalation ladder — **a** (decode in-head; the baseline/control, = the existing
+`encoded_*` family) → **b** (decode with the agent's own tool; the novel core) → **b+c** (b over distributed
+fragments; the final combined attack, later). See `proposal.md §4` for the scoop-check verdicts and the ladder
+rationale; b is what makes this a clean *new-attack* paper (Level 4–5 / open) rather than an eval of existing
+encoders.
+
+**Mechanism.** The smuggled instruction is the same encoded blob as a, but the carrier nudges the agent to
+decode it with a benign tool it already has (`convert_text`), not in its head. Consequence: the readable
+cleartext materializes only in the agent's OWN tool output — a boundary surface-form defenses (spotlighting, a PI
+classifier on *ingested* data) do not inspect — and, critically, the attack **no longer depends on the backbone
+being able to decode the payload unaided.** That decouples attack success from decode competence, which is why b
+dissolves the MathEnc capability tension (§5.2 / Contribution #2): it is an agent-only mechanism with no
+single-shot model-side analog.
+
+**The benign tool (`src/harness/agent_tools.py`).** `convert_text(text, encoding)` decodes a fixed whitelist of
+standard encodings (base64 / caesar / hex / rot13) — a **whitelist decoder, deliberately NOT an arbitrary code
+interpreter**: no model-authored code executes (safe for a research harness), decoding is deterministic (clean
+action scoring), and it stays a *plausibly benign* utility. It is attached to a suite **only for a b cell's run**
+and removed after (`decoder_attached` context manager) — `get_suite` returns a shared singleton, so permanent
+mutation would leak the tool into every other cell. **Realism note:** the tool must read as a legitimate agent
+capability, not a plant — frame it as a data/format utility and (at write-up) confirm benign-task utility is
+unharmed with it present. The maximally-realistic variant (a coding agent's native shell) is the deferred
+**coding-agent harness extension** (§9), not the core.
+
+**b payload axis.** Only the deterministic, tool-invertible ciphers are b schemes: `tooldecode_base64` ↔
+`encoded_cipher` and `tooldecode_caesar` ↔ `encoded_caesar` (each paired to the SAME encoder decoded in-head, the
+matched a-control). The LLM encoders (set-theory / formal-logic / classical) and homoglyph have no deterministic
+inverse and stay in the a family. base64/caesar are exactly the "trivial for a tool, hard for a weak model
+in-head" cases the b thesis needs.
+
+**Honest scope — what b does and does NOT beat.** b evades *surface-form* defenses for the same reason a does
+(the ingested blob is unreadable to them) and additionally works at low capability. b is **not** expected to
+beat the *behavioral* defense (MELON): MELON keys on the injected *action* trajectory, not surface form, so it
+should flag b's downstream harmful tool call just as it flags a's — consistent with the surface-form-falls /
+behavioral-resists thesis (b sharpens the capability story, it does not claim to break MELON). Whether any
+surface-form defense that *also* inspected the agent's own `convert_text` output would catch b is itself a
+finding (the inspection-boundary blind spot); the stock surface-form defenses here inspect ingested data only.
+
+**Scoring (`src/scoring/aggregate.tool_decode_lift`).** ASR(b) − ASR(matched a), holding the encoder fixed. The
+b signature = a positive lift that is **largest at low capability** (the tool decodes where the model can't) and
+~0 under MELON. Verified on synthetic data.
+
+**Build status (2026-07-22): b is BUILT no-spend and verified offline** — `tooldecode_*` attacks registered, the
+benign tool wraps + round-trips both encoders against the real encoder output, the carrier survives
+`.format()`→`yaml.safe_load`, `decoder_attached` attaches/restores the shared suite without leak, `runner
+--dry-run` assembles the `b_pilot`/`b_smoke` presets + validates the tool-decode wiring, and `tool_decode_lift`
+reproduces the b signature. The `b_pilot` run is GATED on owner-go + API keys, exactly like the a pilot.
+
 ---
 
 ## 5. The defenses — the baseline set
@@ -219,21 +270,30 @@ enters at the full-matrix stage.
 
 ## 8. Build plan (S7, ordered)
 
-**Status (2026-07-21): the no-spend scaffolding is BUILT and verified — the pipeline is
-runnable-but-not-run.** Everything below that does not require a live model call is done and
-green; the only remaining items are spend-gated (a vanilla end-to-end run, the pilot) or explicitly
-deferred (the 3rd scaffold, off the pilot path). Verification was all offline: attack registration,
-defense-factory assembly of every baseline, `runner.py --dry-run` assembling all
-smoke(1)/pilot(36)/full(2520→1260 buildable) cells, and `scoring` reproducing the thesis split on
-synthetic data.
+**Status (2026-07-22): the no-spend scaffolding is BUILT and verified — the pipeline is
+runnable-but-not-run — now INCLUDING attack b (tool-assisted self-decoding, §4b).** Everything below
+that does not require a live model call is done and green; the only remaining items are spend-gated
+(a vanilla end-to-end run, the a/b pilots) or explicitly deferred (the 3rd scaffold, off the pilot
+path; the coding-agent harness realism extension, §9). Verification was all offline: attack
+registration (a + b families), defense-factory assembly of every baseline, the benign `convert_text`
+tool wrapping + round-tripping both b encoders + non-leaking suite attach, `runner.py --dry-run`
+assembling all smoke(1)/pilot(36)/b_pilot(60→45 buildable)/full(3600→1800 buildable) cells and
+validating the tool-decode wiring, and `scoring` reproducing both the thesis defense-class split and
+the b tool-decode-lift signature on synthetic data.
 
 1. **Harness up.** ✅ `uv add agentdojo`, version pinned; API mapped from the installed source
    (benchmark `v1.2.2`, 4 suites, `benchmark_suite_with_injections`, `SuiteResults`,
    `load_system_message`). ⏳ *Gated:* the vanilla end-to-end confirmation run needs a live backbone.
-2. **Attack.** ✅ `src/prompt_transformations/` decoupled; `src/attacks/encoded_injection.py` registers
-   `encoded_{plain,cipher,code,homoglyph,set_theory,formal_logic,classical}` with the YAML-double-quoted
+2. **Attack a.** ✅ `src/prompt_transformations/` decoupled; `src/attacks/encoded_injection.py` registers
+   `encoded_{plain,cipher,caesar,code,homoglyph,set_theory,formal_logic,classical}` with the YAML-double-quoted
    escape step; verified a payload survives `.format()`→`yaml.safe_load`. ⏳ *Gated:* the decode-rate
    sanity check needs one live backbone.
+2b. **Attack b (tool-assisted self-decoding, §4b).** ✅ `src/attacks/tool_assisted_decode.py` registers
+   `tooldecode_{base64,caesar}` (matched to the same-encoder a-controls); `src/harness/agent_tools.py` supplies
+   the benign whitelist decoder `convert_text` + the non-leaking `decoder_attached` suite context manager; the
+   runner attaches the tool only for b cells and tags records with `tool_decode`/`pair_control`; `scoring`
+   gained `tool_decode_lift`. Verified offline (registration, round-trips, no-leak attach, dry-run tool-check,
+   synthetic b signature). ⏳ *Gated:* the `b_pilot` run (owner-go + keys).
 3. **Defenses.** ✅ `src/defenses/factory.build_defended_pipeline` — spotlighting + tool_filter (shipped),
    **PIGuard** swapped in as the published classifier baseline (ProtectAI kept for comparison), and
    **MELON** ported to the current content-block API (`src/defenses/melon.py`: real YAML threshold,
@@ -259,6 +319,17 @@ still assume the sibling's VLM cluster pipeline — rewire to this AgentDojo run
 
 ## 9. Open decisions & risks
 
+- **b harness — RESOLVED 2026-07-22 (owner):** attack b runs on **AgentDojo + the benign `convert_text` tool**
+  (reuses the whole built pipeline + deterministic action scoring). A **coding-agent harness** (SWE-agent /
+  OpenHands, native shell = the maximally-realistic decode tool) is a **later realism EXTENSION**, not the core,
+  and would be a from-scratch harness (its coding-agent SoK `maloyan2026promptinjectionattacksagentic` is
+  arXiv-only → related-work only).
+- **b tool realism (write-up gate):** `convert_text` must read as a legitimate agent capability, not a plant —
+  present it as a data/format utility and confirm benign-task utility is unharmed with it available. A reviewer
+  will probe "why does this agent have a decoder"; the honest answer is that real agents ship general
+  code/format tools, and the coding-agent extension makes it native.
+- **b+c (the final combined attack) is NOT built** — distributed encoded fragments reassembled via the agent's
+  tool. Deferred until b is validated on the pilot; present c only combined with b, never standalone (`proposal.md §4`).
 - **Image-render arm** is out of the AgentDojo core (text-only harness) — a scoped multimodal extension, not a
   core-matrix promise (§4). Confirm the paper's scope reflects text encoders on the agent track.
 - **3rd scaffold** must be structurally distinct from the isolation *defense* (don't double-count planner-isolation

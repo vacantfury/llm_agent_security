@@ -53,6 +53,7 @@ _CARRIER = (
 PAYLOAD_SCHEMES: dict[str, tuple[str, dict]] = {
     "plain": ("non_llm_baseline", {}),                # matched no-encoding control
     "cipher": ("non_llm_cipher", {"cipher": "base64"}),
+    "caesar": ("non_llm_cipher", {"cipher": "caesar"}),  # a-family match for tooldecode_caesar
     "homoglyph": ("non_llm_homoglyph", {}),
     "code": ("code_attack", {}),
     "set_theory": ("llm_set_theory", {}),             # LLM-encoded (API key at run time)

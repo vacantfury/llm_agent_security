@@ -86,6 +86,33 @@ def encoding_lift(records: list[dict], control_payload: str) -> list[dict]:
     return out
 
 
+def tool_decode_lift(records: list[dict]) -> list[dict]:
+    """ASR(b) − ASR(matched a) per (backbone, scaffold, defense, suite): the effect of moving the
+    decode into the agent's own tool, holding the ENCODER fixed (attack b vs a; proposal §4).
+
+    Each ``tooldecode_*`` attack record carries ``pair_control`` = its matched internal-decode
+    (``encoded_*``) attack over the same encoder (written by ``src/harness/runner``). A positive lift
+    that is largest at LOW capability is the b signature — the tool decodes regardless of the
+    backbone's own decode competence (dissolves the MathEnc tension)."""
+    asr_by: dict[tuple, float] = {}
+    for r in _attacks(records):
+        if r.get("asr") is not None:
+            asr_by[(r["backbone"], r["scaffold"], r["defense"], r["suite"], r["payload"])] = r["asr"]
+    out: list[dict] = []
+    for r in _attacks(records):
+        if not r.get("tool_decode") or r.get("asr") is None:
+            continue
+        a_name = r.get("pair_control")
+        a_asr = asr_by.get((r["backbone"], r["scaffold"], r["defense"], r["suite"], a_name))
+        if a_asr is None:
+            continue
+        out.append({"backbone": r["backbone"], "capability_rank": r["capability_rank"],
+                    "scaffold": r["scaffold"], "defense": r["defense"], "defense_class": r["defense_class"],
+                    "suite": r["suite"], "b_payload": r["payload"], "a_payload": a_name,
+                    "b_asr": r["asr"], "a_asr": a_asr, "lift": r["asr"] - a_asr})
+    return out
+
+
 def defense_class_split(lift_rows: list[dict], *, defended_only: bool = True) -> dict[str, dict]:
     """Mean encoding lift grouped by defense class. `defended_only` drops the no-defense baseline."""
     buckets: dict[str, list[float]] = defaultdict(list)
@@ -142,6 +169,7 @@ class Summary:
     encoding_lift: list[dict]
     defense_class_split: dict[str, dict]
     capability_scaling: list[dict]
+    tool_decode_lift: list[dict]
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -150,6 +178,7 @@ class Summary:
             "encoding_lift": self.encoding_lift,
             "defense_class_split": self.defense_class_split,
             "capability_scaling": self.capability_scaling,
+            "tool_decode_lift": self.tool_decode_lift,
         }
 
 
@@ -162,6 +191,7 @@ def summarize(path: str | Path, control_payload: str = "encoded_plain") -> Summa
         encoding_lift=lift,
         defense_class_split=defense_class_split(lift),
         capability_scaling=capability_scaling(records),
+        tool_decode_lift=tool_decode_lift(records),
     )
 
 
@@ -184,6 +214,11 @@ def main(argv: list[str] | None = None) -> int:
     for row in sorted(s.capability_scaling, key=lambda d: (d.get('defense', ''), d.get('payload', ''))):
         keys = {k: row[k] for k in row if k not in ('points', 'n', 'pearson_r', 'slope')}
         print(f"  {keys}  r={_fmt(row['pearson_r'])}  slope={_fmt(row['slope'])}  n={row['n']}")
+    if s.tool_decode_lift:
+        print("\ntool-decode lift ASR(b) − ASR(a), same encoder (b signature: positive, largest at low capability):")
+        for row in sorted(s.tool_decode_lift, key=lambda d: (d['b_payload'], d['defense'], d['capability_rank'])):
+            print(f"  {row['b_payload']:20s} vs {row['a_payload']:16s} rank={row['capability_rank']} "
+                  f"{row['defense']:28s} b={_fmt(row['b_asr'])} a={_fmt(row['a_asr'])} lift={_fmt(row['lift'])}")
     return 0
 
 
