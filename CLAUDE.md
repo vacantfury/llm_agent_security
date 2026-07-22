@@ -48,7 +48,7 @@ Global skills (`research-workflow`, `found-project`, `bootstrap-research-skills`
 ## Conventions
 
 - **Package manager: `uv`** (this is a new repo — global law: uv, not poetry). Deps in `pyproject.toml`, lock is `uv.lock`.
-- **Cost:** always estimate experiment cost when designing — API/compute spend is a first-class design constraint (standing rule).
+- **Experiment-run approval gate (owner rule 2026-07-22):** agent experiments are heavy, so BEFORE launching ANY experiment run report an explicit estimate of **(1) GPU count + type, (2) money ($), and (3) wall-clock running time**, and get the owner's explicit go. Never launch a run without an approved estimate. Design-time cost estimation stays a first-class constraint; this adds the mandatory pre-run GPU+$+time report + approval. Prefer the open-weight cluster arm to drive API spend toward zero — reserve paid API models for the final paper, not for gating pilots.
 - **Public-grade discipline** (mandatory): no secrets / PII / 1Password refs in any committed file; `TODO.md`, `outputs/`, `paper/literature/`, `data/`, `text_docs/reviews/` are gitignored.
 - **Conference deadlines:** the CANONICAL timeline lives in the sibling repo — `imaging_text_attacks_for_llm_jailbreaking/text_docs/shared/conference_timeline.md` (deadlines + Rep/Fit/Bar/Archival columns). Local `text_docs/shared/conference_timeline.md` is a pointer stub only. Update the canonical, never fork per-paper deadline lists; when this repo reaches venue planning, add a per-repo Fit column THERE (2026-07-20).
 - **English only** in task files (human names may stay as-is).
