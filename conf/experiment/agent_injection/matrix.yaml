@@ -138,3 +138,55 @@ presets:
     suites: [workspace]
     max_user_tasks: 2
     max_injection_tasks: 1
+
+  # --- STAGED LADDER (owner asked to split the heavy pilot into smaller go/no-go parts, 2026-07-22) ----
+  # Each stage answers ONE question on the SMALLEST sufficient slice and is its OWN approval-gated run
+  # (report GPU+$+time, get go — CLAUDE.md §Conventions). Run cheapest-first; STOP if a stage is negative.
+  # Stages 0-2 need only small open-weight models (1-2 GPUs, ~$0, minutes); the capability SWEEP (s3) is
+  # the only heavy stage and waits until 0-2 show the effect AND the cluster's open-model list is known.
+
+  # s0 — mechanism: does an agent complete the injected action at all, and does b's tool actually fire?
+  # 1 small model, no defense, control vs a(internal decode) vs b(tool decode). ~8 cases/cell.
+  s0_mechanism:
+    backbones: [qwen2.5-7b]
+    payloads: [encoded_plain, encoded_cipher, tooldecode_base64]
+    defenses: [none]
+    scaffolds: [default]
+    suites: [workspace]
+    max_user_tasks: 4
+    max_injection_tasks: 2
+
+  # s1 — evasion: do a and b get past ONE surface-form defense (spotlighting)? 2 small open models
+  # (guard against model-specificity), control + a + b × {none, spotlighting}. ~18 cases/cell.
+  s1_evasion:
+    backbones: [qwen2.5-7b, llama3.1-8b]
+    payloads: [encoded_plain, encoded_cipher, tooldecode_base64]
+    defenses: [none, spotlighting_with_delimiting]
+    scaffolds: [default]
+    suites: [workspace]
+    max_user_tasks: 6
+    max_injection_tasks: 3
+
+  # s2 — defense-class split: surface-form (spotlighting, piguard) FALL vs behavioral (melon) RESISTS,
+  # for both a and b. small + one larger open model. Needs the [classifiers] extra (piguard) + a LOCAL
+  # MELON embedder (else MELON leaks small OpenAI embedding $). ~24 cases/cell.
+  s2_defsplit:
+    backbones: [qwen2.5-7b, qwen2.5-72b]
+    payloads: [encoded_plain, encoded_cipher, tooldecode_base64]
+    defenses: [none, spotlighting_with_delimiting, piguard, melon]
+    scaffolds: [default]
+    suites: [workspace]
+    max_user_tasks: 8
+    max_injection_tasks: 3
+
+  # s3 — capability sweep (the ONLY heavy stage): ASR vs capability on the surviving payload×defense
+  # subset. Fill the backbone list once the cluster's open-weight inventory is known (needs >2 capability
+  # tiers: 7-8B -> ~32B -> 72B -> a near-frontier open anchor). Open-weight ladder placeholder for now.
+  s3_capability:
+    backbones: [qwen2.5-7b, llama3.1-8b, qwen2.5-72b]
+    payloads: [encoded_plain, encoded_cipher, tooldecode_base64]
+    defenses: [none, spotlighting_with_delimiting]
+    scaffolds: [default]
+    suites: [workspace]
+    max_user_tasks: 10
+    max_injection_tasks: 4
