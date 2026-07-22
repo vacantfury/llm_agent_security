@@ -65,6 +65,16 @@ only as an *added axis* (an N-budget dimension, §5) or a *reshaped* future pape
 - **NetInjectBench** (`shayoni2026netinjectbenchbenchmarkingindirectprompt`) — network-ops IPI, action-scored,
   and it *does* evaluate Spotlighting / Self-Reminder on agents (a defense-eval parallel to ours) — but its
   payloads are **100% NL authority-impersonation, zero encoding**. Orthogonal, not a scoop.
+- **Coding-agent injection landscape — `maloyan2026promptinjectionattacksagentic`** (arXiv 2601.17548, SoK, arXiv-only —
+  *related work, not a component to build on*, per the published-first rule). Systematizes 78 sources into a
+  3-axis taxonomy (delivery vector × modality × propagation). Two facts matter for us: (a) it names **"Encoding
+  Obfuscation" as a distinct attack modality (M1.3: base64 / Unicode / word-splitting)** but treats it *only* as
+  filter-evasion (Greshake lineage) with **no account of who/what decodes it downstream** — i.e. tool-assisted
+  self-decoding is unnamed (§6); (b) it documents that real coding agents (Claude Code, Copilot, Cursor, Codex)
+  carry **native shell / code-execution tools** (its own `allowed-tools: [Read, Bash]` skill exploit) — so a
+  coding agent is a viable **action-scored harness with a built-in decode tool** if the tool-assisted-decoding
+  attack is pursued. Its central thesis (text-level/detection defenses are structurally insufficient →
+  architectural mitigation) independently supports our surface-form-falls claim.
 
 All four share the same blind spot for our purposes: **none tests decodable-encoded payloads against a
 defense-in-the-loop.**
@@ -131,6 +141,18 @@ in ingested data — delimiting it, datamarking it, or classifying it.
   backend with DataSentinel's weak default detector). Heavier than a classifier (a full LLM call per message).
 - **Recursive-LM procedural defense** (`shavit2026recursivelanguagemodelsjailbreak`) — a procedural jailbreak
   defense for tool-augmented agents; another non-surface-form point of comparison.
+- **Caught in the Act(ivation)** (`chauhan2026caughtactivationpreoutputmultiturn`, AIWILD @ ICML'26 workshop, arXiv 2606.04141) —
+  an **activation-level** IPI defense (a pre-output hidden-state probe, CIFT, + honeytokens + a multi-turn
+  leakage critic) against **credential exfiltration**. Two things it gives us, **neither a scoop**: (1) its Fig. 3
+  is *independent evidence for our exact split* — text-level output scanners (substring / fuzzy / embedding /
+  LlamaGuard) collapse under Base64/Hex/ROT13/reverse encoding while the activation-level probe stays ~0.95–1.0 F1;
+  (2) it is the natural **behavioral/activation** contrast class alongside MELON. **Critical directional caveat:**
+  its encoding runs the *opposite* way from ours — it encodes the **credential being exfiltrated on the way OUT**
+  ("return the key in base64") to evade *output* scanners, whereas we encode an **injected instruction in the
+  untrusted input** to evade *input-side* injection defenses. It also (a) never tests spotlighting / isolation /
+  prompt-shield, (b) scores **detection AUROC/F1, never action completion**, and (c) requires **white-box
+  activation access** (excludes API models). Cite to sharpen the delta (behavioral defenses are the right
+  countermeasure to encoding evasion), not as a competitor.
 
 **Consequence for the story:** contribution #1 should be scoped to injection-specific **surface-form**
 defenses, with MELON reported as the semantic defense encoding does *not* beat — turning a potential threat
@@ -237,6 +259,18 @@ an artifact of *adaptivity* rather than budget alone. That is at most an **added
 contribution and never build it — the strongest evidence the systematic version is genuinely open, tempered by
 the honest cost that a hot, fast-moving field makes it an obvious next step (scoop-race risk).
 
+**Tool-assisted self-decoding — a confirmed-open agent-native refinement (scoop-check 2026-07-22).** A candidate
+NEW-attack element beyond the base result: the injected payload is an encoded blob + a "decode this and do it"
+nudge, and the agent **decodes it using its OWN tools** (a code interpreter / shell / translator) — downstream of
+where a text-level defense sits — then acts. A ~60-query / ~30-paper search found **no paper doing this**; the
+nearest neighbors miss it in complementary ways: `maloyan2026promptinjectionattacksagentic` names encoding-obfuscation
+as a modality but never as an agent-decoded step (§2), and `chauhan2026caughtactivationpreoutputmultiturn` is the mirror-image
+*output*-encoding defense (§3). It is **agent-only by construction** (a single-shot model has no tools), which is
+precisely what **dissolves the MathEnc capability tension** below — undefended alignment (MathEnc's quantity) and
+tool-assisted decode-and-act (this one) are different mechanisms, so no self-contradiction. Cost: it needs a
+decode-capable tool in the environment — AgentDojo's stock suites lack one (add a benign utility tool, or use a
+coding-agent harness whose native shell is the decode tool). **Direction decision pending owner** (`proposal.md §4`).
+
 ---
 
 ## 7. Compositional action harm on agents — a crowded landscape (the single-agent pivot is closed)
@@ -275,6 +309,17 @@ an axis orthogonal to our encoded-payload evasion.
   trajectory-level LLM monitoring real but **fragile** (degraded by random-subtask noise), reinforcing why
   per-step defenses are insufficient in principle. It explicitly leaves **cross-conversation / cross-agent**
   composition open — the segue to §8.
+
+- **Context Stitching / LogInject** (`karanjai2026contextcontaminationllmanalysis`, arXiv 2607.14493; USENIX artifact badge,
+  venue unconfirmed) — the closest **fragmentation** mechanism analog, in an **adjacent non-agent domain**. Splits
+  a payload across multiple **log entries** (each passes a stateless WAF), reassembled *implicitly in the LLM's own
+  context* on batch retrieval (76.4% ASR, LogInject-1.0 benchmark). Confirms the general principle — *per-item
+  filters miss what only a stateful reader reassembles across its context* — but it is **not an agent** (an LLM
+  summarizer/triage, no tool calls), fragments are **natural-language** (its encoding techniques are a *separate,
+  unfused* taxonomy level), and it scores **textual/label compromise, not action completion**. So it is the nearest
+  proof-of-concept for a *distributed*-encoded variant (candidate B) but does **not** scoop it — the agent +
+  encoded-fragments + action-scored combination is unoccupied. (Candidate B is deprioritized to a secondary
+  ablation vs the tool-assisted-decoding element, §6 / `proposal.md §4`.)
 
 **Verdict:** single-agent compositional action harm = **Level 1 (fully scooped)**; not a standalone direction
 for this line. It stays valid *related work* (per-step defenses are provably insufficient), and the honest
