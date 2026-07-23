@@ -258,6 +258,7 @@ def run(cfg: dict, out_path: str | Path) -> Path:
     """Run every buildable cell + a benign pass per (backbone,scaffold,defense,suite). SPENDS."""
     from agentdojo.attacks import load_attack
     from agentdojo.benchmark import benchmark_suite_with_injections, benchmark_suite_without_injections
+    from agentdojo.logging import OutputLogger
     from agentdojo.task_suite.load_suites import get_suite
 
     logdir = Path(cfg["logdir"])
@@ -273,7 +274,12 @@ def run(cfg: dict, out_path: str | Path) -> Path:
     benign_done: set[tuple[str, str, str, str]] = set()
     records: list[dict] = []
 
-    with out_path.open("w") as fh:
+    # agentdojo's benchmark_* build a TraceLogger whose delegate = Logger.get(); with no active logger
+    # context that delegate is a bare NullLogger() missing .logdir (it's set only in NullLogger.__enter__),
+    # so the benchmark crashes with AttributeError. Establish an OutputLogger(logdir) context — agentdojo's
+    # own CLI pattern — so Logger.get() returns a logger carrying our logdir. live=None => headless (the
+    # delegate is used only for .logdir; the active per-task logger is the TraceLogger the benchmark pushes).
+    with OutputLogger(str(logdir)), out_path.open("w") as fh:
         for cell in cells:
             try:
                 pipeline = build_pipeline_for_cell(cell, melon_emb)
