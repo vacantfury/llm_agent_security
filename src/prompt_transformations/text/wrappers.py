@@ -9,7 +9,7 @@ The factory registers each one via @register_transformation.
 
 Deterministic (non_llm_*) encoders run with no API; the LLM-based ones
 (llm_set_theory / llm_formal_logic / llm_quantum_mechanics / llm_classical_language /
-llm_semantic_camo / llm_paraphrase) call a model to encode via src/llm_utils (an
+llm_semantic_camo / llm_paraphrase) call a model to encode via the llm_utils base package (an
 API key is required at run time; classical-language also needs its conf/ template).
 """
 from src.prompt_transformations.transformation_factory import register_transformation

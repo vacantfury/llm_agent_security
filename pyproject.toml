@@ -10,6 +10,7 @@ dependencies = [
     "agentdojo>=0.1.35",
     "boto3>=1.43.52",
     "homoglyphs>=2.0.4",
+    "llm-utils",
     "pillow>=12.3.0",
     "pydantic>=2.13.4",
     "pyyaml>=6.0.3",
@@ -29,6 +30,9 @@ classifiers = [
 ]
 
 [tool.uv]
+
+[tool.uv.sources]
+llm-utils = { git = "https://github.com/vacantfury/llm_utils", rev = "v2.3.0" }
 # uv is the package/project manager for this repo (global law: uv, not poetry).
 
 [tool.ruff]

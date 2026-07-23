@@ -18,7 +18,7 @@ is escaped for a double-quoted YAML scalar. Braces in the payload are safe (the 
 `.format` arg, not re-scanned).
 
 Deterministic schemes (cipher / homoglyph / code) encode with no API. The `llm_*` schemes
-(set-theory / formal-logic / classical-Chinese) call a model to encode via `src/llm_utils`
+(set-theory / formal-logic / classical-Chinese) call a model to encode via the `llm_utils` base package
 — an API key is required at run time (a per-scheme encoding-model knob can be added to
 PAYLOAD_SCHEMES when the pilot is configured).
 """

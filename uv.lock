@@ -723,6 +723,19 @@ wheels = [
 ]
 
 [[package]]
+name = "httpcore2"
+version = "2.9.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "h11" },
+    { name = "truststore" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/d5/4e/fc534e5c8e9d6df4598cda50bd3df936ba9af495f932dc93376597b2f6db/httpcore2-2.9.0.tar.gz", hash = "sha256:03077a578e26d6166d831f68319326bf1d92cb851946292d2158a85e9da1896a", size = 67072, upload-time = "2026-07-23T14:09:49.949Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/d7/00/bf7357a92f1807f654c3bb303b3e158294ec6a1313c79511fc9f1a45de2b/httpcore2-2.9.0-py3-none-any.whl", hash = "sha256:e51e54521809628d2014da8d67eecd4de738d54f556d646069fa9cb63fc9a9dc", size = 82800, upload-time = "2026-07-23T14:09:46.868Z" },
+]
+
+[[package]]
 name = "httpx"
 version = "0.28.1"
 source = { registry = "https://pypi.org/simple" }
@@ -735,6 +748,22 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/b1/df/48c586a5fe32a0f01324ee087459e112ebb7224f646c0b5023f5e79e9956/httpx-0.28.1.tar.gz", hash = "sha256:75e98c5f16b0f35b567856f597f06ff2270a374470a5c2392242528e3e3e42fc", size = 141406, upload-time = "2024-12-06T15:37:23.222Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/2a/39/e50c7c3a983047577ee07d2a9e53faf5a69493943ec3f6a384bdc792deb2/httpx-0.28.1-py3-none-any.whl", hash = "sha256:d909fcccc110f8c7faf814ca82a9a4d816bc5a6dbfea25d6591d6985b8ba59ad", size = 73517, upload-time = "2024-12-06T15:37:21.509Z" },
+]
+
+[[package]]
+name = "httpx2"
+version = "2.9.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "anyio" },
+    { name = "httpcore2" },
+    { name = "idna" },
+    { name = "truststore" },
+    { name = "typing-extensions", marker = "python_full_version < '3.13'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/92/18/b79756b348664b13253a5811230daa1f33b3f0e86df4409b26199f5e9c3e/httpx2-2.9.0.tar.gz", hash = "sha256:85e33a04e7b0ad24044a62affa916140f363f19ba38e15fbc7e6aba1f1fb2775", size = 95340, upload-time = "2026-07-23T14:09:51.094Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/82/7d/354002b85409c6fe6f3f6b97624f1d11a4ddf701cd9a7ed2e161c73f0d86/httpx2-2.9.0-py3-none-any.whl", hash = "sha256:cc8e82fa3dc02fa91586dc6ccb3c9bd802a5a48adf4626d66553e793de67cbb4", size = 91107, upload-time = "2026-07-23T14:09:48.434Z" },
 ]
 
 [[package]]
@@ -1023,6 +1052,7 @@ dependencies = [
     { name = "agentdojo" },
     { name = "boto3" },
     { name = "homoglyphs" },
+    { name = "llm-utils" },
     { name = "pillow" },
     { name = "pydantic" },
     { name = "pyyaml" },
@@ -1046,6 +1076,7 @@ requires-dist = [
     { name = "agentdojo", extras = ["transformers"], marker = "extra == 'classifiers'", specifier = ">=0.1.35" },
     { name = "boto3", specifier = ">=1.43.52" },
     { name = "homoglyphs", specifier = ">=2.0.4" },
+    { name = "llm-utils", git = "https://github.com/vacantfury/llm_utils?rev=v2.3.0" },
     { name = "pillow", specifier = ">=12.3.0" },
     { name = "pydantic", specifier = ">=2.13.4" },
     { name = "pyyaml", specifier = ">=6.0.3" },
@@ -1057,6 +1088,19 @@ provides-extras = ["classifiers"]
 dev = [
     { name = "bibtexparser", specifier = ">=1.4,<2" },
     { name = "pyyaml", specifier = ">=6" },
+]
+
+[[package]]
+name = "llm-utils"
+version = "2.3.0"
+source = { git = "https://github.com/vacantfury/llm_utils?rev=v2.3.0#d567eb29c661396057ebf826ec6c70c2b47fc039" }
+dependencies = [
+    { name = "anthropic" },
+    { name = "google-genai" },
+    { name = "httpx2" },
+    { name = "openai" },
+    { name = "pillow" },
+    { name = "python-dotenv" },
 ]
 
 [[package]]
@@ -1375,7 +1419,7 @@ wheels = [
 
 [[package]]
 name = "openai"
-version = "2.46.0"
+version = "2.47.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyio" },
@@ -1387,9 +1431,9 @@ dependencies = [
     { name = "tqdm" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/af/ac/f725c4efbda8657d02be684607e5a2e5ce362e4790fdbcbdfb7c15018647/openai-2.46.0.tar.gz", hash = "sha256:0421e0735ac41451cad894af4cddf0435bfbf8cbc538ac0e15b3c062f2ddc06a", size = 1114628, upload-time = "2026-07-17T02:48:06.05Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/bf/61/9aeef14de759306e85175126d3d6d56ee4f5072a9512c6c171d58d02a62d/openai-2.47.0.tar.gz", hash = "sha256:4e205548acd4304f235b86202269912e55bc88270b15d2a051fa2b53b90343a6", size = 1089906, upload-time = "2026-07-22T17:47:29.723Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ea/7b/206238ebcb50b235942b1c66dba4974776f2057402a8d91c399be587d66a/openai-2.46.0-py3-none-any.whl", hash = "sha256:672381db55efb3a1e2610f29304c130cccdd0b319bace4d492b2443cb64c1e7c", size = 1637556, upload-time = "2026-07-17T02:48:03.695Z" },
+    { url = "https://files.pythonhosted.org/packages/41/69/26b032059273ad798d18fbcdbe369e871181841fd8bcb5caee32b7510039/openai-2.47.0-py3-none-any.whl", hash = "sha256:b3a1a7ad974092427ccb46d89f8852bdb67866680bcabeecc3ff5a3fdd71b15b", size = 1639987, upload-time = "2026-07-22T17:47:27.873Z" },
 ]
 
 [[package]]
@@ -2232,6 +2276,15 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/a4/09/5683146fda6a2b569deb78ccfd8fbfea8bfe55f726b081c0a6bb18dd6f28/triton-3.7.1-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:2020153b08280415ec0da6607834e79166442147e78e144df06b508c75b186d2", size = 197729537, upload-time = "2026-06-17T19:53:35.516Z" },
     { url = "https://files.pythonhosted.org/packages/e9/f8/448220c3092019f9fdfab39ec47985968181d67da34b44f6a7f6280a5cbb/triton-3.7.1-cp314-cp314t-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:c58e4c61f0c73b5dba3b5d19b4a7093c32f90dc18b2a7f121a7c16ccd31107b7", size = 184814760, upload-time = "2026-06-17T20:04:04.984Z" },
     { url = "https://files.pythonhosted.org/packages/f0/ac/229b7d4589d2e5937310e72c6d46e89599d16a4a12b479ffa1499fee8eb8/triton-3.7.1-cp314-cp314t-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:10ba85fa2cca4a2fbdeb36bf1cb082f2c252bda55bf9fccd74f65ec5bc647e68", size = 197824404, upload-time = "2026-06-17T19:53:42.772Z" },
+]
+
+[[package]]
+name = "truststore"
+version = "0.10.4"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/53/a3/1585216310e344e8102c22482f6060c7a6ea0322b63e026372e6dcefcfd6/truststore-0.10.4.tar.gz", hash = "sha256:9d91bd436463ad5e4ee4aba766628dd6cd7010cf3e2461756b3303710eebc301", size = 26169, upload-time = "2025-08-12T18:49:02.73Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/19/97/56608b2249fe206a67cd573bc93cd9896e1efb9e98bce9c163bcdc704b88/truststore-0.10.4-py3-none-any.whl", hash = "sha256:adaeaecf1cbb5f4de3b1959b42d41f6fab57b2b1666adb59e89cb0b53361d981", size = 18660, upload-time = "2025-08-12T18:49:01.46Z" },
 ]
 
 [[package]]
