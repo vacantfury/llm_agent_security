@@ -339,10 +339,21 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--preset", default=None, help="named subset from the config's `presets` (e.g. pilot)")
     p.add_argument("--dry-run", action="store_true", help="assemble every cell offline + count cases; no spend")
     p.add_argument("--out", default=None, help="results JSONL path (default: outputs/agent_injection/results/<preset>.jsonl)")
+    p.add_argument("--only-backbone", default=None,
+                   help="restrict the run to ONE backbone id (serve one model per vLLM endpoint; all "
+                        "vllm backbones share VLLM_BASE_URL, so a per-model run points at that model's "
+                        "server). Default out becomes <preset>__<backbone>.jsonl; concatenate the "
+                        "per-model files for scoring.")
     args = p.parse_args(argv)
 
     cfg = load_matrix(args.config, args.preset)
     tag = cfg.get("_preset", "full")
+
+    if args.only_backbone:
+        ids = _backbone_ids(cfg)
+        if args.only_backbone not in ids:
+            raise SystemExit(f"--only-backbone {args.only_backbone!r} not in this preset's backbones {ids}")
+        cfg["_backbone_ids"] = [args.only_backbone]
 
     if args.dry_run:
         plan = dry_run(cfg)
@@ -366,7 +377,8 @@ def main(argv: list[str] | None = None) -> int:
                 print(f"    [b PROBLEM] {prob}")
         return 0
 
-    out = args.out or f"outputs/agent_injection/results/{tag}.jsonl"
+    suffix = f"__{args.only_backbone}" if args.only_backbone else ""
+    out = args.out or f"outputs/agent_injection/results/{tag}{suffix}.jsonl"
     path = run(cfg, out)
     print(f"[run] wrote results -> {path}")
     return 0

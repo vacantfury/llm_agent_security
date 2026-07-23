@@ -15,6 +15,10 @@ paper/
 # Mirrors of the sibling's canonical cluster_files/ (see cluster_files/README.md).
 cluster_files/
 
+# Cluster ops job scripts — module versions + venv path conventions (local-only, per sibling policy;
+# the sibling gitignores its run_experiment_*.sbatch the same way). Pushed to clusters via rsync.
+scripts/*.sbatch
+
 # Reviews / ARR / reviewer text — never committed (public repo)
 text_docs/reviews/
 
