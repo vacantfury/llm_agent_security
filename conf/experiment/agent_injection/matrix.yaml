@@ -83,13 +83,15 @@ suites:
 backbones:
   - {id: qwen2.5-7b,    provider: vllm,      model: "Qwen/Qwen2.5-7B-Instruct",    default_scaffold: prompted, capability_rank: 1, base_url_env: VLLM_BASE_URL}
   - {id: llama3.1-8b,   provider: vllm,      model: "meta-llama/Llama-3.1-8B-Instruct", default_scaffold: prompted, capability_rank: 2, base_url_env: VLLM_BASE_URL}
-  - {id: gpt-4o-mini,   provider: openai,    model: "gpt-4o-mini-2024-07-18",      default_scaffold: native,   capability_rank: 3}
-  - {id: qwen2.5-72b,   provider: vllm,      model: "Qwen/Qwen2.5-72B-Instruct",   default_scaffold: prompted, capability_rank: 4, base_url_env: VLLM_BASE_URL}
-  - {id: gpt-4o,        provider: openai,    model: "gpt-4o-2024-08-06",           default_scaffold: native,   capability_rank: 5}
-  - {id: claude-sonnet, provider: anthropic, model: "claude-3-5-sonnet-20241022",  default_scaffold: native,   capability_rank: 6}
-  - {id: gemini-2.5-pro,provider: google,    model: "gemini-2.5-pro",              default_scaffold: native,   capability_rank: 7}
-  - {id: gpt-5,         provider: openai,    model: "gpt-5",                       default_scaffold: native,   capability_rank: 8, reasoning_effort: medium}
-  - {id: claude-opus,   provider: anthropic, model: "claude-opus-4-20250514",      default_scaffold: native,   capability_rank: 9}
+  - {id: qwen2.5-14b,   provider: vllm,      model: "Qwen/Qwen2.5-14B-Instruct",   default_scaffold: prompted, capability_rank: 3, base_url_env: VLLM_BASE_URL}
+  - {id: gpt-4o-mini,   provider: openai,    model: "gpt-4o-mini-2024-07-18",      default_scaffold: native,   capability_rank: 4}
+  - {id: qwen2.5-32b,   provider: vllm,      model: "Qwen/Qwen2.5-32B-Instruct",   default_scaffold: prompted, capability_rank: 5, base_url_env: VLLM_BASE_URL}
+  - {id: qwen2.5-72b,   provider: vllm,      model: "Qwen/Qwen2.5-72B-Instruct",   default_scaffold: prompted, capability_rank: 6, base_url_env: VLLM_BASE_URL}
+  - {id: gpt-4o,        provider: openai,    model: "gpt-4o-2024-08-06",           default_scaffold: native,   capability_rank: 7}
+  - {id: claude-sonnet, provider: anthropic, model: "claude-3-5-sonnet-20241022",  default_scaffold: native,   capability_rank: 8}
+  - {id: gemini-2.5-pro,provider: google,    model: "gemini-2.5-pro",              default_scaffold: native,   capability_rank: 9}
+  - {id: gpt-5,         provider: openai,    model: "gpt-5",                       default_scaffold: native,   capability_rank: 10, reasoning_effort: medium}
+  - {id: claude-opus,   provider: anthropic, model: "claude-opus-4-20250514",      default_scaffold: native,   capability_rank: 11}
 
 # --- run controls -------------------------------------------------------------------------------
 force_rerun: false        # false = reuse AgentDojo's on-disk cache (resume); true = recompute
@@ -179,13 +181,17 @@ presets:
     max_user_tasks: 8
     max_injection_tasks: 3
 
-  # capability_sweep — the ONLY heavy part: ASR vs capability on the surviving payload×defense subset,
-  # run only if pilot_open is positive. Fill the backbone list once the cluster's open-weight inventory
-  # is known (needs >2 capability tiers: 7-8B -> ~32B -> 72B -> a near-frontier open anchor).
+  # capability_sweep — firms up the pilot's positive signal into a capability TREND. 4-point Qwen ladder
+  # (7B->14B->32B->72B) = ONE family, so scaffold/family are controlled and capability is isolated (the
+  # headline axis). All 4 defenses to confirm the defense-split (spotlighting falls / piguard+melon hold)
+  # persists across capability. Suite held = workspace to isolate capability (cross-suite breadth is a
+  # separate follow-up run). mu10/mi4 = 40 cases/attack-cell (up from the pilot's 24) for tighter estimates.
+  # Llama-8B dropped (empty completions under the prompted scaffold, 2026-07-23 — deferred to native tool
+  # format). GATED: reports GPU+$+time and gets owner go before launch (CLAUDE.md §Conventions).
   capability_sweep:
-    backbones: [qwen2.5-7b, llama3.1-8b, qwen2.5-72b]
+    backbones: [qwen2.5-7b, qwen2.5-14b, qwen2.5-32b, qwen2.5-72b]
     payloads: [encoded_plain, encoded_cipher, tooldecode_base64]
-    defenses: [none, spotlighting_with_delimiting]
+    defenses: [none, spotlighting_with_delimiting, piguard, melon]
     scaffolds: [default]
     suites: [workspace]
     max_user_tasks: 10
