@@ -135,6 +135,12 @@ def build_pipeline_for_cell(cell: Cell, melon_embedding: str = "local"):
     default) or ``openai`` (reference; small spend even for an open backbone). Both lazy — no load
     until a real run embeds, so dry-run assembles melon cells without the [classifiers] extra."""
     llm = build_backbone(cell.backbone, cell.scaffold)
+    # Name the LLM so the agentdojo pipeline name is "<backbone>-<defense>" (not "None-<defense>"), which
+    # distinguishes backbones in the logdir/cache even in a shared tree (see run()'s per-backbone note).
+    try:
+        llm.name = cell.backbone.id
+    except (AttributeError, TypeError):
+        pass
     melon_kwargs = None
     if cell.defense == "melon":
         melon_kwargs = {"llm": llm, "embedding_backend": _melon_backend(melon_embedding)}
@@ -261,7 +267,16 @@ def run(cfg: dict, out_path: str | Path) -> Path:
     from agentdojo.logging import OutputLogger
     from agentdojo.task_suite.load_suites import get_suite
 
+    # Isolate traces + the on-disk task cache PER BACKBONE. agentdojo names the pipeline
+    # f"{llm.name}-{defense}", and (for the shipped-defense from_config path) our pre-built LLM carries no
+    # name -> "None-<defense>" for EVERY backbone. A shared logdir then collides across backbones, and
+    # concurrent per-model jobs race + contaminate each other's cached task results (verified 2026-07-22:
+    # 7B and 8B run together reused each other's traces). Namespacing the logdir by backbone id makes each
+    # per-model run own its tree; force_rerun=false then resumes cleanly WITHIN a backbone only.
+    ids = _backbone_ids(cfg)
     logdir = Path(cfg["logdir"])
+    if len(ids) == 1:
+        logdir = logdir / ids[0]
     logdir.mkdir(parents=True, exist_ok=True)
     out_path = Path(out_path)
     out_path.parent.mkdir(parents=True, exist_ok=True)
