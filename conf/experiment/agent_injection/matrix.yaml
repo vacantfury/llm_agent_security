@@ -145,6 +145,21 @@ presets:
     max_user_tasks: 2
     max_injection_tasks: 1
 
+  # calib — a tiny $0 calibration on ONE model. Purpose is NOT cost-caution (pilot_open is already $0)
+  # but engineering prudence: prove the never-executed end-to-end serving path (vLLM <-> LocalLLM XML
+  # tool-calls <-> AgentDojo action scoring <-> MELON/PIGuard firing in-loop) AND measure real throughput
+  # so pilot_open's wall-clock estimate stops being a guess. Same payload/defense axes as pilot_open,
+  # capped to mu1/mi1 -> 12 attack + 4 benign ~= 16 agent episodes (~15-30 min on 1 GPU). Run first via
+  # serve_and_run.sbatch (qwen2.5-7b), read outputs/agent_injection/results/calib__qwen2.5-7b.jsonl.
+  calib:
+    backbones: [qwen2.5-7b]
+    payloads: [encoded_plain, encoded_cipher, tooldecode_base64]
+    defenses: [none, spotlighting_with_delimiting, piguard, melon]
+    scaffolds: [default]
+    suites: [workspace]
+    max_user_tasks: 1
+    max_injection_tasks: 1
+
   # --- TWO-PART SPLIT (owner 2026-07-22: the micro-stage ladder was too conservative for uniformly-$0
   # cluster runs — merge mechanism+evasion+defense-split into ONE cheap open-weight run; keep the heavy
   # capability sweep separate). One run's results still slice by defense/model/payload, so the
