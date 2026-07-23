@@ -14,7 +14,9 @@ AgentDojo doesn't ship the way we want:
 See text_docs/agent_injection/design.md §5.
 
 RUN-TIME items to confirm when we first construct these (build-time fetch / spend, not import):
-  - PIGuard's label scheme (`classifier_safe_label`) against the leolee99/PIGuard model card.
+  - PIGuard's label scheme (`classifier_safe_label`) — VERIFIED 2026-07-22 on cluster: the model emits
+    labels `benign` / `injection`, so `classifier_safe_label="benign"` is correct. (leolee99/PIGuard
+    ships custom model code -> loaded via `_TrustedTransformersPIDetector`, below.)
   - passing a constructed `llm` object (not a model-name string) through `PipelineConfig`.
 """
 
@@ -25,7 +27,10 @@ from typing import Literal
 from agentdojo.agent_pipeline import AgentPipeline, PipelineConfig
 from agentdojo.agent_pipeline.base_pipeline_element import BasePipelineElement
 from agentdojo.agent_pipeline.basic_elements import InitQuery, SystemMessage
-from agentdojo.agent_pipeline.pi_detector import TransformersBasedPIDetector
+from agentdojo.agent_pipeline.pi_detector import (
+    PromptInjectionDetector,
+    TransformersBasedPIDetector,
+)
 from agentdojo.agent_pipeline.tool_execution import (
     ToolsExecutionLoop,
     ToolsExecutor,
@@ -59,6 +64,39 @@ def _tool_output_formatter(tool_output_format: str | None):
     return tool_result_to_str
 
 
+class _TrustedTransformersPIDetector(TransformersBasedPIDetector):
+    """``TransformersBasedPIDetector`` that loads the HF classifier with ``trust_remote_code=True``.
+
+    Some published classifier repos ship custom model code (``leolee99/PIGuard``, ACL'25) that
+    ``transformers.pipeline`` refuses to run without ``trust_remote_code=True`` — the stock detector
+    never passes it, so every PIGuard cell would silently *skip* (verified: the dry-run reported all
+    9 piguard cells skipped on a ValueError until this landed). We replicate the parent ``__init__``
+    and add only that flag — calling ``super().__init__`` would build the pipeline WITHOUT the flag
+    and raise before we could rebuild. ``trust_remote_code=True`` executes code FROM the model repo;
+    acceptable for a pinned, published research artifact on a research cluster — never point this at
+    an untrusted model id."""
+
+    def __init__(
+        self,
+        model_name: str,
+        safe_label: str,
+        threshold: float = 0.5,
+        mode: Literal["message", "full_conversation"] = "message",
+        raise_on_injection: bool = False,
+    ) -> None:
+        PromptInjectionDetector.__init__(self, mode=mode, raise_on_injection=raise_on_injection)
+        import torch
+        from transformers import pipeline
+
+        self.model_name = model_name
+        self.safe_label = safe_label
+        self.threshold = threshold
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.pipeline = pipeline(
+            "text-classification", model=self.model_name, device=device, trust_remote_code=True
+        )
+
+
 def _classifier_pipeline(
     llm: BasePipelineElement,
     system_message: str,
@@ -68,13 +106,17 @@ def _classifier_pipeline(
     threshold: float,
     tool_output_format: str | None,
     label: str,
+    trust_remote_code: bool = False,
 ) -> AgentPipeline:
-    """Mirror AgentDojo's `transformers_pi_detector` branch with a chosen HF classifier model."""
+    """Mirror AgentDojo's `transformers_pi_detector` branch with a chosen HF classifier model.
+
+    ``trust_remote_code`` selects the trusted-loading subclass (needed for PIGuard; see above)."""
     fmt = _tool_output_formatter(tool_output_format)
+    detector_cls = _TrustedTransformersPIDetector if trust_remote_code else TransformersBasedPIDetector
     tools_loop = ToolsExecutionLoop(
         [
             ToolsExecutor(fmt),
-            TransformersBasedPIDetector(model_name=model_name, safe_label=safe_label, threshold=threshold, mode="message"),
+            detector_cls(model_name=model_name, safe_label=safe_label, threshold=threshold, mode="message"),
             llm,
         ]
     )
@@ -90,7 +132,7 @@ def build_defended_pipeline(
     *,
     tool_output_format: Literal["yaml", "json"] | None = None,
     piguard_model: str = PIGUARD_MODEL,
-    classifier_safe_label: str = "benign",  # VERIFY against leolee99/PIGuard model card at run time
+    classifier_safe_label: str = "benign",  # VERIFIED 2026-07-22 on cluster (labels: benign / injection)
     classifier_threshold: float = 0.5,
     melon_kwargs: dict | None = None,
 ) -> AgentPipeline:
@@ -117,6 +159,7 @@ def build_defended_pipeline(
             threshold=classifier_threshold,
             tool_output_format=tool_output_format,
             label="piguard",
+            trust_remote_code=True,  # leolee99/PIGuard ships custom model code (see _TrustedTransformersPIDetector)
         )
 
     if defense == "melon":
