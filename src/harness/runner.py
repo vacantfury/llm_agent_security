@@ -296,8 +296,8 @@ def run(cfg: dict, out_path: str | Path) -> Path:
                 benign_done.add(key)
                 b = benchmark_suite_without_injections(pipeline, suite, logdir, force, user_tasks, version)
                 rec = {"kind": "benign", **_cell_dict(cell), "payload": None,
-                       "benign_utility": _mean(b.utility_results),
-                       "utility_results": _serialize_results(b.utility_results)}
+                       "benign_utility": _mean(b["utility_results"]),
+                       "utility_results": _serialize_results(b["utility_results"])}
                 records.append(rec)
                 fh.write(json.dumps(rec) + "\n")
 
@@ -310,10 +310,10 @@ def run(cfg: dict, out_path: str | Path) -> Path:
             rec = {"kind": "attack", **_cell_dict(cell),
                    "tool_decode": _is_tool_decode(cell.payload),
                    "pair_control": TOOLDECODE_PAIR.get(cell.payload),  # matched a-attack for tool_decode_lift
-                   "asr": _mean(r.security_results),
-                   "utility_under_attack": _mean(r.utility_results),
-                   "security_results": _serialize_results(r.security_results),
-                   "utility_results": _serialize_results(r.utility_results)}
+                   "asr": _mean(r["security_results"]),
+                   "utility_under_attack": _mean(r["utility_results"]),
+                   "security_results": _serialize_results(r["security_results"]),
+                   "utility_results": _serialize_results(r["utility_results"])}
             records.append(rec)
             fh.write(json.dumps(rec) + "\n")
     return out_path
