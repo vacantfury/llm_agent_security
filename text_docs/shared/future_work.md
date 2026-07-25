@@ -159,8 +159,8 @@ pull them apart will be refuted on first read.
 
 1. **Decode exposure (capability-positive).** Bigger backbones decode encoded payloads better and are
    therefore *more* exposed. This repo has already measured it: the 4-tier Qwen `capability_sweep`
-   (2026-07-23) found the tool-decode lift rising from ~+0.03 at 7B to ~+0.23 at 32B/72B (numbers in
-   `TODO.md`).
+   (2026-07-23) found the tool-decode lift rising monotonically with backbone capability, negligible at the
+   small tiers and large at the top two (numbers in `TODO.md`, the live-status home).
 2. **Planning danger (capability-positive).** Stronger orchestrators produce *more* successful harmful
    decompositions. Established finding — Semantic Intent Fragmentation (Ahad et al., AAAI 2026 Summer
    Symposium, arXiv:2604.08608), which reports 10/14 enterprise scenarios yielding policy-violating plans
@@ -169,9 +169,9 @@ pull them apart will be refuted on first read.
    workers are worse at noticing an injected instruction. This is the only one of the three not yet measured
    by anyone.
 
-A fourth confound to control: small backbones are simply worse at the benign task. This repo's own sweep put
-benign utility at 0.6 for Qwen-7B against 0.9 for 72B — so any robustness comparison must hold task competence
-fixed or report the safety–utility frontier, not a bare attack-success number.
+A fourth confound to control: small backbones are simply worse at the benign task — the same sweep found
+benign utility falling substantially from the top tier to the smallest. Any robustness comparison must
+therefore hold task competence fixed or report the safety–utility frontier, not a bare attack-success number.
 
 ### 5.2 What is open
 
