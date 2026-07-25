@@ -26,8 +26,14 @@ starts, add its row here and create its namespace subdirs.
 channel, **action-completion** scoring — shares almost none of the sibling's VLM batch-eval pipeline, so it
 lives here as its own line. The sibling keeps the model-side Papers A–D.
 
-**Planned agent-side directions (not yet started papers — no namespace yet).** The line's roadmap lives in
-`text_docs/shared/future_work.md`: the action-level **recover-before-act defense** + flagship deployed-agent
-demonstration (the coupled, later half of the Smuggled-Actions thesis), and **multi-agent / distributed
-composition** (a separate later paper). Each earns a row here only when it becomes an active paper with its
-own namespace.
+**The line's CURRENT WORK (2026-07-25) — no row yet, by design.** After Paper E was shelved, the line's lead
+direction is `future_work.md` **§2: an action-level defense against *data-shaped* injection** — injected
+content that carries no instruction at all, which the papers closing Paper E name as an open gap in their own
+abstracts and do not close. It is **gated on a scoop-check** (`future_work.md §2.0`) and deliberately earns no
+row here, no namespace, and no design doc until that check clears — the re-entry condition set in
+`text_docs/agent_injection/proposal.md §12`, after three of the papers that killed Paper E turned out to be
+already in our own possession.
+
+**Remaining future directions (not started).** `future_work.md` §3 multimodal / image-borne encoded
+injection · §4 multi-agent / distributed harm · §5 decomposed / small-model agents. Each earns a row here only
+when it becomes an active paper with its own namespace.

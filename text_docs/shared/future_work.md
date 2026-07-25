@@ -17,13 +17,22 @@ prompt-shield) inherit the same **decode blind spot** content guards have: an *e
 rides through them and the agent decodes-and-acts. §5 extends the same logic to a further unit — the
 **worker's fragment of context** inside a decomposed agent.
 
+**Direction change, 2026-07-25 (owner decision).** The attack-first encoded-injection paper (§1) is
+**CLOSED** — eight candidate contributions were tested to destruction and all eight were already published
+(`text_docs/agent_injection/proposal.md §§11–12`). **The defense half (§2) is promoted to the line's current
+work**, gated on a scoop-check before any design. The remaining sections stay as future work, unchanged in
+substance and re-ranked below §2.
+
 Index:
 
-- **§1 — the current paper** (Paper E "Smuggled Actions", `agent_injection`): encoded indirect injection,
-  attack-first. This is the shipping paper; its own near-term extensions live in
-  `text_docs/agent_injection/proposal.md`, not here.
-- **§2 — the direct follow-on**: the action-level *recover-before-act* defense + a flagship deployed-agent
-  demonstration — the coupled, engineering-heavier, deliberately-later half of the Smuggled-Actions thesis.
+- **§1 — CLOSED, do not re-enter** (Paper E "Smuggled Actions", `agent_injection`): encoded indirect
+  injection, attack-first. Shelved 2026-07-24 at Level 1 (Full Overlap). Kept as the record of a direction
+  tested to destruction; the verdict and its primary-source citations are in
+  `text_docs/agent_injection/proposal.md §12`.
+- **§2 — THE CURRENT WORK**: the action-level defense against **data-shaped** injection + a flagship
+  deployed-agent demonstration. Promoted from follow-on to lead 2026-07-25 because the attack papers that
+  closed §1 name this defensive gap as open *in their own abstracts* and do not close it. **Gated on a
+  scoop-check** (§2.0) before any design or build.
 - **§3 — multimodal / image-borne encoded injection**: extend the encoded-payload attack to VLM /
   computer-use (screenshot) agents.
 - **§4 — the next coordinate**: multi-agent / distributed harm — a separate, later paper that generalizes §1
@@ -35,7 +44,19 @@ Within each section, subsections are its component points.
 
 ---
 
-## 1. Encoded indirect injection (attack-first) — the current paper [Paper E]
+## 1. ⛔ CLOSED — Encoded indirect injection (attack-first) [Paper E, shelved 2026-07-24]
+
+> **Do not re-enter this section.** Shelved at scoop-check Level 1 (Full Overlap) on every claim, after
+> five attack candidates and three measurement legs were each falsified or found already published —
+> typically 6–18 months earlier, by a recurring set of authors. Full record with verified primary-source
+> quotes: `text_docs/agent_injection/proposal.md §§11–12`.
+>
+> **The one-line reason, worth keeping:** an encoded injection must become cleartext instruction-shaped
+> text exactly where the agent reads it — which is where a data-channel classifier sits. Encoding therefore
+> evades only defenses placed *upstream of the decode*. That is a placement property of the pipeline, not a
+> tunable one, so it does not yield to a better encoder.
+>
+> The text below is preserved unchanged as the historical statement of the direction.
 
 The agent setting leaves the model-only frame on two axes at once. A model-only study asks *where harmful
 content is placed* (encoding, modality) against a **model** whose only output is text and whose only adversary
@@ -71,7 +92,48 @@ text-side jailbreaking.
 
 ---
 
-## 2. Action-level defense + a flagship demonstration — the direct follow-on
+## 2. ★ THE CURRENT WORK — action-level defense against data-shaped injection
+
+*Promoted from "later follow-on" to the line's lead direction, owner decision 2026-07-25.*
+
+### 2.0 Why this one, and the gate that comes first
+
+**Why it was picked over §3–§5.** Three reasons, in order of weight:
+
+1. **The problem is named open by current primary sources — verified, not inferred.** The two papers that
+   closed §1's last leg both state the defensive gap in their own abstracts and neither closes it:
+   - AutoDojo (arXiv:2606.15057, Jun 2026): *"This is a **structural limit**: on such tasks the injection
+     can pose as ordinary data rather than an explicit instruction, **bypassing defenses that rely on
+     detecting instruction-like text**."*
+   - Agent Data Injection (arXiv:2607.05120, Jul 2026): *"ADI **remains underexplored** and easily bypasses
+     existing IPI defenses."* — 0 of 108 payloads detected by Llama Prompt Guard 2.
+2. **Different competition dynamics.** §1 died eight times to a speed mismatch: a payload idea is cheap, so
+   a handful of labs iterating monthly reached every one of ours first. A defense takes months to build and
+   validate, which both slows the field's clock and raises the barrier — the mismatch that beat us bites far
+   less here. This is the genre argument, and it is the main lesson §1 paid for.
+3. **Our assets are already defense-shaped.** A defense paper needs a harness, comparison baselines, and a
+   capability sweep — we have all three: the AgentDojo runtime, our own ports of MELON (behavioral),
+   PIGuard (classifier) and spotlighting (prompt-level), the open-weight Qwen ladder, and the $0 offline
+   probe machinery (`src/analysis/`). §1's negative results become this paper's motivation section rather
+   than being discarded.
+
+**THE GATE — scoop-check before any design.** This is the re-entry condition written into
+`proposal.md §12`, and it binds this direction first: run `scoop-check` on the defense claim, checked
+against **our own bib** and **our own wired baselines' abstracts**, *before* a design doc exists. §1's
+decisive failure was not insufficient search — three of the papers that killed it were already in our
+possession, including PIGuard, whose abstract states the property we spent a day rediscovering. No design,
+no build, no namespace, and no `papers.md` row until the check clears.
+
+**Known prior art to clear (from §1's own scoop-checks — start here, do not re-derive):** MELON
+(`zhu2025melon`, masked re-execution) · RETA (`he2026reta`, and its "Canary-Blind Entanglement" bypass) ·
+PlanGuard (2604.10134, "Intent Verifier" over parameter deviations) · dual-LLM quarantine and
+information-flow-control designs · `bhagwatkar2025firewalls` (tool-input/output firewall, near-perfect on
+current benchmarks) · DataSentinel (IEEE S&P'25, known-answer probing). The honest first question for the
+check is whether "defend against injection that carries no instruction" is already someone's paper —
+because if a defense keys on instruction-likeness it is disqualified by construction, and the surviving
+design space may be narrow.
+
+### 2.1 The direction (as previously stated)
 
 The coupled, later half of the thesis: after the attack (§1) establishes the blind spot, close it.
 
