@@ -26,14 +26,17 @@ starts, add its row here and create its namespace subdirs.
 channel, **action-completion** scoring — shares almost none of the sibling's VLM batch-eval pipeline, so it
 lives here as its own line. The sibling keeps the model-side Papers A–D.
 
-**The line's CURRENT WORK (2026-07-25) — no row yet, by design.** After Paper E was shelved, the line's lead
-direction is `future_work.md` **§2: an action-level defense against *data-shaped* injection** — injected
-content that carries no instruction at all, which the papers closing Paper E name as an open gap in their own
-abstracts and do not close. It is **gated on a scoop-check** (`future_work.md §2.0`) and deliberately earns no
-row here, no namespace, and no design doc until that check clears — the re-entry condition set in
-`text_docs/agent_injection/proposal.md §12`, after three of the papers that killed Paper E turned out to be
-already in our own possession.
+**The line has no current work (2026-07-25).** After Paper E was shelved, `future_work.md` **§2 — an
+action-level defense against *data-shaped* injection** — was promoted to lead and **closed the same day by
+its own gate**: scoop-check #4 returned Level 1 (Full Overlap), blocked by ARGUS (arXiv:2605.03378), which
+states our problem framing, insight and mechanism in its own abstract and ships a benchmark for the task
+setting. Three further closures are recorded in `future_work.md §2`. The gate did what it was built for —
+the direction cost one day of search and never reached a design doc, a namespace, or a row here.
 
-**Remaining future directions (not started).** `future_work.md` §3 multimodal / image-borne encoded
-injection · §4 multi-agent / distributed harm · §5 decomposed / small-model agents. Each earns a row here only
-when it becomes an active paper with its own namespace.
+Two directions picked in this line, two closed at Level 1, four days apart. The standing recommendation is
+**not to found a third here**; the call is the owner's.
+
+**Unchecked future directions.** `future_work.md` §3 multimodal / image-borne encoded injection · §4
+multi-agent / distributed harm · §5 decomposed / small-model agents. **No scoop-check has been run on any of
+them** — neither closure above bears on their novelty. Each earns a row here only when it becomes an active
+paper with its own namespace, and only after passing the gate first.

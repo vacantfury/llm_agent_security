@@ -17,11 +17,18 @@ prompt-shield) inherit the same **decode blind spot** content guards have: an *e
 rides through them and the agent decodes-and-acts. §5 extends the same logic to a further unit — the
 **worker's fragment of context** inside a decomposed agent.
 
-**Direction change, 2026-07-25 (owner decision).** The attack-first encoded-injection paper (§1) is
-**CLOSED** — eight candidate contributions were tested to destruction and all eight were already published
-(`text_docs/agent_injection/proposal.md §§11–12`). **The defense half (§2) is promoted to the line's current
-work**, gated on a scoop-check before any design. The remaining sections stay as future work, unchanged in
-substance and re-ranked below §2.
+**Direction change, 2026-07-25 — and its immediate reversal.** The attack-first encoded-injection paper
+(§1) was **CLOSED** on 2026-07-24: eight candidate contributions tested to destruction, all eight already
+published (`text_docs/agent_injection/proposal.md §§11–12`). The defense half (§2) was promoted to lead in
+its place, **gated on a scoop-check before any design** — and the gate closed it the same day at Level 1
+(Full Overlap), blocked by ARGUS (arXiv:2605.03378). See §2's header for the full closure.
+
+**Line status: no current work.** Two directions picked, two closed at Level 1, four days apart, each
+blocked by work published 2–15 months before we picked it. §3, §4 and §5 below are **unchecked** — no
+scoop-check has been run on any of them, and neither closure says anything about their novelty. The
+standing recommendation (session, 2026-07-25) is **not to found a third direction in this line**: the
+observed pattern is a cycle-time mismatch, not bad luck on a coordinate, and §3–§5 are the same shape of
+bet. That is a recommendation, not a decision — the call is the owner's, and nothing here is retired.
 
 Index:
 
@@ -29,10 +36,9 @@ Index:
   injection, attack-first. Shelved 2026-07-24 at Level 1 (Full Overlap). Kept as the record of a direction
   tested to destruction; the verdict and its primary-source citations are in
   `text_docs/agent_injection/proposal.md §12`.
-- **§2 — THE CURRENT WORK**: the action-level defense against **data-shaped** injection + a flagship
-  deployed-agent demonstration. Promoted from follow-on to lead 2026-07-25 because the attack papers that
-  closed §1 name this defensive gap as open *in their own abstracts* and do not close it. **Gated on a
-  scoop-check** (§2.0) before any design or build.
+- **§2 — CLOSED, do not re-enter**: the action-level defense against **data-shaped** injection. Promoted to
+  lead and closed by its own gate on 2026-07-25, Level 1 (Full Overlap), blocked by ARGUS. Kept as the
+  record of a direction stopped *before* any build — the gate paying for itself.
 - **§3 — multimodal / image-borne encoded injection**: extend the encoded-payload attack to VLM /
   computer-use (screenshot) agents.
 - **§4 — the next coordinate**: multi-agent / distributed harm — a separate, later paper that generalizes §1
@@ -92,11 +98,37 @@ text-side jailbreaking.
 
 ---
 
-## 2. ★ THE CURRENT WORK — action-level defense against data-shaped injection
+## 2. ⛔ CLOSED — action-level defense against data-shaped injection [closed 2026-07-25]
 
-*Promoted from "later follow-on" to the line's lead direction, owner decision 2026-07-25.*
+> **Do not re-enter this section.** Promoted to lead direction on 2026-07-25 and **closed the same day** by
+> its own gate: scoop-check #4 returned **Level 1 (Full Overlap)**. Full record with verified quotes:
+> `outputs/scoop_check/2026-07-25-defense/step7_verdict.md` (gitignored).
+>
+> **The blocking work is ARGUS** (arXiv:2605.03378, May 2026, `weng2026argus`), which matches on all four
+> axes — our problem framing, our insight, and our mechanism are each stated in its abstract, and it ships
+> **AgentLure**, a benchmark for the exact task setting. Three further closures: **CaMeL**
+> (`debenedetti2025camel`) covers the no-instruction case *by construction* — it never inspects for
+> instruction-likeness, so our motivating gap is not a gap it has; the **out-of-band defense survey**
+> (`narisetty2026outofband`) already names and taxonomizes the whole non-detection genre and already ran the
+> first adaptive evaluation on AgentDojo with Qwen2.5-7B on one H200 — our exact fallback position and our
+> exact hardware arm; and **`abdelnabi2026contextualintegrity`** argues an *impossibility result* for this
+> class: "an adversary can always construct a context under which a blocked flow appears legitimate, or a
+> defender who tightens norms will block genuinely legitimate flows."
+>
+> **The one-line reason, worth keeping:** the "defenses key on instruction-likeness" gap is real, but it is
+> the *field's own headline open problem*, worked by Google DeepMind, Microsoft Research and several
+> university groups simultaneously — so it is the most contested ground in the area, not open ground. The
+> §2.0 argument below inverted the truth: naming a gap in a current abstract is evidence the gap is
+> **crowded**, not that it is available.
+>
+> **The gate worked.** Cost of this direction: one day of search, zero GPU-hours, zero dollars, no design
+> doc, no namespace, no `papers.md` row. That is the gate paying for itself — contrast §1, which reached a
+> full build before its verdict.
+>
+> The text below is preserved unchanged as the historical statement of the direction and of the reasoning
+> that picked it — including the parts that were wrong.
 
-### 2.0 Why this one, and the gate that comes first
+### 2.0 Why this one, and the gate that comes first *(historical — the reasoning that picked it)*
 
 **Why it was picked over §3–§5.** Three reasons, in order of weight:
 
