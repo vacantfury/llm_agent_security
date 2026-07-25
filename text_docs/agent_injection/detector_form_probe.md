@@ -182,7 +182,29 @@ and must not lean on ρ.
 - **Two detectors is not "detectors".** The generality claim needs more of them (Prompt-Guard,
   Lakera, an LLM-judge guard) before it can be stated broadly.
 
-## 6. What this gates
+## 6. GATE OUTCOME — SCOOPED. This probe is a negative-result record, not a contribution.
+
+**Scoop-check #3 (2026-07-24) returned Level 1, Full Overlap** on every claim in this file. See
+`proposal.md §12` and `outputs/scoop_check/2026-07-24-detector-form/step7_verdict.md`.
+
+The finding above is real and correctly measured — and it was **published before we measured it**:
+
+- **PIGuard**, the classifier probed here and our own wired baseline (`li-etal-2025-piguard`, ACL'25),
+  is *itself a paper about this exact weakness*. Its abstract: *"Prompt guard models…suffer from
+  **over-defense — falsely flagging benign inputs as malicious due to trigger word bias**."* It ships
+  **NotInject** — 339 benign samples enriched with attack trigger words, i.e. §1(2)'s experiment as a
+  benchmark, by the same group, two years earlier.
+- *Defenses Against Prompt Attacks Learn Surface Heuristics* (arXiv:2601.07185, Jan 2026) states §1's
+  conclusion and measures it: a single inserted trigger token raises false refusals by up to 50%.
+- **AutoDojo** (arXiv:2606.15057, Jun 2026) runs §1(3)'s imperative-vs-declarative contrast on this
+  same benchmark against this same classifier — *"the injected content contains no sentence that reads
+  as an explicit instruction, so it evades PIGuard entirely"* — with a declarative billing record
+  carrying the same AgentDojo banking IBAN used in this file's H2 scenario.
+
+**Keep this file** as the record of a correctly-run, independently-reproduced negative result and as
+documentation of the probe machinery. **Do not cite it as a contribution, and do not build on it.**
+
+## 6b. (historical) What this was expected to gate
 
 Leg 2 of the successor direction (`proposal.md §11.4`) is **CONFIRMED at pilot grade**, and leg 3
 has a concrete payload class (L1 reported speech, no encoding). **Neither is buildable until a

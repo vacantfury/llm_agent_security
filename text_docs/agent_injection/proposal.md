@@ -279,6 +279,49 @@ wrapper, so the "classifier blocks the attack" result was **template recognition
 *necessary* to evade, let alone sufficient. **Next gate: scoop-check legs 2+3 BEFORE any build** — the last
 five candidates in this line died precisely at the step of skipping that check.
 
+---
+
+## 12. S10 — SCOOP-CHECK #3 (2026-07-24): ALL THREE LEGS SCOOPED · **LINE SHELVED**
+
+**Verdict: Level 1 — Full Overlap.** Full record with verbatim primary-source quotes:
+`outputs/scoop_check/2026-07-24-detector-form/step7_verdict.md`. Every load-bearing quote was verified
+directly against an arXiv `/abs/` page, ACL Anthology, or locally-extracted PDF text — **not** from a search
+agent's summary; four separate fetch-contamination incidents were caught and excluded this round.
+
+| Leg | Status | Anticipated by |
+|---|---|---|
+| 1 — ASR confounded by tool-use competence | **SCOOPED** | **WASP** (Meta FAIR, 2504.18575, Apr 2025) names it *"security through incompetence"* and ships the two-metric fix; **InjecAgent** (ACL'24 Findings) shipped `ASR-valid` vs `ASR-all` for exactly this in 2024 — **and is cited in our own literature review §2** |
+| 2 — detectors key on surface form, not harm | **SCOOPED ×4** | **InjecGuard** (2410.22770, Oct 2024) → **PIGuard** (ACL'25) → *Defenses Learn Surface Heuristics* (2601.07185, Jan 2026) → *When Benchmarks Lie* (2602.14161, AIWILD@ICLR'26) |
+| 3 — non-imperative / data-shaped injection | **SCOOPED ×2** | **AutoDojo** (2606.15057, Jun 2026) — same benchmark, same classifier, same declarative-record construction, *"evades PIGuard entirely"*; **ADI** (2607.05120, 6 Jul 2026, 18 days old) — formal category, 0/108 payloads detected |
+
+**The decisive fact.** **PIGuard is our own wired baseline of record** (`conf/experiment/agent_injection/defenses.yaml`,
+cited as `li-etal-2025-piguard`). Its ACL'25 abstract opens: *"Prompt guard models, though effective in
+defense, suffer from **over-defense — falsely flagging benign inputs as malicious due to trigger word
+bias**."* It ships **NotInject: 339 benign samples enriched with attack trigger words** — our benign-in-wrapper
+experiment, as a published benchmark, by the same authors, two years ahead. We spent this session
+discovering the property our own baseline's paper is titled after.
+
+**Three of the killing papers were already in our possession:** InjecAgent (cited in our lit review),
+`bhagwatkar2025firewalls` (flagged in scoop-check #1 for an unrelated reason, and it *also* says benchmark
+attacks are "overly reliant on fixed trigger phrases"), and PIGuard itself. **The failure was not
+insufficient search — it was not reading what we already held.**
+
+### DECISION: shelve the `agent_injection` line
+
+Eight candidate contributions have now been generated in this line — five attacks (§11.1) and three
+measurement legs — and **all eight were already published**, typically 6–18 months earlier, with recurring
+authorship (Chaowei Xiao on PIGuard, 2601.07185, *and* AutoDojo; Hao Li on InjecGuard and 2601.07185). That
+is a structural speed mismatch against a handful of labs iterating monthly, not a run of bad luck.
+
+**What is preserved and NOT wasted:** a working AgentDojo harness with our own MELON / PIGuard /
+spotlighting ports; a controlled open-weight capability ladder; the `$0` offline probe machinery
+(`src/analysis/{guard_capture,guard_threshold,form_vs_harm}.py`); and a cleanly recorded set of negative
+results with primary-source citations, so no future session re-derives any of this.
+
+**Do NOT** open a leg 4 here. If the agent-security area is revisited, the entry condition is a scoop-check
+run **first**, on a claim checked against our own bib and our own wired baselines' abstracts **before** any
+measurement is designed.
+
 **Standing constraints unchanged:** no cluster run is proposed without a GPU + $ + wall-clock estimate and
 the owner's explicit go; no scoop-check verdict is asserted from memory; a successor proposal doc is written
 only *after* the pilot decides, so the new direction is not documented ahead of its evidence.
