@@ -342,7 +342,18 @@ what that future paper can claim:
   only as a *diagnostic ceiling* (it assumes the codec is known). Multi-agent, action-scored
   (credential-exfiltration execution).
 
-This **substantially scoops** the future §3 on its core idea (per-agent-benign / joint-harmful + a
+**Update 2026-07-25 — this section's own assessment was too soft; the coordinate is now CLOSED.** A dedicated
+check re-verified `hu2026localmonitorsmisscompositional` from `/abs/` and put the line's origin far earlier
+than this section assumed: **`lee2024promptinfection`** (2410.07283, **9 Oct 2024**) — *"malicious prompts
+self-replicate across interconnected agents"*, working *"even when agents do not publicly share all
+communications"* — twenty-one months before this coordinate was carded. Between then and now: AiTM
+(`he2025aitm`, 2502.14847), 2503.12188 (*"attacks succeed even if individual agents are not susceptible to
+direct or indirect prompt injection"* — this coordinate's premise, as someone else's result), 2604.23459,
+2508.08127, dedicated defenses (A-Trust, PropGuard, SAIGuard, SentinelAgent), and a 247-paper survey calling
+multi-agent propagation a *"central emerging concern"*. Venue-confirmed papers at ESORICS and ACL. The three
+"relocations" listed below were **not** re-checked against that literature and should not be assumed open.
+
+The original assessment, preserved: this **substantially scoops** the future §3 on its core idea (per-agent-benign / joint-harmful + a
 wider-view / joint defense) **and already uses encoded fragments** — so the future paper cannot simply re-stake
 "distributed compositional harm + joint verification." What it leaves open, and where §3 must relocate:
 (1) **action / tool-call-level** distributed harm (sensitive tool calls split across agents), not assembled
@@ -354,8 +365,93 @@ observation-window monitors). §3, if pursued, is scoped to that intersection.
 
 ---
 
-*Maintenance: this review is the agent line's single prior-art home. §§1–6 cover the current paper's prior art
+## 9. The defense genre — "out-of-band" agent defenses (closes the defense coordinate)
+
+The line's defense half (`future_work.md §2`: an action-level defense against *data-shaped*, no-instruction
+injection) was promoted to lead and closed the same day, 2026-07-25. Four papers, all abstracts verified from
+`arxiv.org/abs/` in-session:
+
+- **ARGUS** (`weng2026argus`, 2605.03378, May 2026) — the blocking work, matching on all four axes. Names the
+  framing (*"an attacker can hide a context-aware instruction inside evidence the agent must use to decide
+  what to do. Existing benchmarks and defenses largely miss this setting"*), the insight (*"Existing defenses
+  also do not capture the causal support from runtime evidence to concrete actions"*), and the mechanism
+  (*"releases an action only when benign evidence entails it and task invariants hold"*). Ships **AgentLure**,
+  a benchmark for the setting. ASR 28.8% → 3.8% at 87.5% clean utility.
+- **CaMeL** (`debenedetti2025camel`, 2503.18813) — covers the no-instruction case *by construction*:
+  *"the untrusted data retrieved by the LLM can never impact the program flow"*. A defense that never inspects
+  for instruction-likeness has no instruction-likeness blind spot. 77% of AgentDojo tasks with provable
+  security vs 84% undefended.
+- **The out-of-band survey** (`narisetty2026outofband`, 2606.26479) — names and taxonomizes the whole
+  non-detection genre (CaMeL, FIDES, Progent, RTBAS, FORGE) via Biba integrity / reference monitoring / least
+  privilege, warns that *"every one of them is validated only on static benchmarks"*, and runs the first
+  adaptive evaluation — on AgentDojo, with **Qwen2.5-7B on a single H200**, i.e. our own open-weight arm.
+- **Contextual Integrity** (`abdelnabi2026contextualintegrity`, 2605.17634) — an *impossibility* argument for
+  the class: *"an adversary can always construct a context under which a blocked flow appears legitimate, or a
+  defender who tightens norms will block genuinely legitimate flows."*
+
+**Consequence for this line:** the defense coordinate is not open ground; it is the field's most contested
+ground, worked simultaneously by DeepMind, MSR and several university groups.
+
+## 10. Multimodal / image-borne injection on agents (declined on headroom, not novelty)
+
+`future_work.md §3`. The narrow intersection *encoded payload × image × agent action-completion ×
+injection-specific defense* was **not found** — but the direction is declined anyway, on headroom:
+
+- **VPI-Bench** (`cao2025vpibench`, 2506.02456; the `/abs/` venue field shows **ICLR 2026**) — the multimodal
+  analog of AgentDojo already exists: 306 test cases, five platforms, Computer-Use and Browser-Use agents
+  *"deceived at rates of up to 51% and 100%, respectively"*, and decisively *"system prompt defenses offer only
+  limited improvements."* **The plain-visual baseline is already at ceiling**, so an *encoded* visual payload
+  has no room left to demonstrate value — the same failure that killed this line's a-vs-b comparison.
+- **MIRAGE** (`dai2026mirage`, 2606.20717) — image-borne *"targeted next-action hijacking"* against SeeAct and
+  OpenClaw, via diffusion-generated benign-looking images inside an attacker-controlled ad slot.
+- **WAInjectBench** (`liu2025wainjectbench`, 2510.01354) — benchmarks injection *detectors* for web agents
+  including *"malicious images produced by attacks"*, and pre-empts the image-modality version of the
+  data-shaped thesis: detectors *"largely fail against attacks that omit explicit instructions or employ
+  imperceptible perturbations."*
+
+§3 also inherits §§1–6's structural result unchanged — rendering a payload into an image does not move the
+decode boundary — and imaging belongs to the sibling repo per `CLAUDE.md`.
+
+## 11. Monitor placement & capability scaling (the last idea; closed by our own data)
+
+A late idea — *no design-time monitor placement is complete, because the agent synthesizes new
+semantics-preserving transformations at runtime with its own tools; and this worsens with capability* — was
+checked on 2026-07-25 and closed. Prior art left a genuine gap; **our own measurements and two published
+theorems killed it first.**
+
+- **Counter-theorem 1** (`louck2026laundering`, 2606.24322) — proves content/lineage-based gates *are*
+  malleable under agent-mediated laundering (*"including the agent's own summarization"*), then **exhibits a
+  sufficient placement** (write-time, non-content-based), contradicting the "no placement suffices" clause.
+- **Counter-theorem 2** (`garby2026noninterference`, 2602.20064) — *"a termination-insensitive probabilistic
+  noninterference theorem over the whole calculus, including code-generating agents"*, via label propagation
+  rather than content inspection.
+- **The classical framing is already imported** — `narisetty2026outofband` and `zhang2025saltzerschroeder`
+  (2505.24019) both bring Saltzer–Schroeder *complete mediation* / reference-monitor properties into agent
+  security. This ground is occupied.
+- **What is genuinely open, and why it is still not ours:** `narisetty2026outofband` names it —
+  *"a layer that sees only tool I/O cannot observe how the model laundered low-integrity text into a
+  high-integrity argument inside its hidden reasoning… an open question, and we do not claim to have answered
+  it."* That in-head laundering is this line's attack `a`, and our own 4-tier ladder measured it **flat at
+  ≤0.05 from 7B to 72B**. The question is open partly *because current models cannot yet do it*.
+
+**⚠️ Standing caveat on this repo's own capability data.** `zou2025art` (2507.20526, 28 Jul 2025 — Zou,
+Hendrycks, Kolter, Fredrikson, Gal, UK AISI; 22 frontier agents, 44 scenarios, **1.8M** submitted attacks)
+finds *"limited correlation between agent robustness and model size, capability, or inference-time compute."*
+Our in-head-flat result is **consistent** with this; our `tool_decode_lift` capability trend is **contested**
+by it. The lift claim is narrower in scope and so not strictly refuted, but it is this line's strongest
+positive empirical result and it must never be cited without addressing ART. A year old, heavily authored, and
+absent from our bib until 2026-07-25.
+
+---
+
+*Maintenance: this review is the agent line's single prior-art home. §§1–6 cover the original paper's prior art
 (encoded indirect injection vs. injection-specific defenses); §§7–8 record the compositional-harm and
-multi-agent scoop-checks — the directions this line deliberately does *not* pursue single-agent, and the
-reshaped future coordinate. Add new agent-injection prior art with its `my_base.bib` key as the line advances;
+multi-agent scoop-checks; **§§9–11 record the 2026-07-24/25 closure sweep** — the defense coordinate, the
+multimodal coordinate, and the monitor-placement idea, i.e. why every remaining direction in `future_work.md`
+is closed or declined. Add new agent-injection prior art with its `my_base.bib` key as the line advances;
 keep model-side citations in the sibling repo's review.*
+
+*Verification standard used in §§9–11 (adopted after four fabricated-source incidents on 2026-07-24): every
+load-bearing quote was obtained by fetching `arxiv.org/abs/<id>` directly in-session — never a `/pdf/` fetch,
+never a search-agent summary. Entries whose metadata rests only on an agent report are marked
+`AGENT-REPORTED … VERIFY BEFORE CITING` in `my_base.bib` and must be opened before use.*
