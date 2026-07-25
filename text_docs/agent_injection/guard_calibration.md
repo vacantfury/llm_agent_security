@@ -90,6 +90,13 @@ The replay was checked against the actual PIGuard-arm traces from `capability_sw
   prediction is never *above* the truth, as expected: an episode is counted broken if any tool
   output is redacted, but redaction does not always break the task. **Reported utility cost is an
   upper bound.**
+- **The approximation is bracketed, and the truth sits at the faithful end.** Running the sweep
+  under both aggregation rules brackets ASR(b) at τ=0.5 on 72B: `any_message` → 0.000,
+  `first_only` → 0.125. The measured run is 0.000, i.e. exactly the `any_message` end. So the
+  bracket contains the truth, and the gap (12.5 pp) is an upper bound on how much the reuse
+  approximation could ever have mattered here. It also shows the injection carrier is frequently
+  *not* the first tool output — which is why the carrier-locating safety axis (§2) is worth having
+  rather than just testing message 0.
 
 ---
 
