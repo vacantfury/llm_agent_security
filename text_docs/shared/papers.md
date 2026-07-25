@@ -13,7 +13,7 @@ of this committed file** (public repo, public-grade discipline).
 
 | Alias | Codename | Topic (one line) | Namespace | Key doc | Stage |
 |---|---|---|---|---|---|
-| **E** | Smuggled Actions | *Encoded indirect prompt injection defeats injection-specific defenses on LLM agents* — an encoded payload dropped into the agent's untrusted data channel rides past spotlighting / data-isolation / prompt-shield; success = the agent **completes the injected action** (attack-first; the action-level defense is the deliberately-later half) | `agent_injection` | `text_docs/agent_injection/{proposal,idea_check}.md` | build + pilot (S7 built; S8 open-weight pilot positive) |
+| **E** | *(retitled at the pivot — TBD)* | **⛔ Attack-first framing RETIRED 2026-07-24.** ~~Encoded indirect prompt injection defeats injection-specific defenses on LLM agents~~ — the encoded-payload thesis was tested to destruction (see `proposal.md §11`): encoding evades only defenses placed *upstream of the decode*, which is a placement property of the pipeline, not a tunable one. **Successor direction (gated on a $0 pilot): a measurement paper — *what do agent prompt-injection benchmarks actually measure?*** — ASR confounded by tool-use competence; injection detectors keying on imperative surface form rather than harm | `agent_injection` | `text_docs/agent_injection/proposal.md §11` (pivot record; §§1–2, 5, 9 historical) | **S9 · direction pivot — successor proposal written only after the pilot decides** |
 
 **Namespacing convention.** Each paper owns a subdir keyed by its **Namespace** above under `text_docs/`,
 `conf/experiment/`, and `outputs/`; `shared/` holds cross-paper material (venue facts, literature, future

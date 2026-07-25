@@ -1,6 +1,11 @@
 # Research Proposal — Smuggled Actions: Encoded Indirect Prompt Injection on LLM Agents (`agent_injection`)
 
-**Workflow stage:** S8 · pilot-positive (open-weight arm) — **S4 scoop + deep-read DONE (Level 3 Medium, delta SAFE, 2026-07-19); S1 idea-check RETURNED + CONFIRMED (cspaper.org, 2026-07-20 — no new scoop; MELON surfaced, which sharpens the claim; §4).** Prior art in `literature_review.md §1` (full map §§2–6). Both High-risk candidates defanged on inspection. **Order from here (owner-corrected 2026-07-19 — keep this sequence):** (1) preliminary proposal ✅ → (2) S4 literature / scoop search ✅ → (3) `idea_check.md` ✅ (returned + confirmed, cspaper.org 2026-07-20) → (4) ✅ S5 main story (delta + positioning locked; surface-form-vs-behavioral sharpening folded in; compositional & multi-agent pivots scoop-checked and closed — lit review §§5/7/8) → (5) ✅ S6 design + cost — **owner ratified the direction 2026-07-20** (Paper E go; capability-scaling pilot authorized; blind-BoN axis held) — full design in `design.md` → (6) ✅ **S7 build — no-spend scaffolding BUILT + verified 2026-07-21, attack b added 2026-07-22** (attack `encoded_*` [a] + `tooldecode_*` [b, tool-assisted self-decoding — the new element, §4b of design]; benign `convert_text` decode tool; defense factory + MELON port + PIGuard; `src/harness` run driver over AgentDojo; `src/scoring` incl. `tool_decode_lift`; `runner --dry-run` assembles all cells offline + validates the b tool wiring; scoring reproduces the thesis split AND the b capability signature on synthetic data — design.md §§4b,8). → (7) **NOW: S8 — the open-weight pilot ran POSITIVE (`pilot_open`, 2026-07-23) and the 4-tier Qwen `capability_sweep` is DONE (2026-07-23, $0): the tool-decode lift rises monotonically with backbone capability, confirming the capability-scaling thesis (numbers in `TODO.md`, the live-status home). The paid-API pilot remains GATED on owner-go + API keys.** Paper E, off the July AAAI crunch (Papers C/D own that); targets a later cycle (§8).
+> ## ⛔ SUPERSEDED — read [§11 (S9 direction pivot, 2026-07-24)](#11-s9--direction-pivot-2026-07-24-the-attack-first-framing-is-retired) FIRST.
+> The **attack-first framing** of §§1–2 is **retired** (owner-approved 2026-07-24). §§3, 7 (design, machinery)
+> stay live — the harness is the asset that carries forward. §§2, 5, 9 are historical.
+> The chronological gate log (§4, S4→S8) is kept as the record of how the direction was tested to destruction.
+
+**Workflow stage:** S9 · **DIRECTION PIVOT — attack-first thesis retired, measurement direction gated on a $0 pilot (§11).** Historical stage line follows. ~~S8 · pilot-positive (open-weight arm)~~ — **S4 scoop + deep-read DONE (Level 3 Medium, delta SAFE, 2026-07-19); S1 idea-check RETURNED + CONFIRMED (cspaper.org, 2026-07-20 — no new scoop; MELON surfaced, which sharpens the claim; §4).** Prior art in `literature_review.md §1` (full map §§2–6). Both High-risk candidates defanged on inspection. **Order from here (owner-corrected 2026-07-19 — keep this sequence):** (1) preliminary proposal ✅ → (2) S4 literature / scoop search ✅ → (3) `idea_check.md` ✅ (returned + confirmed, cspaper.org 2026-07-20) → (4) ✅ S5 main story (delta + positioning locked; surface-form-vs-behavioral sharpening folded in; compositional & multi-agent pivots scoop-checked and closed — lit review §§5/7/8) → (5) ✅ S6 design + cost — **owner ratified the direction 2026-07-20** (Paper E go; capability-scaling pilot authorized; blind-BoN axis held) — full design in `design.md` → (6) ✅ **S7 build — no-spend scaffolding BUILT + verified 2026-07-21, attack b added 2026-07-22** (attack `encoded_*` [a] + `tooldecode_*` [b, tool-assisted self-decoding — the new element, §4b of design]; benign `convert_text` decode tool; defense factory + MELON port + PIGuard; `src/harness` run driver over AgentDojo; `src/scoring` incl. `tool_decode_lift`; `runner --dry-run` assembles all cells offline + validates the b tool wiring; scoring reproduces the thesis split AND the b capability signature on synthetic data — design.md §§4b,8). → (7) **NOW: S8 — the open-weight pilot ran POSITIVE (`pilot_open`, 2026-07-23) and the 4-tier Qwen `capability_sweep` is DONE (2026-07-23, $0): ~~the tool-decode lift rises monotonically with backbone capability, confirming the capability-scaling thesis~~ — **CORRECTED 2026-07-24: the trend is NOT monotone; the top two tiers invert, and the context-overflow explanation was ruled out against the full trace set. The capability-scaling headline is falsified — see §11.1** (numbers in `TODO.md`, the live-status home). The paid-API pilot remains GATED on owner-go + API keys.** Paper E, off the July AAAI crunch (Papers C/D own that); targets a later cycle (§8).
 
 *Codename: **Smuggled Actions** (Paper E — the alias **E was reassigned from the parked `judge_reliability` direction** in the sibling repo `imaging_text_attacks_for_llm_jailbreaking`, 2026-07-19). Origin: this repo's `text_docs/shared/future_work.md §1` (the agent-side line, migrated from the sibling's future_work §5) + the compositional-harm identity. **Attack-first** — the attack is this paper; the defense is the deliberately-later half (`future_work.md §2`). Full paper-facing title refined at writing.*
 
@@ -73,6 +78,13 @@ The cspaper.org idea-check (10 related papers) independently confirmed the place
 
 - **The one substantive addition — MELON (`zhu2025melon`, ICML'25).** A *behavioral/trajectory* IPI defense (masked re-execution + tool comparison), SOTA on AgentDojo, that the S4 deep-read missed. It likely *resists* encoding (it keys on action-dependence, not surface form) — so it **sharpens** the thesis rather than threatening it: encoding defeats *surface-form* injection defenses and NOT behavioral ones, which localizes the decode blind spot. Contribution #1 re-scoped to surface-form defenses accordingly (§5); MELON added as the resistant contrast defense (§3).
 - **Neighbors / baselines added:** ChatInject (`chang2026chatinject`, structural chat-template attack — parallel vector, not a scoop), Defense-by-Attack-Techniques (`chen-etal-2025-defense`, surface shield-prompt — baseline to beat), AdvAgent (`xu2025advagent`, RL invisible-HTML — web-agent support), ASB (`zhang2025asb`, possible alt harness).
+
+### S8 scoop-check #2 — 2026-07-24 (encoded parameter-poisoning pivot — Level 2 High Overlap, FRAGILE; do NOT pursue)
+
+After the open-weight pilot/sweep showed the tool-decode attack is caught by PIGuard + MELON (surface-form-evasion story empirically weak), a stronger pivot was scoop-checked: **encoded parameter-poisoning** — poison an *argument* of a legitimate action (task-entangled) to jointly evade content classifiers (PIGuard) AND behavioral masked-re-execution (MELON). **Verdict: Level 2 (High Overlap) — the pivot is largely anticipated and closing fast; NOT recommended.**
+- **Insight already named:** `he2026reta` (RETA, arXiv 2606.15441) defines *"Canary-Blind Entanglement"* vs MELON by name (conceptual/unscored bypass that appends a separate action, no encoding); `wang2026landscapepi` (SoK, 2602.10453) names the *context-dependent-task* defense blind spot + ships AgentPI; MonitoringBench (affordance reuse) and `qu2026intentexecution` ("Data Flow Integrity" argument-poisoning, 2605.16976) converge from adjacent angles; MELON's own limitations note the context-dependent false-positive mode.
+- **Mechanism well-trodden:** AgentDojo banking `InjectionTask4` is an argument-poisoning instance in our own harness; OWASP ASI02 "Parameter Manipulation"; MCPTox argument-tampering (metadata vector).
+- **Surviving delta is fragile + half-dead:** argument-*merge* (no extra call) + encoding, action-scored vs MELON+PIGuard — one axis off RETA's unscored sequencing example, and the **encoding leg is empirically weak** (PIGuard flags base64 + fully-encoded blobs — our own 2026-07-24 offline check). **Gate outcome = do NOT pivot here.** Full log `outputs/scoop_check/2026-07-24/`.
 - **Validated future directions:** the check independently named "multi-agent collaborative security" as an open gap (= `future_work.md §4`) and "theoretical learnability bounds for instruction/data separation" (a discussion-section framing, not to be owned).
 - **Venue note (weak, corpus-confounded):** all 10 retrieved papers were ICML/ICLR/ACL — evidence that ICLR / ACL-via-ARR are live homes for this work, *not* evidence against the security-venue target (cspaper under-indexes SaTML/S&P/USENIX). Keep both tracks for the S10 decision.
 
@@ -171,3 +183,102 @@ Assumptions (explicit, to be re-measured against AgentDojo's real token footprin
 - **Capability-scaling pilot.** ~6 backbones × 3 payload conditions (plain + 2 encoders) × 2 defense conditions (none + spotlighting) × 1 scaffold × ~75 AgentDojo cases ≈ **~2.7K agent runs ≈ ~27K LLM calls ≈ ~80M tokens.** On API models at a blended ~$1–10/M tokens that is **order ~$100–800**; on **served open-weight backbones (NEU / employer cluster) the compute is near-zero** — so run the open-weight arm on the cluster and reserve API spend for the frontier-capability points. Owner's go is needed only for the API arm.
 - **Full matrix (post-pilot, only if the pilot is positive).** All encoders (6 + image) × defense families (none / spotlighting / isolation / prompt-shield / MELON) × ≥3 scaffolds × more backbones ≈ **~10–20× the pilot** → low-thousands of API dollars, again largely offloadable to the cluster for the open-weight arm.
 - **Build effort (S7 — the real gate, not the API spend).** Integrate AgentDojo (clone into gitignored `other_repos/`, read before wiring), wire the copied encoders as an `attack()`, wrap spotlighting / isolation / prompt-shield / MELON as evaluatable defense baselines, add action-completion + utility scoring. This engineering is the dominant cost of the direction; the API dollars are secondary.
+
+---
+
+## 11. S9 — DIRECTION PIVOT (2026-07-24): the attack-first framing is RETIRED
+
+**Owner-approved 2026-07-24.** After the S8 sweep, three falsifiable $0 checks, and a second scoop-check, the
+attack-first thesis is retired. **This section supersedes §2 (core claim), §5 (contributions), and §9 (next
+actions).** §§3 and 7 stay live — the harness, the defense ports, and the capability ladder are the assets
+that carry forward. §4's gate log (S4→S8) is kept as the record of how the direction was tested to
+destruction. Per the repo's numbers rule, values live in the gitignored `TODO.md`; this section states the
+findings qualitatively.
+
+### 11.1 What died, and how
+
+| Candidate | How it died | Evidence |
+|---|---|---|
+| **a** — backbone decodes the payload in-head | in-head decode is negligible at *every* capability tier; a tool-output classifier blocks what little remains | `capability_sweep` (values in `TODO.md`) |
+| **b** — agent decodes via its own benign `convert_text` tool (*the* new element) | evades PROMPT-level spotlighting, but the tool-output classifier **and** the behavioral defense both block it at every tier, with large margin | ditto + `guard_calibration.md` |
+| the **capability-scaling headline** | the trend is **not monotone** — the top two tiers invert. The context-overflow explanation was tested against the full trace set and ruled out, so the inversion is real, not an artifact | trace audit 2026-07-24 |
+| **fragmentation** across injection vectors | feasible on only a minority of tasks, and rated fragile + re-opening closed ground by our own check | scoop-check 2026-07-22 |
+| **encoded parameter-poisoning** | Level 2 (High Overlap), FRAGILE — the insight is already named in the literature and the encoding leg is empirically dead | §4 / S8 scoop-check #2, `outputs/scoop_check/2026-07-24/` |
+
+### 11.2 The structural reason — why no further encoding pivot is worth trying
+
+An encoded injection must become **cleartext instruction-shaped text somewhere the agent reads it** — and
+that is exactly where a data-channel classifier sits. Encoding therefore buys evasion *only* against defenses
+placed **upstream of the decode** (prompt-level spotlighting); every defense at or downstream of the decode
+sees the same cleartext an un-encoded attack would present. This is a **placement property of the pipeline,
+not a tuning problem**, so it does not yield to a better encoder. Three independent measurements agree.
+**Do not open a sixth encoding variant.**
+
+### 11.3 The genre diagnosis — the actual lesson
+
+All five deaths are one failure: competing in the **attack-novelty race** in agent injection. That field
+posts monthly preprints, our differentiating asset (the encoder suite) is provably weak *in this setting*,
+and each idea we generated arrived 1–3 months behind someone's arXiv post — two died to scoop-checks, three
+to our own measurements. The repo's real comparative advantage is the opposite genre: **a controlled
+open-weight capability ladder on our own cluster, a working multi-defense harness, and a willingness to
+measure and report negatives** — instruments the surveyed (largely API-model) preprints structurally lack.
+Retire the attack genre for this line; keep the measurement genre.
+
+### 11.4 The successor direction — a MEASUREMENT paper (working thesis)
+
+*What do agent prompt-injection benchmarks actually measure?* Three legs, in dependency order:
+
+1. **ASR is confounded by tool-use competence.** Trace evidence shows low-capability backbones fail the
+   injected action because they cannot operate the tools at all — not because they resist. Published
+   agent-injection ASR therefore conflates *resistance* with *incompetence*, and every capability-scaling
+   claim in the literature inherits the confound. The fix is to decompose ASR into
+   **capability-to-execute × willingness-to-comply**, which our capability ladder measures directly and
+   API-only work cannot. This leg **stands on evidence already in hand** and is the paper's spine.
+2. **The leading injection detector keys on imperative surface FORM, not on harm.** Two of our own
+   measurements point at this from opposite sides: detector confidence degrades sharply as a payload's
+   phrasing moves off the templated benchmark style, *and* the same detector redacts a non-trivial share of
+   ordinary benign tool output (`guard_calibration.md` §1(3)). Both are explained by a single claim — the
+   classifier is a **surface-form** classifier. **Leg 2 is the $0 pilot's subject (§11.5); it is UNVERIFIED
+   until that pilot lands.**
+3. **A payload class that demonstrates leg 2** — non-imperative injection: plausible *data* carrying no
+   instruction at all, which reaches the harmful action through the agent's own legitimate reasoning.
+   Enters as the paper's attack section, not its thesis, so the paper does not collapse if it is scooped —
+   precisely the fragility that killed all five candidates above.
+
+**Why this genre resists the failure mode:** a measurement critique does not die when someone posts a new
+attack. Legs 1 and 2 are independently publishable; leg 3 is upside.
+
+### 11.5 The gate — a $0 offline pilot decides leg 2 (and hence leg 3)
+
+**Cost: $0, CPU, no GPU, no new agent run** — offline classifier forward passes only, so the experiment-run
+approval gate does not apply (same basis as `guard_calibration.md`).
+
+**Hypothesis.** The tool-output injection classifier discriminates on **imperative surface form**, not on the
+harmfulness of the outcome. **Prediction (falsifiable both ways):** holding the harmful *semantics* fixed
+while grading the phrasing from full imperative down to pure declarative data, detector confidence falls
+monotonically toward benign — and symmetrically, benign content phrased imperatively is flagged.
+
+- **Confirmed** → leg 2 is real, leg 3 has a payload class, the measurement paper has teeth, and the next
+  step is a scoop-check on legs 2+3 *before* any build.
+- **Refuted** (the detector tracks harm, not form) → drop legs 2 and 3; the paper narrows to leg 1 alone,
+  which is leaner but still stands on evidence already collected.
+
+**PILOT RAN 2026-07-24 — CONFIRMED, and sharper than the hypothesis. Full record:
+[`detector_form_probe.md`](detector_form_probe.md)** (dedicated results doc, so it carries the values).
+Both wired classifiers were probed over a 2×5 semantics-held-fixed factorial plus a carrier ablation.
+Qualitatively: the published classifier flags AgentDojo's **task-override sentence with no payload at all**,
+and *passes* the identical harmful instruction stated bare; swapping the harmful action for a legitimate one
+inside the same wrapper changes nothing; and a semantics-preserving rephrasing into **third-party reported
+speech evades both detectors completely, in plain English with no encoding**. The two detectors fail by
+different mechanisms, which rules out a single-model artifact. **The hypothesis' predicted *shape* was
+wrong** — a cliff, not a gradient — so the rank-correlation statistic understates the effect and the
+categorical comparison is the load-bearing one (`detector_form_probe.md §4`).
+
+This also retro-explains the two dead results above: our payloads always carried the benchmark's cleartext
+wrapper, so the "classifier blocks the attack" result was **template recognition**, and encoding was never
+*necessary* to evade, let alone sufficient. **Next gate: scoop-check legs 2+3 BEFORE any build** — the last
+five candidates in this line died precisely at the step of skipping that check.
+
+**Standing constraints unchanged:** no cluster run is proposed without a GPU + $ + wall-clock estimate and
+the owner's explicit go; no scoop-check verdict is asserted from memory; a successor proposal doc is written
+only *after* the pilot decides, so the new direction is not documented ahead of its evidence.
