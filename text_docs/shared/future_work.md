@@ -75,6 +75,13 @@ Index:
   payload across agents, so every local check passes while the assembled object is the attack."* Plus an
   impossibility proof we had no answer to. **It was already in our bib**, carrying our own staging comment
   identifying it as this very section — the fourth instance of the not-reading-what-we-hold failure.
+  A corroborating survey (arXiv API + `/abs/` fetches + DBLP venue lookups) put the line's origin at
+  **`lee2024promptinfection` (2410.07283, 9 Oct 2024) — twenty-one months before we picked this section**:
+  *"malicious prompts self-replicate across interconnected agents"*, working *"even when agents do not
+  publicly share all communications."* Add AiTM (2502.14847), *"attacks succeed even if individual agents are
+  not susceptible to direct or indirect prompt injection"* (2503.12188), dedicated defenses (A-Trust,
+  PropGuard, SAIGuard, SentinelAgent), and a 247-paper survey calling multi-agent propagation a *"central
+  emerging concern"*. Venue-confirmed papers at ESORICS and ACL. This was never open ground.
 - **§5 — SPLIT VERDICT 2026-07-25** (decomposed / small-model agents). Two readings, collapsed until now:
   decomposition-as-**attack** is **closed** (CFD `lin2026contextfractureddecompositionattackstoolusing`
   2606.09084 · DeCompBench 2606.13994 · STAC 2509.25624), and fragmentation-as-**defense** is a mature
