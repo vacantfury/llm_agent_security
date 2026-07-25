@@ -431,8 +431,9 @@ theorems killed it first.**
 - **What is genuinely open, and why it is still not ours:** `narisetty2026outofband` names it —
   *"a layer that sees only tool I/O cannot observe how the model laundered low-integrity text into a
   high-integrity argument inside its hidden reasoning… an open question, and we do not claim to have answered
-  it."* That in-head laundering is this line's attack `a`, and our own 4-tier ladder measured it **flat at
-  ≤0.05 from 7B to 72B**. The question is open partly *because current models cannot yet do it*.
+  it."* That in-head laundering is this line's attack `a`, and our own capability ladder measured it **flat
+  and near-zero across every tier** (values in the gitignored run record, not quoted here). The question is
+  open partly *because current models cannot yet do it*.
 
 **⚠️ Standing caveat on this repo's own capability data.** `zou2025art` (2507.20526, 28 Jul 2025 — Zou,
 Hendrycks, Kolter, Fredrikson, Gal, UK AISI; 22 frontier agents, 44 scenarios, **1.8M** submitted attacks)
