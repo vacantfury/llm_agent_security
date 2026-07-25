@@ -23,12 +23,33 @@ published (`text_docs/agent_injection/proposal.md §§11–12`). The defense hal
 its place, **gated on a scoop-check before any design** — and the gate closed it the same day at Level 1
 (Full Overlap), blocked by ARGUS (arXiv:2605.03378). See §2's header for the full closure.
 
-**Line status: no current work.** Two directions picked, two closed at Level 1, four days apart, each
-blocked by work published 2–15 months before we picked it. §3, §4 and §5 below are **unchecked** — no
-scoop-check has been run on any of them, and neither closure says anything about their novelty. The
-standing recommendation (session, 2026-07-25) is **not to found a third direction in this line**: the
-observed pattern is a cycle-time mismatch, not bad luck on a coordinate, and §3–§5 are the same shape of
-bet. That is a recommendation, not a decision — the call is the owner's, and nothing here is retired.
+**Line status: no current work, and every section now checked.** Scoop-check #5 (2026-07-25) closed the
+three remaining sections; full record with verified quotes in
+`outputs/scoop_check/2026-07-25-remaining/verdict_sections_3_4_5.md` (gitignored).
+
+**The finding that subsumes all five: the line's own thesis is published, with an impossibility proof.**
+The line-identity paragraph above — *"safety mechanisms that inspect one unit are structurally incomplete
+when harm is composed across units"* — is the same claim as
+`hu2026localmonitorsmisscompositional` (arXiv:2607.11751, **13 Jul 2026**, six days before this repo was
+founded): *"Local safety is not global safety when harm is compositional."* And they prove it: *"We prove
+that once the fragments look benign in the monitored view, no detector on that view can catch them, however
+strong it is."* The thesis was right; another group formalized it first.
+
+| § | Direction | Verdict (2026-07-25) |
+|---|---|---|
+| §1 | encoded injection, attack-first | ⛔ **CLOSED** — Level 1 |
+| §2 | defense vs data-shaped injection | ⛔ **CLOSED** — Level 1, ARGUS |
+| §3 | multimodal / image-borne | **DECLINED** — a narrow gap survives, but no headroom |
+| §4 | multi-agent / distributed harm | ⛔ **CLOSED** — Level 1, with a proof against us |
+| §5 | decomposed / small-model agents | **SPLIT** — attack reading closed; the crossed measurement question open at medium confidence |
+
+**Standing recommendation (session, 2026-07-25): do not found a further direction in this line.** Across
+three scoop-checks the line produced ~14 candidate contributions and every one was already published —
+killers landing between 12 days and 15 months ahead of us, four of them already in our own bib or wired into
+our own code. The defect is **cycle time**, not research taste: an idea→paper latency of ~6 months cannot
+win where the frontier publishes monthly. Any future direction should be chosen so that arriving second is
+survivable. That is a recommendation, not a decision — the call is the owner's, and nothing here is retired
+or deleted.
 
 Index:
 
@@ -39,12 +60,30 @@ Index:
 - **§2 — CLOSED, do not re-enter**: the action-level defense against **data-shaped** injection. Promoted to
   lead and closed by its own gate on 2026-07-25, Level 1 (Full Overlap), blocked by ARGUS. Kept as the
   record of a direction stopped *before* any build — the gate paying for itself.
-- **§3 — multimodal / image-borne encoded injection**: extend the encoded-payload attack to VLM /
-  computer-use (screenshot) agents.
-- **§4 — the next coordinate**: multi-agent / distributed harm — a separate, later paper that generalizes §1
-  from a single agent to a system of agents.
-- **§5 — decomposed / small-model agents**: does splitting an agent across many small workers change its
-  injection robustness? Carded 2026-07-24; cheaper and nearer than §3/§4, gated on a scoop-check.
+- **§3 — DECLINED 2026-07-25** (multimodal / image-borne encoded injection). Not Level 1: the narrow
+  intersection *encoded payload × image × agent action × injection-specific defense* was not found. Declined
+  on **headroom** — **VPI-Bench** (`cao2025vpibench`, 2506.02456, ICLR 2026) already deceives Computer-Use and
+  Browser-Use agents at *"up to 51% and 100%"* with *"system prompt defenses offer only limited
+  improvements"*, so an encoded visual payload has no room left to demonstrate value (the same
+  baseline-at-ceiling problem that killed §1's a-vs-b comparison). **MIRAGE** (`dai2026mirage`) already does
+  image-borne next-action hijacking; **WAInjectBench** (`liu2025wainjectbench`) already benchmarks image
+  detectors and finds they *"largely fail against attacks that omit explicit instructions"*. §3 also inherits
+  §1's structural kill unchanged — rendering the payload into an image does not move the decode boundary — and
+  is the most sibling-shaped direction here (imaging belongs to the sibling per `CLAUDE.md`).
+- **§4 — CLOSED 2026-07-25, do not re-enter** (multi-agent / distributed harm). Level 1, 4/4 axes, blocked by
+  `hu2026localmonitorsmisscompositional` (2607.11751, 13 Jul 2026): *"A distributed backdoor splits a harmful
+  payload across agents, so every local check passes while the assembled object is the attack."* Plus an
+  impossibility proof we had no answer to. **It was already in our bib**, carrying our own staging comment
+  identifying it as this very section — the fourth instance of the not-reading-what-we-hold failure.
+- **§5 — SPLIT VERDICT 2026-07-25** (decomposed / small-model agents). Two readings, collapsed until now:
+  decomposition-as-**attack** is **closed** (CFD `lin2026contextfractureddecompositionattackstoolusing`
+  2606.09084 · DeCompBench 2606.13994 · STAC 2509.25624), and fragmentation-as-**defense** is a mature
+  published pattern (Design Patterns 2506.08837 "Map-Reduce"; CaMeL; IsolateGPT NDSS'25; PFI). But this
+  section's actual question — injection ASR as a joint function of *fragmentation depth* × *backbone scale* —
+  **was not found**, at **medium** confidence only (the search agent's budget ran out, so this rests partly on
+  absence-of-hits). Declined on genre and cost, not novelty: measurement is the genre with the worst record in
+  this line, the fragmentation arm needs new GPU rollouts, and a positive result would merely confirm Design
+  Patterns' existing *provable*-resistance claim. **The one section not closed on novelty — owner's call.**
 
 Within each section, subsections are its component points.
 

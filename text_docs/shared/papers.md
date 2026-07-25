@@ -36,7 +36,16 @@ the direction cost one day of search and never reached a design doc, a namespace
 Two directions picked in this line, two closed at Level 1, four days apart. The standing recommendation is
 **not to found a third here**; the call is the owner's.
 
-**Unchecked future directions.** `future_work.md` §3 multimodal / image-borne encoded injection · §4
-multi-agent / distributed harm · §5 decomposed / small-model agents. **No scoop-check has been run on any of
-them** — neither closure above bears on their novelty. Each earns a row here only when it becomes an active
-paper with its own namespace, and only after passing the gate first.
+**All remaining directions checked 2026-07-25 (scoop-check #5) — none earns a row.** §4 multi-agent is
+**closed** at Level 1 by `hu2026localmonitorsmisscompositional` (2607.11751), which states the claim *and*
+proves an impossibility result against it. §5 decomposed agents is **split**: the attack reading is closed,
+the crossed *fragmentation × scale* measurement question survives at medium confidence, declined on genre and
+GPU cost rather than novelty. §3 multimodal is **declined on headroom** — VPI-Bench (ICLR 2026) already
+deceives computer-use agents at up to 51–100% with prompt-level defenses barely helping, leaving an encoded
+visual payload nothing to demonstrate. Record: `outputs/scoop_check/2026-07-25-remaining/`.
+
+**The line's thesis is itself published.** This repo's line identity — safety mechanisms that inspect one
+unit are incomplete when harm is composed across units — is 2607.11751's headline sentence (*"Local safety is
+not global safety when harm is compositional"*), dated six days before this repo was founded. The thesis was
+correct; another group formalized and proved it first. The standing recommendation is to found no further
+direction here and to treat this repo as a preserved harness; the call is the owner's.
