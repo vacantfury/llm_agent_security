@@ -169,6 +169,36 @@ def build_ablation(cfg: dict[str, Any]) -> list[Item]:
     return items
 
 
+def build_template_sweep(cfg: dict[str, Any]) -> list[Item]:
+    """Score every injection template AgentDojo actually ships, with/without payload.
+
+    Generalizes the ablation from the default wrapper to the benchmark's whole injection
+    surface. Templates are transcribed verbatim from the installed package (see config).
+    """
+    bt = cfg.get("benchmark_templates")
+    if not bt:
+        return []
+    cells = {
+        "full": (bt["goal_harmful"], "harmful"),
+        "empty": (bt["goal_removed"], "harmful"),
+        "benign": (bt["goal_benign"], "benign"),
+    }
+    items: list[Item] = []
+    for tpl in bt["templates"]:
+        for cell, (goal, sem) in cells.items():
+            items.append(
+                Item(
+                    item_id=f"T_{tpl['id']}__{cell}",
+                    scenario="template_sweep",
+                    semantics=sem,
+                    form="template_sweep",
+                    rank=-3,
+                    text=tpl["text"].replace("{goal}", goal),
+                )
+            )
+    return items
+
+
 def load_detector(spec: dict[str, Any]):
     from transformers import pipeline
 
@@ -250,6 +280,28 @@ def summarize(rows: list[dict[str, Any]], cfg: dict[str, Any]) -> list[str]:
                 f"`{r['item_id']}` {r['p_injection']:.4f} {'FLAG' if r['flagged'] else 'pass'}" for r in ctl
             )]
 
+        sweep = [r for r in dr if r["form"] == "template_sweep"]
+        if sweep:
+            by_id = {r["item_id"]: r for r in sweep}
+            out += ["\n**benchmark-template sweep** — every injection template AgentDojo ships "
+                    "(verbatim from the installed source), scored with the payload present, "
+                    "removed, and replaced by a harmless one.\n"]
+            out += ["| AgentDojo attack | + harmful goal | **goal REMOVED** | + benign goal |",
+                    "|---|---|---|---|"]
+            for tpl in cfg["benchmark_templates"]["templates"]:
+                cs = []
+                for cell in ("full", "empty", "benign"):
+                    r = by_id.get(f"T_{tpl['id']}__{cell}")
+                    cs.append(f"{r['p_injection']:.4f} {'**FLAG**' if r['flagged'] else 'pass'}"
+                              if r else "—")
+                out += [f"| `{tpl['attack_name']}` | {cs[0]} | {cs[1]} | {cs[2]} |"]
+            n_empty_flag = sum(by_id[f"T_{t['id']}__empty"]["flagged"]
+                               for t in cfg["benchmark_templates"]["templates"]
+                               if f"T_{t['id']}__empty" in by_id)
+            n_tpl = len(cfg["benchmark_templates"]["templates"])
+            out += [f"\n**{n_empty_flag}/{n_tpl} of AgentDojo's shipped injection templates flag "
+                    f"with NO payload at all.**"]
+
         abl = [r for r in dr if r["form"] == "ablation"]
         if abl:
             asks = {v["id"]: v["asks"] for v in cfg["carrier_ablation"]["variants"]}
@@ -286,11 +338,12 @@ def main() -> None:
     args = ap.parse_args()
 
     cfg = yaml.safe_load(args.config.read_text())
-    items = build_items(cfg) + build_ablation(cfg)
+    items = build_items(cfg) + build_ablation(cfg) + build_template_sweep(cfg)
     print(f"grid: {len(items)} items "
           f"({len([i for i in items if i.rank >= 0])} factorial + "
           f"{len([i for i in items if i.rank == -1])} controls + "
-          f"{len([i for i in items if i.rank == -2])} ablation)\n", flush=True)
+          f"{len([i for i in items if i.rank == -2])} ablation + "
+          f"{len([i for i in items if i.rank == -3])} template-sweep)\n", flush=True)
 
     if args.dry_run:
         for it in items:
