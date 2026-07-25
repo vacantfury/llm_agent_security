@@ -13,7 +13,7 @@ of this committed file** (public repo, public-grade discipline).
 
 | Alias | Codename | Topic (one line) | Namespace | Key doc | Stage |
 |---|---|---|---|---|---|
-| **E** | Smuggled Actions | *Encoded indirect prompt injection defeats injection-specific defenses on LLM agents* — an encoded payload dropped into the agent's untrusted data channel rides past spotlighting / data-isolation / prompt-shield; success = the agent **completes the injected action** (attack-first; the action-level defense is the deliberately-later half) | `agent_injection` | `text_docs/agent_injection/{proposal,idea_check}.md` | founding (S4 lit/scoop done) |
+| **E** | Smuggled Actions | *Encoded indirect prompt injection defeats injection-specific defenses on LLM agents* — an encoded payload dropped into the agent's untrusted data channel rides past spotlighting / data-isolation / prompt-shield; success = the agent **completes the injected action** (attack-first; the action-level defense is the deliberately-later half) | `agent_injection` | `text_docs/agent_injection/{proposal,idea_check}.md` | build + pilot (S7 built; S8 open-weight pilot positive) |
 
 **Namespacing convention.** Each paper owns a subdir keyed by its **Namespace** above under `text_docs/`,
 `conf/experiment/`, and `outputs/`; `shared/` holds cross-paper material (venue facts, literature, future
