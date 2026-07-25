@@ -15,6 +15,10 @@ paper/
 # Mirrors of the sibling's canonical cluster_files/ (see cluster_files/README.md).
 cluster_files/
 
+# Cluster job logs (SLURM .out/.err + vLLM server logs) — carry cluster home paths and
+# usernames; rsynced back from the clusters for triage. Local-only (public repo).
+logs/
+
 # Cluster ops job scripts — module versions + venv path conventions (local-only, per sibling policy;
 # the sibling gitignores its run_experiment_*.sbatch the same way). Pushed to clusters via rsync.
 scripts/*.sbatch
