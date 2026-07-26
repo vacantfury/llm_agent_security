@@ -55,7 +55,7 @@ If the round or matrix is ambiguous, **WAIT FOR USER**.
 
 `experiment.yaml` is the **active preset, overwritten per round** (prior rounds live in git history, not extra files). So **first**: if the current `experiment.yaml` is uncommitted, offer to `git add -A conf/experiment/autoattack_defense/experiment.yaml && git commit` it before overwriting, so the round isn't lost.
 
-Use the **current `experiment.yaml` and the presets in `conf/experiment/*.yaml` as templates** — match their structure, don't invent a schema. Reference: `CLAUDE.md` (3-layer config merge, factories), `src/experiment/schemas.py`, `src/llm_utils/llm_model.py` (model registry), and the factories `src/prompt_transformations/transformation_factory.py` (encoders + image renderers, unified), `src/defense/defender_factory.py`, `src/evaluation/evaluator_factory.py`.
+Use the **current `experiment.yaml` and the presets in `conf/experiment/*.yaml` as templates** — match their structure, don't invent a schema. Reference: `CLAUDE.md` (3-layer config merge, factories), `src/experiment/schemas.py`, the `llm_utils` package's `llm_model.py` (model registry — the vendored in-repo copy is gone; read it from the installed package), and the factories `src/prompt_transformations/transformation_factory.py` (encoders + image renderers, unified), `src/defense/defender_factory.py`, `src/evaluation/evaluator_factory.py`.
 
 Required shape (mirror the existing file):
 - A **header comment block** tying the run to the plan/proposal section and stating the watch-points.

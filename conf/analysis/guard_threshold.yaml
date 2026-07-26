@@ -17,10 +17,12 @@
 #     compare in opposite directions.
 #   - The utility axis is benign TASK UTILITY retained, not prompt over-refusal.
 #   - The sibling's tier-1 ordinal ladder is deliberately NOT carried over: it exists there because
-#     its guards are generative LLMs whose continuous score needs verdict-token logprobs that
-#     `llm_utils` v3.0.0 does not expose. Both guards here emit a real number natively, so tier 2
-#     applies directly. If a generative guard is ever wired into this repo, port `severity_of`'s
-#     ordinal ladder back from the sibling rather than reinventing it.
+#     its guards are generative LLMs whose continuous score needs verdict-token logprobs. Both
+#     guards here emit a real number natively, so tier 2 applies directly. If a generative guard is
+#     ever wired into this repo, port `severity_of`'s ordinal ladder back from the sibling rather
+#     than reinventing it -- and note that `llm_utils` >= v3.1.0 does expose the logprobs
+#     (`batch_chat_with_logprobs`, cluster-served models only), so a continuous score is reachable
+#     for an open-weight generative guard without a package bump.
 
 # ------------------------------------------------------------------- guards
 # One entry per guard whose threshold can be swept. `direction` is the guard's real comparison,

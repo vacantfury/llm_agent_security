@@ -1076,7 +1076,7 @@ requires-dist = [
     { name = "agentdojo", extras = ["transformers"], marker = "extra == 'classifiers'", specifier = ">=0.1.35" },
     { name = "boto3", specifier = ">=1.43.52" },
     { name = "homoglyphs", specifier = ">=2.0.4" },
-    { name = "llm-utils", git = "https://github.com/vacantfury/llm_utils?rev=v3.0.0" },
+    { name = "llm-utils", git = "https://github.com/vacantfury/llm_utils?rev=v3.1.0" },
     { name = "pillow", specifier = ">=12.3.0" },
     { name = "pydantic", specifier = ">=2.13.4" },
     { name = "pyyaml", specifier = ">=6.0.3" },
@@ -1092,8 +1092,8 @@ dev = [
 
 [[package]]
 name = "llm-utils"
-version = "3.0.0"
-source = { git = "https://github.com/vacantfury/llm_utils?rev=v3.0.0#9af5630797680f0ec7e6784549d0b9e0dfaa92f9" }
+version = "3.1.0"
+source = { git = "https://github.com/vacantfury/llm_utils?rev=v3.1.0#3f30a874febf9621b70967950f06873ca7a20046" }
 dependencies = [
     { name = "anthropic" },
     { name = "google-genai" },

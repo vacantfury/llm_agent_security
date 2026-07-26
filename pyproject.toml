@@ -32,7 +32,7 @@ classifiers = [
 [tool.uv]
 
 [tool.uv.sources]
-llm-utils = { git = "https://github.com/vacantfury/llm_utils", rev = "v3.0.0" }
+llm-utils = { git = "https://github.com/vacantfury/llm_utils", rev = "v3.1.0" }
 # uv is the package/project manager for this repo (global law: uv, not poetry).
 
 [tool.ruff]
