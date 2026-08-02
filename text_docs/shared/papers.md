@@ -7,7 +7,7 @@ which owns the model-side (VLM) line (Papers A–D); the two repos share only th
 boundary in `CLAUDE.md`).
 
 **This is a projection, not the source of truth.** The canonical registry — evaluation, priority, venue and
-review status, publication record, and future aims — is the portfolio of record (psyche `self_model/portfolio.md`);
+review status, publication record, and future aims — is the portfolio of record (the science repo `portfolio.md`);
 live status/venue tracking is the gitignored `TODO.md`. Keep review status, scores, and venue decisions **out
 of this committed file** (public repo, public-grade discipline).
 
