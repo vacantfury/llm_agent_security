@@ -1,6 +1,6 @@
 # llm_agent_security
 
-Research harness for the **security of LLM agents**: **encoded / indirect prompt injection**, action-level attacks and defenses, and agent-safety evaluation. A shared codebase for a *line* of work (multiple papers under one harness), sibling to [`imaging_text_attacks_for_llm_jailbreaking`](https://github.com/vacantfury/imaging_text_attacks_for_llm_jailbreaking) (the model-side / VLM encoding-attack line).
+Research harness for the **security of LLM agents**: **encoded / indirect prompt injection**, action-level attacks and defenses, and agent-safety evaluation. A shared codebase for a *line* of work (multiple papers under one harness), sibling to [`llm_guardrail_security`](https://github.com/vacantfury/llm_guardrail_security) (the model-side / VLM encoding-attack line).
 
 ## The line
 

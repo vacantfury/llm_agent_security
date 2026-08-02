@@ -11,7 +11,7 @@ ASR = 0, measured at one threshold (0.5). This traces the whole curve instead.
 
 Tooling: `src/analysis/guard_capture.py` (replay) + `src/analysis/guard_threshold.py` (sweep),
 config `conf/analysis/guard_threshold.yaml`. Both COPIED from the sibling repo
-(`imaging_text_attacks_for_llm_jailbreaking`, commit `25692f6`) and adapted — copy, not a
+(`llm_guardrail_security`, commit `25692f6`) and adapted — copy, not a
 dependency, per the ecosystem charter.
 
 ---

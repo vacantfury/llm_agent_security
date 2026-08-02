@@ -5,7 +5,7 @@ injection through the untrusted data channel, action-level harm, agent scaffolds
 defenses. One direction per section, in rough priority / readiness order.
 
 **Not shared with the sibling repo (owner decision 2026-07-24).** This roadmap is *independent* of
-`imaging_text_attacks_for_llm_jailbreaking`'s `future_work.md`: no coordinate is mirrored, nothing is kept in
+`llm_guardrail_security`'s `future_work.md`: no coordinate is mirrored, nothing is kept in
 sync across the two, and neither side owes the other an update when it moves. A direction earns a section here
 only if it is **agent-side**; a model-side direction belongs in the sibling's roadmap and is simply absent
 here. (Scope boundary: `CLAUDE.md`.)

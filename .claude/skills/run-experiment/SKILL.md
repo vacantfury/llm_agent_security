@@ -106,7 +106,7 @@ This step is the ENFORCEMENT of memory `feedback-maximize-compute-utilization`. 
 
 **Owner principle (2026-07-11): the experiment/research flow minimizes his participation to *meaningful gates only* — automate all pure actuation.** This sync is the one purely-mechanical actuation still on his plate, and the standing goal is to AUTOMATE it away (backlog: scripted rsync mirroring his Cursor excludes + direct `ssh -i <key>` auth, or git-pull delivery for the yaml direction). Until that lands it's his hands — not because it *should* be, but because:
 
-The yaml is written **locally**; the cluster runs from its own checkout (`~/projects/imaging_text_attacks_for_llm_jailbreaking`), so the file must be carried across — and **I cannot carry it yet**. This stage is explicit, never skipped, never assumed done:
+The yaml is written **locally**; the cluster runs from its own checkout (`~/projects/llm_guardrail_security`), so the file must be carried across — and **I cannot carry it yet**. This stage is explicit, never skipped, never assumed done:
 
 - The sync is the user's Cursor **Sync-Rsync** palette command (Cmd+Shift+P → sync local→remote), which I can't invoke; it also applies the repo's exclude patterns and carries any **new** stage-1 encode dirs a single-file copy would miss.
 - A one-file `scp` of `experiment.yaml` over the Step-4 submit-ssh path is *theoretically* possible but **unreliable** (the ssh-agent gap below) and misses new inputs — so the Cursor sync stays the method. Do **not** try to replicate the sync yourself.
@@ -120,10 +120,10 @@ Show the exact command and get a go-ahead:
 ```bash
 # AICR (preferred):
 ssh aicr \
-  'cd ~/projects/imaging_text_attacks_for_llm_jailbreaking && squeue --user=$USER | head && sbatch scripts/run_experiment_aicr.sbatch autoattack_defense/experiment'
+  'cd ~/projects/llm_guardrail_security && squeue --user=$USER | head && sbatch scripts/run_experiment_aicr.sbatch autoattack_defense/experiment'
 # NURC / Explorer (conda; use run_experiment_uv.sbatch for the uv env):
 ssh zhang.haoyu6@login.explorer.northeastern.edu \
-  'cd ~/projects/imaging_text_attacks_for_llm_jailbreaking && squeue --user=$USER | head && sbatch scripts/run_experiment.sbatch autoattack_defense/experiment'
+  'cd ~/projects/llm_guardrail_security && squeue --user=$USER | head && sbatch scripts/run_experiment.sbatch autoattack_defense/experiment'
 ```
 
 Use the ssh/wrapper for the backend chosen in Step 0. (And use `test` instead of `experiment` for the ~$0.01 smoke preset first if the round introduces a new defender/model/serving path — the current yaml header usually flags "first real run of X".)

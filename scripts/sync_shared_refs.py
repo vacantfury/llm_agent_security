@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Reconcile the shared-encoding bib overlap between this repo and its sibling.
 
-This repo (llm_agent_security) and its sibling (imaging_text_attacks_for_llm_jailbreaking)
+This repo (llm_agent_security) and its sibling (llm_guardrail_security)
 share the ENCODERS as payloads, so their encoding-literature citations overlap. The
 oikos charter bars a research-bet -> research-bet import dependency, so the two
 `paper/literature/my_base.bib` files are kept as separate copies (see CLAUDE.md

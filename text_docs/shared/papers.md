@@ -2,7 +2,7 @@
 
 This repository is a **shared harness for a line of work** (the *agent-side* security line), not a single
 paper. This file is the crisp `alias ↔ paper ↔ namespace` map so any reader or session can orient in one
-glance. Sibling to [`imaging_text_attacks_for_llm_jailbreaking`](https://github.com/vacantfury/imaging_text_attacks_for_llm_jailbreaking),
+glance. Sibling to [`llm_guardrail_security`](https://github.com/vacantfury/llm_guardrail_security),
 which owns the model-side (VLM) line (Papers A–D); the two repos share only the encoders (see the scope
 boundary in `CLAUDE.md`).
 
@@ -21,7 +21,7 @@ work, this index). Aliases are the stable shorthand; codenames are the paper-fac
 starts, add its row here and create its namespace subdirs.
 
 **Origin — the `E` alias.** Paper E was spun out to this repo on **2026-07-19** from the sibling
-`imaging_text_attacks_for_llm_jailbreaking` (where the alias `E` had briefly named the now-parked
+`llm_guardrail_security` (where the alias `E` had briefly named the now-parked
 `judge_reliability` direction). The agent runtime — a tool-use loop, injection into the untrusted *data*
 channel, **action-completion** scoring — shares almost none of the sibling's VLM batch-eval pipeline, so it
 lives here as its own line. The sibling keeps the model-side Papers A–D.

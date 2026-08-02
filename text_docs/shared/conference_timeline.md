@@ -3,8 +3,8 @@
 The canonical conference/workshop submission timeline for ALL of the owner's research repos lives in the
 sibling repo:
 
-- Local path: `../imaging_text_attacks_for_llm_jailbreaking/text_docs/shared/conference_timeline.md`
-- GitHub: https://github.com/vacantfury/imaging_text_attacks_for_llm_jailbreaking/blob/main/text_docs/shared/conference_timeline.md
+- Local path: `../llm_guardrail_security/text_docs/shared/conference_timeline.md`
+- GitHub: https://github.com/vacantfury/llm_guardrail_security/blob/main/text_docs/shared/conference_timeline.md
 
 Read and UPDATE it there — never fork a copy here (one canonical home; a stale duplicate is worse than one
 extra hop). It carries per-venue Rep / Fit / Bar / Archival columns; the Fit column is currently scored

@@ -4,7 +4,7 @@
 later coordinates). It covers agentic indirect-prompt-injection (IPI) harnesses, injection-specific defenses,
 encoded / obfuscated / non-plaintext injection payloads, and adaptive attacks on agent defenses. The
 **model-side (VLM) survey** — typographic / perturbation / encoding jailbreaks against content guards, judge
-reliability, best-of-N — lives in the sibling repo `imaging_text_attacks_for_llm_jailbreaking`'s own
+reliability, best-of-N — lives in the sibling repo `llm_guardrail_security`'s own
 `literature_review.md` and is not duplicated here (scope boundary: `CLAUDE.md`). Only the **encoders** are shared,
 and here they are **payloads**, not model-side attacks.*
 

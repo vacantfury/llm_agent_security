@@ -1,6 +1,6 @@
 """Guard-threshold calibration sweep — a PAPER-AGNOSTIC analysis tool (AGENT adaptation).
 
-COPIED from the sibling repo (``imaging_text_attacks_for_llm_jailbreaking``,
+COPIED from the sibling repo (``llm_guardrail_security``,
 ``src/analysis/guard_threshold.py``, commit ``25692f6``, 2026-07-24) and adapted to the agent
 runtime. **COPY, NOT a dependency** — the ecosystem charter bars a research-bet -> research-bet
 import, and a pure analysis tool owns no external access so it fails the infrastructure founding

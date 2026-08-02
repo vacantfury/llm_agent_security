@@ -2,7 +2,7 @@
 # repo and its sibling VLM repo.
 #
 # Why this exists: the two repos (llm_agent_security ↔
-# imaging_text_attacks_for_llm_jailbreaking) share the ENCODERS as payloads, so
+# llm_guardrail_security) share the ENCODERS as payloads, so
 # their encoding-literature citations overlap. The oikos charter bars a
 # research-bet -> research-bet import dependency, so the bibs are kept as
 # separate copies (see CLAUDE.md "Scope boundary"). This tool reconciles the
@@ -17,11 +17,11 @@
 #           side-by-side under the same parent dir (the owner's layout). Override
 #           on the CLI with --sibling if cloned elsewhere.
 local_bib: paper/literature/my_base.bib
-sibling_bib: ../imaging_text_attacks_for_llm_jailbreaking/paper/literature/my_base.bib
+sibling_bib: ../llm_guardrail_security/paper/literature/my_base.bib
 
 # Human labels for the report header.
 local_label: llm_agent_security
-sibling_label: imaging_text_attacks_for_llm_jailbreaking
+sibling_label: llm_guardrail_security
 
 # --- Identity matching ---
 matching:
