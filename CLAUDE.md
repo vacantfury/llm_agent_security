@@ -10,12 +10,12 @@ Research codebase for the **security of LLM agents** line: **encoded / indirect 
 
 **Founded 2026-07-19**, spun out of `llm_guardrail_security`. Rationale: the agent runtime (a tool-use loop on an external harness, injection into the untrusted *data channel*, **action-completion** scoring) shares almost none of the sibling's VLM batch-eval pipeline (`prompt_transform → content-guard defense → VLM query → harm/refusal judge`) — the only genuinely shared piece is the **text/image encoders**, copied here as *payloads*. Forcing the two execution models into one repo would jam incompatible runtimes together.
 
-First paper: **Paper E "Smuggled Actions"** (`agent_injection`) — an encoded indirect-injection payload evades injection-specific defenses (spotlighting / isolation / prompt-shield) on an LLM agent, scored by whether the agent completes the injected action; the agent coordinate of the sibling line's coverage / decode-gap thesis. See `text_docs/agent_injection/{proposal,idea_check}.md` and `text_docs/shared/{papers,future_work,literature_review}.md`.
+First paper: **"Smuggled Actions"** (ID **AS-5†** — retired 2026-08-02; alias ~~E~~, the letter since reassigned to the model-internals paper AS-6; `agent_injection`) — an encoded indirect-injection payload evades injection-specific defenses (spotlighting / isolation / prompt-shield) on an LLM agent, scored by whether the agent completes the injected action; the agent coordinate of the sibling line's coverage / decode-gap thesis. See `text_docs/agent_injection/{proposal,idea_check}.md` and `text_docs/shared/{papers,future_work,literature_review}.md`.
 
 ## Scope boundary (load-bearing — read before deciding where work goes)
 
 - **THIS repo owns everything AGENT:** indirect injection via a tool/data channel, action-completion harm, agent scaffolds + external harnesses (AgentDojo / InjecAgent), injection-specific defenses (spotlighting, data-isolation, prompt-shield / injection classifiers), and later multi-agent / distributed harm.
-- **The SIBLING `llm_guardrail_security` owns the model-side (VLM) line:** encoding + imaging jailbreak *attacks* and *content-guard* defenses, judged by harm / refusal on the model's TEXT output. Papers A–D live there; `judge_reliability` is parked there.
+- **The SIBLING `llm_guardrail_security` owns the model-side (VLM) line:** encoding + imaging jailbreak *attacks* and *content-guard* defenses, judged by harm / refusal on the model's TEXT output. Papers AS-1…AS-4 (aliases A–D) live there; `judge_reliability` is parked there.
 - **Shared = the ENCODERS only.** `src/prompt_transformations/` here is a **COPY** of the sibling's encoder/renderer factory — the payload generators. Keep them in sync **manually**; if a second real need appears, extract a standalone encoder package (rule of two). **Do NOT add a cross-repo import dependency** — the oikos charter bars a research-bet→research-bet dependency; copy, don't import.
 - **One concrete example each side:** "encode a harmful request as set-theory, render to image" = an **encoder** (shared); "inject that encoded blob into a tool output and check whether the agent calls `send_email`" = **THIS repo**; "check whether a VLM emits harmful text for that image" = the **sibling**.
 
@@ -40,7 +40,7 @@ The agent runtime is not built yet — the `agent_injection` paper is at **S6 (d
 ## Skills (copied from the sibling; adapt the runtime-specific ones)
 
 `.claude/skills/` holds copies of the sibling's research skills:
-- **`lit-review-loop`, `scoop-check`** — directly reusable (general research skills; already used to found Paper E's literature base).
+- **`lit-review-loop`, `scoop-check`** — directly reusable (general research skills; already used to found Paper AS-5's (Smuggled Actions) literature base).
 - **`run-experiment`, `check-experiment-results`, `manage-experiments`** — **need adaptation** to the agent runtime; they currently assume the sibling's VLM cluster pipeline (`conf/experiment/autoattack_defense`, vLLM serving, HarmBench judge). Adapt at S7/S8 when the agent harness exists.
 
 Global skills (`research-workflow`, `found-project`, `bootstrap-research-skills`, etc.) apply unchanged.
