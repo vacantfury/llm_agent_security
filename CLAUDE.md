@@ -10,7 +10,7 @@ Research codebase for the **security of LLM agents** line: **encoded / indirect 
 
 **Founded 2026-07-19**, spun out of `llm_guardrail_security`. Rationale: the agent runtime (a tool-use loop on an external harness, injection into the untrusted *data channel*, **action-completion** scoring) shares almost none of the sibling's VLM batch-eval pipeline (`prompt_transform → content-guard defense → VLM query → harm/refusal judge`) — the only genuinely shared piece is the **text/image encoders**, copied here as *payloads*. Forcing the two execution models into one repo would jam incompatible runtimes together.
 
-First paper: **"Smuggled Actions"** (ID **AS-5†** — retired 2026-08-02; alias ~~E~~, the letter since reassigned to the model-internals paper AS-6; `agent_injection`) — an encoded indirect-injection payload evades injection-specific defenses (spotlighting / isolation / prompt-shield) on an LLM agent, scored by whether the agent completes the injected action; the agent coordinate of the sibling line's coverage / decode-gap thesis. See `text_docs/agent_injection/{proposal,idea_check}.md` and `text_docs/shared/{papers,future_work,literature_review}.md`.
+First paper: **"Smuggled Actions"** (dead 2026-08-02, no series ID — dead papers carry none per the paper-ID standard; alias ~~E~~, the letter since reassigned to the model-internals paper AS-5; `agent_injection`) — an encoded indirect-injection payload evades injection-specific defenses (spotlighting / isolation / prompt-shield) on an LLM agent, scored by whether the agent completes the injected action; the agent coordinate of the sibling line's coverage / decode-gap thesis. See `text_docs/agent_injection/{proposal,idea_check}.md` and `text_docs/shared/{papers,future_work,literature_review}.md`.
 
 ## Scope boundary (load-bearing — read before deciding where work goes)
 
@@ -40,7 +40,7 @@ The agent runtime is not built yet — the `agent_injection` paper is at **S6 (d
 ## Skills (copied from the sibling; adapt the runtime-specific ones)
 
 `.claude/skills/` holds copies of the sibling's research skills:
-- **`lit-review-loop`, `scoop-check`** — directly reusable (general research skills; already used to found Paper AS-5's (Smuggled Actions) literature base).
+- **`lit-review-loop`, `scoop-check`** — directly reusable (general research skills; already used to found the Smuggled Actions (ex-E) literature base).
 - **`run-experiment`, `check-experiment-results`, `manage-experiments`** — **need adaptation** to the agent runtime; they currently assume the sibling's VLM cluster pipeline (`conf/experiment/autoattack_defense`, vLLM serving, HarmBench judge). Adapt at S7/S8 when the agent harness exists.
 
 Global skills (`research-workflow`, `found-project`, `bootstrap-research-skills`, etc.) apply unchanged.

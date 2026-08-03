@@ -10,7 +10,7 @@ Model-side jailbreak research asks whether a model *emits* harmful text. This re
 
 | ID | Alias | Codename | Topic | Namespace | Stage |
 |---|---|---|---|---|---|
-| **AS-5†** *(retired)* | **E** | Smuggled Actions | Encoded indirect prompt injection defeats injection-specific defenses on LLM agents; success = action completion | `agent_injection` | founding (S4 lit/scoop done) |
+| — *(dead, no ID)* | **E** | Smuggled Actions | Encoded indirect prompt injection defeats injection-specific defenses on LLM agents; success = action completion | `agent_injection` | founding (S4 lit/scoop done) |
 
 See `text_docs/shared/papers.md` for the live roster and `text_docs/agent_injection/proposal.md` for the current paper's state.
 
