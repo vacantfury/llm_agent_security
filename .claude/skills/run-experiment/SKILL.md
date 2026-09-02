@@ -1,6 +1,6 @@
 ---
 name: run-experiment
-description: Plan and launch the next experiment round for this repo — read the experiments plan + results, write conf/experiment/autoattack_defense/experiment.yaml against the project schema with a footprint sanity-check, then prepare/submit the cluster sbatch job. Triggers on "run experiment", "run the experiment", "kick off the next round", "write experiment.yaml", "submit the job", "launch on the cluster". Collaborative and gated: the user approves the yaml and runs the Cursor sync (a palette command I don't replicate); cluster submission only happens after explicit go-ahead and only when the cluster is confirmed live.
+description: "Plan and launch the next experiment round for this repo — read the experiments plan + results, write conf/experiment/autoattack_defense/experiment.yaml against the project schema with a footprint sanity-check, then prepare/submit the cluster sbatch job. Triggers on \"run experiment\", \"run the experiment\", \"kick off the next round\", \"write experiment.yaml\", \"submit the job\", \"launch on the cluster\". Collaborative and gated: the user approves the yaml and runs the Cursor sync (a palette command I don't replicate); cluster submission only happens after explicit go-ahead and only when the cluster is confirmed live."
 ---
 
 # Run Experiment

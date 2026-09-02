@@ -1,6 +1,6 @@
 ---
 name: check-experiment-results
-description: Triage a completed (or failed) experiment run for this repo. Walks logs → cleanup → result correctness → spot-check raw outputs → bad-logic detection → update experiment_results.md → discuss findings. The user wants a *collaborative* triage: many steps end with "wait for the user" — never run destructive commands and never edit experiment_results.md without an explicit go-ahead.
+description: "Triage a completed (or failed) experiment run for this repo. Walks logs → cleanup → result correctness → spot-check raw outputs → bad-logic detection → update experiment_results.md → discuss findings. The user wants a *collaborative* triage: many steps end with \"wait for the user\" — never run destructive commands and never edit experiment_results.md without an explicit go-ahead."
 ---
 
 # Check Experiment Results
