@@ -1,5 +1,6 @@
 ---
 name: lit-review-loop
+consumers: project:llm_agent_security
 description: This repo's literature-review loop — search prior-art/baselines, stage candidate BibTeX into the science repo's master references.bib (literature/llm-security/references.bib), then download the PDF + arXiv source into the paper's OWN subfolder under science literature/llm-security/papers/<paper-name>/ (by the session) and verify metadata, then write the verified entries into science literature/llm-security/reviews/agent_prompt_injection_review.md. Triggers on "do the literature review", "literature search", "search the literature (for X)", "find prior art / baselines", "add to my_base.bib", "what's published on X for the paper". Wraps the general literature-search-arxiv / literature-search-openalex / citation-management skills; the download+verify step is load-bearing and never skipped (the session downloads, reads, and verifies; keep the owner informed).
 ---
 

@@ -1,5 +1,6 @@
 ---
 name: manage-experiments
+consumers: project:llm_agent_security
 description: >
   Keep a paper's experiment pile finite and legible — build or refresh its
   experiment_matrix.md (RQ → minimal cell-matrix → status), so "what have we run

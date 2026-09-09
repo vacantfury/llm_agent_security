@@ -1,5 +1,6 @@
 ---
 name: scoop-check
+consumers: project:llm_agent_security
 description: Verify whether a specific claimed research contribution/novelty is already covered by existing work — decomposes the claim into 4 axes (problem framing, core mechanism, key insight, application domain), searches + triages prior art, deep-dives the closest candidates, and produces a 5-level overlap verdict plus a one-sentence delta statement. Triggers on "check if an idea is novel", "check if this is already scooped", "prior-art check for a specific claim", "novelty check", "has this been done", "verify our contribution is new", "scoop check", "am I scooped". Delegates the actual paper download+verify to lit-review-loop — never fetches PDFs itself. NOT for general literature reviews unrelated to a specific novelty claim — use lit-review-loop for that.
 ---
 
