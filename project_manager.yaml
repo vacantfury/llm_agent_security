@@ -1,0 +1,21 @@
+schema: 1 # derived: The declaration.load schema implemented by this package.
+builder: v0.1.0 # derived: The first admitted release; this rollout follows the v0.1.0 milestone.
+project: llm_agent_security # derived: oikos.projects.llm_agent_security.path matches checkout (including linked worktrees)
+capabilities: # inferred: checkout and registry evidence
+  - research_code # inferred: A research-kind registration with observable code. Evidence: oikos.projects.llm_agent_security.kind
+facts:
+  relied_on: # reviewed: its .claude/skills are generic research skills used inside this repo only; no outside skill, hook or pin calls its code
+    value: false
+    basis: "research code worked on in its own sessions; nothing outside the repo calls, runs or pins it"
+  trusted_state: # reviewed: no store of its own; outputs/ and logs/ are experiment artifacts read only by this repo's own sessions
+    value: false
+    basis: "experiment outputs only; no other project reads its state as truth"
+  effects: [] # reviewed: scripts/sync_shared_refs.py:16 "It NEVER writes to either bib" (read-only comparison with a sibling repo's bib); src/harness/agent_tools.py runs against the simulated AgentDojo suites (pyproject.toml:10), no real send; no scheduled job
+validation: # inferred: evidence-supported checks only; adequacy needs review. Empty scaffolding only; absence of declared gaps is not coverage evidence.
+  checks: [] # reviewed: tests/ exists but is empty and untracked; pyproject.toml has no pytest dependency or configuration
+  gaps:
+    - "no automated tests"
+hygiene: # inferred: pyproject.toml tool.ruff; Warn mode for evidenced Ruff usage (design section 4).
+  lint:
+    tool: ruff
+    mode: warn
