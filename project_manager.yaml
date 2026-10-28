@@ -14,7 +14,3 @@ validation: # inferred: evidence-supported checks only; adequacy needs review. E
   checks: [] # reviewed: tests/ exists but is empty and untracked; pyproject.toml has no pytest dependency or configuration
   gaps:
     - "no automated tests"
-hygiene: # inferred: pyproject.toml tool.ruff; Warn mode for evidenced Ruff usage (design section 4).
-  lint:
-    tool: ruff
-    mode: warn
