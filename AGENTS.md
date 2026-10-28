@@ -10,8 +10,6 @@ Research codebase for the **security of LLM agents** line: **encoded / indirect 
 
 **Founded 2026-07-19**, spun out of `llm_guardrail_security`. Rationale: the agent runtime (a tool-use loop on an external harness, injection into the untrusted *data channel*, **action-completion** scoring) shares almost none of the sibling's VLM batch-eval pipeline (`prompt_transform → content-guard defense → VLM query → harm/refusal judge`) — the only genuinely shared piece is the **text/image encoders**, copied here as *payloads*. Forcing the two execution models into one repo would jam incompatible runtimes together.
 
-First paper: **"Smuggled Actions"** (dead 2026-08-02, no series ID — dead papers carry none per the paper-ID standard; alias ~~E~~, the letter since reassigned to the model-internals paper AS-5; `agent_injection`) — an encoded indirect-injection payload evades injection-specific defenses (spotlighting / isolation / prompt-shield) on an LLM agent, scored by whether the agent completes the injected action; the agent coordinate of the sibling line's coverage / decode-gap thesis. See `text_docs/agent_injection/{proposal,idea_check}.md` and `text_docs/shared/{papers,future_work,literature_review}.md`.
-
 ## Scope boundary (load-bearing — read before deciding where work goes)
 
 - **THIS repo owns everything AGENT:** indirect injection via a tool/data channel, action-completion harm, agent scaffolds + external harnesses (AgentDojo / InjecAgent), injection-specific defenses (spotlighting, data-isolation, prompt-shield / injection classifiers), and later multi-agent / distributed harm.
@@ -34,8 +32,6 @@ Multi-paper namespacing mirrors the sibling: `text_docs/<paper>/`, `conf/experim
 
 - **Bib sync** — reconcile the shared-encoding citation overlap with the sibling repo:
   `uv run python scripts/sync_shared_refs.py` (`--show-only` for the one-sided lists; `--strict` to exit non-zero on a metadata conflict). Report-only — it never writes; config in `conf/sync_shared_refs.yaml`. Per the scope boundary above, the two bibs are kept as separate copies (not imported), and this tool keeps their overlap honest.
-
-The agent runtime is not built yet — the `agent_injection` paper is at **S6 (design)** (see its `proposal.md`); the runtime **build is S7**. Once built, this section mirrors the sibling's `python main.py <preset>` shape adapted to the agent harness. Until then, work is docs + design (`text_docs/`) plus the maintenance command above.
 
 ## Skills (copied from the sibling; adapt the runtime-specific ones)
 
